@@ -1,138 +1,103 @@
-<!DOCTYPE html>
-<html lang="bn">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PlumMine - Tap to Earn</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    
-    <script async src="https://ss.mrmnd.com/interstitial.js" data-mndintid="ace4b2a0-0bfe-493d-b8e2-c39de7fe1ce2"></script>
-    
-    <style>
-        :root { --primary: #2e7d32; --bg: #e1f5fe; }
-        body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); margin: 0; padding: 0; user-select: none; }
-        .page { display: none; padding: 20px; padding-bottom: 90px; min-height: 100vh; box-sizing: border-box; }
-        .active { display: block; }
-
-        /* ব্যালেন্স কার্ড ডিজাইন */
-        .balance-card { background: #fff9c4; margin: 15px auto; width: 90%; padding: 20px; border-radius: 25px; text-align: center; border: 3px solid #8d6e63; }
-        .balance-card h1 { font-size: 38px; color: #d84315; margin: 5px 0; }
-        
-        /* গেম এরিয়া */
-        .game-zone { position: relative; height: 350px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
-        #plum-tree { width: 230px; z-index: 2; cursor: pointer; transition: transform 0.1s; }
-        #plum-tree:active { transform: scale(0.92); }
-        .pot { width: 130px; margin-top: -15px; z-index: 1; }
-
-        /* টাস্ক ও সাপোর্ট কার্ড ডিজাইন */
-        .card { background: white; padding: 15px; margin: 10px 0; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); border-left: 5px solid var(--primary); }
-        .tg-icon { width: 24px; vertical-align: middle; margin-right: 10px; }
-        .btn { background: var(--primary); color: white; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; }
-
-        /* নেভিগেশন বার */
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid #eee; }
-        .nav-link { text-align: center; font-size: 11px; color: #757575; text-decoration: none; flex: 1; }
-        .nav-link.active-nav { color: var(--primary); font-weight: bold; }
-    </style>
-</head>
-<body>
-
-    <div id="home" class="page active">
-        <div class="balance-card">
-            <small>YOUR BOIROI BALANCE</small>
-            <h1 id="bal">0</h1>
-            <small>Next ad in: <span id="tc">0</span>/50</small>
-        </div>
-        <div class="game-zone" onclick="tapTree()">
-            <img id="plum-tree" src="https://cdn-icons-png.flaticon.com/512/490/490099.png" alt="Tree">
-            <img class="pot" src="https://cdn-icons-png.flaticon.com/512/628/628283.png" alt="Pot">
-        </div>
-    </div>
-
-    <div id="tasks" class="page">
-        <h2 style="color:var(--primary)">📋 টাস্ক লিস্ট</h2>
-        <div id="task-container"></div>
-    </div>
-
-    <div id="support" class="page">
-        <h2 style="color:var(--primary)">🎧 সাপোর্ট সেন্টার</h2>
-        <div class="card" onclick="window.open('https://t.me/SumaiyaJannatHasi','_blank')">
-            <span><img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" class="tg-icon"> Admin Support</span>
-            <button class="btn">Chat</button>
-        </div>
-        <div class="card" onclick="window.open('https://t.me/HasiEarnigZone','_blank')">
-            <span><img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" class="tg-icon"> Join Channel</span>
-            <button class="btn">Join</button>
-        </div>
-    </div>
-
-    <nav class="bottom-nav">
-        <div class="nav-link active-nav" onclick="nav('home')">🍒<br>PlumMine</div>
-        <div class="nav-link" onclick="nav('tasks')">📋<br>Tasks</div>
-        <div class="nav-link" onclick="nav('support')">🎧<br>Support</div>
-    </nav>
-
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
-        let bal = parseInt(localStorage.getItem('p_bal')) || 0;
-        let taps = 0;
 
-        // আপনার দেওয়া ৫টি ডাইরেক্ট লিঙ্ক
-        const directLinks = [
-            "https://www.effectivegatecpm.com/terguwpb?key=f9a940d361f256fea01e722ed90142a0",
-            "https://www.effectivegatecpm.com/h0pcefng?key=abbdbc66cbbe1b5399de46182281695e",
-            "https://www.effectivegatecpm.com/vvqrzy9mi?key=b86387c522a84da67f7603d92e41b9e3",
-            "https://www.effectivegatecpm.com/xvtvgpzu?key=d840ab456701c101a4df8de6f240f8d6",
-            "https://www.effectivegatecpm.com/vvqrzy9mi?key=b86387c522a84da67f7603d92e41b9e3"
-        ];
+        let points = parseInt(localStorage.getItem('p_bal')) || 0;
+        let taps = 0;
+        const directAdLink = "https://www.effectivegatecpm.com/eu58bq8h?key=ddafcd4b90ae80d8637cde448cec9d9c";
 
         function update() {
-            document.getElementById('bal').innerText = bal.toLocaleString();
+            document.getElementById('bal').innerText = points.toLocaleString();
+            document.getElementById('w-bal').innerText = points.toLocaleString();
             document.getElementById('tc').innerText = taps;
-            localStorage.setItem('p_bal', bal);
+            document.getElementById('fill').style.width = (taps / 50) * 100 + "%";
+            localStorage.setItem('p_bal', points);
         }
 
-        function nav(id) {
+        function nav(id, el) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active-nav'));
-            event.currentTarget.classList.add('active-nav');
+            el.classList.add('active-nav');
         }
 
-        function tapTree() {
+        function doTap() {
             if (taps < 50) {
-                bal++; taps++; update();
+                points++; 
+                taps++; 
+                update();
+                
+                const p = document.createElement('div');
+                p.className = 'plum-fall'; p.innerText = "🍒";
+                p.style.left = Math.random() * 60 + 20 + "%";
+                p.style.top = "50px";
+                document.getElementById('p-area').appendChild(p);
+                setTimeout(() => p.remove(), 700);
             } else {
-                if (typeof mndint !== 'undefined') { mndint.show(); }
-                taps = 0; update();
+                const randomChoice = Math.random();
+                if (randomChoice > 0.5 && typeof mndint !== 'undefined') {
+                    mndint.show();
+                } else {
+                    window.open(directAdLink, '_blank');
+                }
+                taps = 0;
+                update();
             }
         }
 
-        // ১০টি টাস্ক জেনারেট করা
-        const container = document.getElementById('task-container');
-        for(let i=1; i<=10; i++) {
-            container.innerHTML += `
-                <div class="card">
-                    <span>Task ${i}: Watch & Earn 10 🍒</span>
-                    <button class="btn" onclick="runTask(${i})">Claim</button>
-                </div>`;
+        // --- টাস্ক সিস্টেম (২৪ ঘণ্টা লজিক) ---
+        const taskDiv = document.getElementById('task-list');
+        
+        function renderTasks() {
+            taskDiv.innerHTML = '';
+            const now = new Date().getTime();
+
+            for(let i=1; i<=10; i++){
+                const lastClaim = localStorage.getItem(`task_${i}_time`);
+                const isCompleted = lastClaim && (now - lastClaim < 24 * 60 * 60 * 1000);
+
+                taskDiv.innerHTML += `
+                    <div class="card">
+                        <span>Task ${i}: Get 10 🍒</span>
+                        <button class="btn" id="btn_${i}" 
+                            ${isCompleted ? 'disabled style="background:#ccc"' : ''} 
+                            onclick="goTask(${i})">
+                            ${isCompleted ? 'Completed' : 'Claim'}
+                        </button>
+                    </div>`;
+            }
         }
 
-        function runTask(id) {
-            if (id <= 5) {
-                // প্রথম ৫টি টাস্কের জন্য ডাইরেক্ট লিঙ্ক
-                window.open(directLinks[id-1], '_blank');
-            } else {
-                // পরের ৫টি টাস্কের জন্য Mondiad Interstitial
-                if (typeof mndint !== 'undefined') { mndint.show(); }
-            }
-            bal += 10;
+        function goTask(id) {
+            const now = new Date().getTime();
+            
+            // অ্যাড ওপেন করা
+            window.open(directAdLink, '_blank');
+            
+            // রিওয়ার্ড দেওয়া ও টাইম সেভ করা
+            points += 10;
+            localStorage.setItem(`task_${id}_time`, now);
+            
             update();
-            tg.showAlert("অভিনন্দন! ১০টি বড়ই যুক্ত হয়েছে।");
+            renderTasks(); // বাটন আপডেট করা
+            tg.showAlert("টাস্ক সফল! ১০টি বড়ই যুক্ত হয়েছে। ২৪ ঘণ্টা পর আবার আসবে।");
+        }
+
+        function checkW() {
+            if(points < 5000) tg.showAlert("মিনিমাম ৫০০০ বড়ই লাগবে।");
+            else tg.showAlert("রিকোয়েস্ট সফল! অ্যাডমিন ২৪ ঘণ্টার মধ্যে চেক করবেন।");
+        }
+
+        function copyRef() {
+            navigator.clipboard.writeText(document.getElementById('ref-link').innerText);
+            tg.showAlert("লিঙ্ক কপি হয়েছে!");
+        }
+
+        if (tg.initDataUnsafe.user) {
+            const u = tg.initDataUnsafe.user;
+            document.getElementById('ref-link').innerText = `https://t.me/PlumMineTap_bot?start=${u.id}`;
         }
 
         update();
+        renderTasks(); // শুরুতে টাস্কগুলো লোড করা
     </script>
-</body>
-</html>
