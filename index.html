@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PlumMine - Tap to Earn</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script async src="https://ss.mrmnd.com/interstitial.js" data-mndintid="ace4b2a0-0bfe-493d-b8e2-c39de7fe1ce2"></script>
+    
+    <style>
+        :root { --primary: #2e7d32; --accent: #ffeb3b; --bg: #e1f5fe; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, sans-serif; background: var(--bg); margin: 0; padding: 0; user-select: none; }
+        .page { display: none; padding: 20px; padding-bottom: 90px; min-height: 100vh; box-sizing: border-box; }
+        .active { display: block; }
+
+        /* Header UI */
+        .top-nav { display: flex; justify-content: space-between; align-items: center; background: white; padding: 10px 15px; border-radius: 0 0 15px 15px; box-shadow: 0 3px 6px rgba(0,0,0,0.1); }
+        .logo-area { display: flex; align-items: center; font-weight: bold; color: var(--primary); }
+        .user-pic { width: 35px; height: 35px; border-radius: 50%; border: 2px solid var(--primary); }
+
+        /* Balance Card */
+        .balance-card { background: white; margin: 15px auto; width: 90%; padding: 15px; border-radius: 20px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .balance-card h1 { font-size: 38px; margin: 5px 0; color: #1b5e20; }
+        
+        /* Game Area */
+        .game-zone { position: relative; height: 320px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; margin-top: 10px; }
+        #plum-tree { width: 230px; z-index: 2; cursor: pointer; transition: transform 0.1s ease; }
+        #plum-tree:active { transform: scale(0.92); }
+        .pot { width: 120px; margin-top: -15px; z-index: 1; }
+        
+        /* Progress & Animation */
+        .progress-box { width: 80%; background: #cfd8dc; height: 12px; border-radius: 10px; margin: 15px auto; overflow: hidden; }
+        #bar { width: 0%; height: 100%; background: var(--primary); transition: width 0.2s; }
+        .plum-particle { position: absolute; font-size: 24px; animation: fall 0.6s ease-in forwards; z-index: 5; pointer-events: none; }
+        @keyframes fall { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(200px); } }
+
+        /* Task & List UI */
+        .card-item { background: white; padding: 15px; margin: 10px 0; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; border-left: 5px solid var(--primary); }
+        .btn { background: var(--primary); color: white; border: none; padding: 10px 18px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .btn:disabled { background: #ccc; }
+
+        /* Navigation */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid #eee; }
+        .nav-link { text-align: center; font-size: 11px; color: #757575; text-decoration: none; flex: 1; }
+        .nav-link.active-nav { color: var(--primary); font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div id="home" class="page active">
+        <div class="top-nav">
+            <div class="logo-area">🍒 PlumMine</div>
+            <img id="u-img" class="user-pic" src="https://via.placeholder.com/35" alt="User">
+        </div>
+        <div class="balance-card">
+            <small>বড়ই ব্যালেন্স</small>
+            <h1 id="bal">0</h1>
+            <div class="progress-box"><div id="bar"></div></div>
+            <small>Next Ad in: <span id="tc">0</span>/50</small>
+        </div>
+        <div class="game-zone" onclick="doTap()">
+            <img id="plum-tree" src="https://cdn-icons-png.flaticon.com/512/490/490099.png" alt="Tree">
+            <img class="pot" src="https://cdn-icons-png.flaticon.com/512/628/628283.png" alt="Pot">
+            <div id="particles"></div>
+        </div>
+    </div>
+
+    <div id="tasks" class="page">
+        <h2 style="color:var(--primary)">📋 টাস্ক লিস্ট</h2>
+        <div class="card-item">
+            <div><strong>Task 1: Watch Ad</strong><br><small>Earn 10 🍒</small></div>
+            <button class="btn" onclick="taskAd(10)">Claim</button>
+        </div>
+        <div class="card-item">
+            <div><strong>Task 2: Watch Ad</strong><br><small>Earn 10 🍒</small></div>
+            <button class="btn" onclick="taskAd(10)">Claim</button>
+        </div>
+        <div class="card-item">
+            <div><strong>Task 3: Watch Ad</strong><br><small>Earn 10 🍒</small></div>
+            <button class="btn" onclick="taskAd(10)">Claim</button>
+        </div>
+    </div>
+
+    <div id="withdraw" class="page">
+        <h2 style="color:var(--primary)">💰 উইথড্র</h2>
+        <div class="balance-card">
+            <p>মিনিমাম উইথড্র: 5000 🍒 ($0.01)</p>
+            <h2 id="w-bal" style="color:var(--primary)">0</h2>
+        </div>
+        <div class="card-item"><span>Method: BSC (Binance Smart Chain)</span></div>
+        <input id="wallet" type="text" placeholder="BSC Wallet Address (0x...)" style="width:100%; padding:15px; border-radius:10px; border:1px solid #ddd; margin-top:10px; box-sizing:border-box;">
+        <button class="btn" style="width:100%; margin-top:15px; padding:15px" onclick="checkWithdraw()">Withdraw Now</button>
+    </div>
+
+    <div id="refer" class="page">
+        <h2 style="color:var(--primary)">👥 রেফারেল</h2>
+        <div class="balance-card">
+            <p>প্রতি রেফারে পাবেন ১০০ বড়ই</p>
+            <p id="r-link" style="font-size:12px; color:#1565c0; word-break:break-all;">Generating...</p>
+            <button class="btn" onclick="copyLink()">Copy Link</button>
+        </div>
+        <h3>রেফার লিস্ট (0)</h3>
+    </div>
+
+    <div id="support" class="page">
+        <h2 style="color:var(--primary)">🎧 সাপোর্ট</h2>
+        <div class="card-item" onclick="window.open('https://t.me/SumaiyaJannatHasi','_blank')">
+            <span>Admin: @SumaiyaJannatHasi</span>
+            <span>➡️</span>
+        </div>
+        <div class="card-item" onclick="window.open('https://t.me/HasiEarnigZone','_blank')">
+            <span>Channel: HasiEarnigZone</span>
+            <span>➡️</span>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <div class="nav-link active-nav" onclick="nav('home')">🍒<br>PlumMine</div>
+        <div class="nav-link" onclick="nav('tasks')">📋<br>Tasks</div>
+        <div class="nav-link" onclick="nav('withdraw')">💰<br>Withdraw</div>
+        <div class="nav-link" onclick="nav('refer')">👥<br>Refer</div>
+        <div class="nav-link" onclick="nav('support')">🎧<br>Support</div>
+    </nav>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+
+        let bal = parseInt(localStorage.getItem('p_bal')) || 0;
+        let tapCount = 0;
+        const botName = "PlumMineTap_bot";
+
+        function update() {
+            document.getElementById('bal').innerText = bal.toLocaleString();
+            document.getElementById('w-bal').innerText = bal.toLocaleString();
+            document.getElementById('tc').innerText = tapCount;
+            document.getElementById('bar').style.width = (tapCount / 50) * 100 + "%";
+            localStorage.setItem('p_bal', bal);
+        }
+
+        function nav(id) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active-nav'));
+            event.currentTarget.classList.add('active-nav');
+        }
+
+        function doTap() {
+            if (tapCount < 50) {
+                bal++;
+                tapCount++;
+                update();
+                anim();
+            } else {
+                if (typeof mndint !== 'undefined') { mndint.show(); }
+                tapCount = 0;
+                update();
+            }
+        }
+
+        function anim() {
+            const p = document.createElement('div');
+            p.className = 'plum-particle';
+            p.innerText = "🍒";
+            p.style.left = Math.random() * 60 + 20 + "%";
+            document.getElementById('particles').appendChild(p);
+            setTimeout(() => p.remove(), 600);
+        }
+
+        function taskAd(reward) {
+            if (typeof mndint !== 'undefined') { mndint.show(); }
+            bal += reward;
+            update();
+            tg.showAlert(`অভিনন্দন! আপনি ${reward} বড়ই পেয়েছেন।`);
+        }
+
+        function checkWithdraw() {
+            const addr = document.getElementById('wallet').value;
+            if (bal < 5000) { tg.showAlert("মিনিমাম ৫০০০ বড়ই প্রয়োজন।"); }
+            else if (!addr) { tg.showAlert("BSC অ্যাড্রেস দিন।"); }
+            else { tg.showAlert("রিকোয়েস্ট সফল! অ্যাডমিন ২৪ ঘণ্টার মধ্যে চেক করবেন।"); }
+        }
+
+        function copyLink() {
+            navigator.clipboard.writeText(document.getElementById('r-link').innerText);
+            tg.showAlert("লিঙ্ক কপি হয়েছে!");
+        }
+
+        // Init User
+        if (tg.initDataUnsafe.user) {
+            const user = tg.initDataUnsafe.user;
+            if(user.photo_url) document.getElementById('u-img').src = user.photo_url;
+            document.getElementById('r-link').innerText = `https://t.me/${botName}?start=${user.id}`;
+        }
+
+        update();
+    </script>
+</body>
+</html>
