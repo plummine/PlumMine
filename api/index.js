@@ -1,4 +1,3 @@
-
 const axios = require('axios');
 
 // আপনার কনফিগারেশন - যা স্ক্রিনশট অনুযায়ী সঠিক আছে
@@ -13,26 +12,34 @@ module.exports = async (req, res) => {
             const { message } = req.body;
 
             if (message && message.text) {
-                const chatId = message.chat.id;
+                const chatId = message.chat.id.toString();
                 const text = message.text;
-                const firstName = message.from.first_name;
+                const firstName = message.from.first_name || "User";
 
-                // ১. স্টার্ট কমান্ড এবং ইউজারের নিজের নাম ডাটাবেসে সেভ করা
+                // ১. স্টার্ট কমান্ড এবং ইউজারের তথ্য আপডেট
                 if (text.startsWith('/start')) {
                     const startParam = text.split(' ')[1]; // রেফারেল আইডি
 
-                    // ইউজারের প্রোফাইল আপডেট বা তৈরি (নাম নিশ্চিত করার জন্য)
-                    await axios.patch(`${FIREBASE_URL}/users/${chatId}.json`, {
-                        name: firstName
-                    });
+                    // নতুন ইউজার হলে ডাটাবেসে প্রোফাইল তৈরি (পয়েন্ট ০ রেখে)
+                    const userCheck = await axios.get(`${FIREBASE_URL}/users/${chatId}.json`);
+                    if (!userCheck.data) {
+                        await axios.put(`${FIREBASE_URL}/users/${chatId}.json`, {
+                            name: firstName,
+                            points: 0,
+                            taps: 0
+                        });
+                    } else {
+                        // নাম আপডেট করা (যদি পরিবর্তন হয়)
+                        await axios.patch(`${FIREBASE_URL}/users/${chatId}.json`, { name: firstName });
+                    }
 
                     // ২. রেফারেল লজিক (সংশোধিত)
-                    if (startParam && startParam != chatId) {
+                    if (startParam && startParam !== chatId) {
                         try {
                             // চেক করা হচ্ছে এই ইউজার আগে কখনো রেফার হয়েছে কি না
-                            const referralCheck = await axios.get(`${FIREBASE_URL}/users/${chatId}/is_referred.json`);
+                            const isReferredResponse = await axios.get(`${FIREBASE_URL}/users/${chatId}/is_referred.json`);
                             
-                            if (!referralCheck.data) {
+                            if (!isReferredResponse.data) {
                                 const refPath = `${FIREBASE_URL}/users/${startParam}`;
                                 const refResponse = await axios.get(`${refPath}.json`);
                                 
@@ -44,8 +51,7 @@ module.exports = async (req, res) => {
                                         points: currentPoints + 500
                                     });
 
-                                    // রেফারারের 'referrals' লিস্টে নতুন ইউজারের নাম ও আইডি সঠিকভাবে যোগ করা
-                                    // এটি অবজেক্ট আকারে ডাটাবেসে সেভ হবে যাতে নামগুলো লিস্টে দেখায়
+                                    // রেফারারের 'referrals' লিস্টে নতুন ইউজারের নাম ও আইডি যুক্ত করা
                                     await axios.patch(`${refPath}/referrals.json`, {
                                         [chatId]: firstName
                                     });
