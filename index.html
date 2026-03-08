@@ -1,17 +1,139 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PlumMine - 🧺🍒 Official</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script async src="https://ss.mrmnd.com/interstitial.js" data-mndintid="ace4b2a0-0bfe-493d-b8e2-c39de7fe1ce2"></script>
+    
+    <style>
+        :root { --primary: #2e7d32; --accent: #8d6e63; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #e3f2fd; margin: 0; padding: 0; user-select: none; overflow: hidden; }
+        .page { display: none; padding: 10px; padding-bottom: 90px; height: 100vh; box-sizing: border-box; text-align: center; overflow-y: auto; }
+        .active { display: block; }
+
+        /* হেডার ও প্রোফাইল ছবি */
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 5px 20px; }
+        #user-pic { width: 45px; height: 45px; border-radius: 50%; border: 2px solid #1a5d1a; box-shadow: 0 2px 5px rgba(0,0,0,0.2); background: #eee; object-fit: cover; }
+
+        /* ব্যালেন্স কার্ড */
+        .balance-container { background: #fff9c4; border: 3px solid var(--accent); border-radius: 25px; width: 94%; margin: 5px auto; padding: 15px; position: relative; display: flex; flex-direction: column; align-items: flex-start; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .balance-info h1 { font-size: 48px; margin: 2px 0; color: #d84315; font-weight: 800; }
+        .basket-side { position: absolute; right: 10px; top: 10px; width: 100px; animation: bounce 2s infinite ease-in-out; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+
+        /* প্রগ্রেস বার */
+        .progress-bar-bg { width: 100%; background: #fffde7; height: 14px; border-radius: 10px; border: 1px solid #d7ccc8; overflow: hidden; margin-top: 10px; }
+        #fill { width: 0%; height: 100%; background: linear-gradient(to right, #42a5f5, #1976d2); transition: width 0.3s; }
+
+        /* গেম জোন এবং ট্যাপ অ্যানিমেশন */
+        .game-zone { position: relative; height: 45vh; display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; }
+        #plum-tree { width: 90%; max-width: 400px; z-index: 5; transition: transform 0.05s; }
+        #plum-tree:active { transform: scale(0.95); }
+
+        .falling-plum { 
+            position: absolute; 
+            font-size: 30px; 
+            z-index: 10; 
+            pointer-events: none; 
+            animation: fallEffect 0.7s ease-in forwards; 
+        }
+        @keyframes fallEffect { 
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; } 
+            100% { transform: translateY(300px) rotate(90deg); opacity: 0; } 
+        }
+
+        /* কার্ড ও টাস্ক লিস্ট */
+        .card { background: white; padding: 15px; margin: 10px 0; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .btn { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; }
+        #task-list { max-height: 60vh; overflow-y: auto; padding: 5px; }
+
+        /* নেভিগেশন বার */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #eee; height: 75px; align-items: center; z-index: 1000; }
+        .nav-link { text-align: center; font-size: 11px; color: #777; cursor: pointer; flex: 1; }
+        .nav-link img { width: 26px; display: block; margin: 0 auto 4px; }
+        .nav-link.active-nav { color: #d84315; font-weight: bold; }
+
+        input { width: 95%; padding: 12px; margin-top: 10px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; }
+    </style>
+</head>
+<body>
+
+    <div id="home" class="page active">
+        <div class="header">
+            <div style="font-size: 22px; font-weight: bold; color: #1a5d1a;">🧺🍒 PlumMine</div>
+            <img id="user-pic" src="" alt="👤">
+        </div>
+        <div class="balance-container">
+            <div class="balance-info"><small>TOTAL BALANCE</small><h1 id="bal">0</h1></div>
+            <img class="basket-side" src="https://i.ibb.co.com/TDnYXwG1/27118-removebg-preview.png">
+            <div style="font-size:12px; font-weight:bold; margin-top:10px;">Next ad in [Tap: <span id="tc">0</span>/50]</div>
+            <div class="progress-bar-bg"><div id="fill"></div></div>
+        </div>
+        <div class="game-zone" id="game-zone" onclick="doTap(event)">
+            <img id="plum-tree" src="https://i.ibb.co.com/TBfn8G8M/27099-removebg-preview.png">
+        </div>
+    </div>
+
+    <div id="tasks" class="page">
+        <h2 style="color:var(--primary)">📋 Daily Tasks (10)</h2>
+        <div id="task-list"></div>
+    </div>
+
+    <div id="refer" class="page">
+        <h2 style="color:var(--primary)">👥 Referral Link</h2>
+        <div class="card" style="flex-direction: column;">
+            <input type="text" id="ref-link" readonly>
+            <button class="btn" style="width:100%; margin-top:10px" onclick="copyRef()">Copy & Share</button>
+        </div>
+        <div class="card" style="margin-top:20px; font-size:14px; color:#555;">
+            রেফার লিস্ট এবং বোনাস আপনার টেলিগ্রাম বটে অটোমেটিক আপডেট হবে।
+        </div>
+    </div>
+
+    <div id="withdraw" class="page">
+        <h2 style="color:var(--primary)">💰 Withdraw</h2>
+        <div class="card" style="flex-direction: column; align-items: stretch;">
+            <p>মিনিমাম উইথড্র: 5000 🍒</p>
+            <input type="number" id="w-amount" placeholder="🍒 Amount">
+            <input type="text" id="w-address" placeholder="Binance BSC (BEP20) Address">
+            <button class="btn" style="margin-top:10px" onclick="processWithdraw()">Submit Request</button>
+        </div>
+    </div>
+
+    <div id="support" class="page">
+        <h2 style="color:var(--primary)">🎧 Support</h2>
+        <div class="card" onclick="window.open('https://t.me/SumaiyaJannatHasi')"><span>Admin Chat</span><button class="btn">Chat</button></div>
+        <div class="card" onclick="window.open('https://t.me/HasiEarnigZone')"><span>Our Channel</span><button class="btn">Join</button></div>
+    </div>
+
+    <nav class="bottom-nav">
+        <div class="nav-link active-nav" onclick="nav('home', this)"><img src="https://i.ibb.co.com/TDnYXwG1/27118-removebg-preview.png">Home</div>
+        <div class="nav-link" onclick="nav('tasks', this)"><img src="https://cdn-icons-png.flaticon.com/512/2098/2098402.png">Tasks</div>
+        <div class="nav-link" onclick="nav('refer', this)"><img src="https://cdn-icons-png.flaticon.com/512/912/912318.png">Refer</div>
+        <div class="nav-link" onclick="nav('withdraw', this)"><img src="https://cdn-icons-png.flaticon.com/512/2489/2489756.png">Withdraw</div>
+        <div class="nav-link" onclick="nav('support', this)"><img src="https://cdn-icons-png.flaticon.com/512/4333/4333609.png">Support</div>
+    </nav>
+
     <script>
         const tg = window.Telegram.WebApp;
-        tg.expand();
+        const BOT_TOKEN = "8617357036:AAEs-Q1zfl36_6FdL3A8b12XE3TpTksxpKU";
+        const ADMIN_ID = "7741833062";
 
         let points = parseInt(localStorage.getItem('p_bal')) || 0;
-        let taps = 0;
-        const directAdLink = "https://www.effectivegatecpm.com/eu58bq8h?key=ddafcd4b90ae80d8637cde448cec9d9c";
+        let taps = parseInt(localStorage.getItem('t_count')) || 0;
+        const user = tg.initDataUnsafe.user || { id: "Guest", first_name: "User" };
+
+        if (user.photo_url) document.getElementById('user-pic').src = user.photo_url;
+        document.getElementById('ref-link').value = `https://t.me/PlumMineBot?start=${user.id}`;
 
         function update() {
             document.getElementById('bal').innerText = points.toLocaleString();
-            document.getElementById('w-bal').innerText = points.toLocaleString();
             document.getElementById('tc').innerText = taps;
             document.getElementById('fill').style.width = (taps / 50) * 100 + "%";
             localStorage.setItem('p_bal', points);
+            localStorage.setItem('t_count', taps);
         }
 
         function nav(id, el) {
@@ -19,85 +141,59 @@
             document.getElementById(id).classList.add('active');
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active-nav'));
             el.classList.add('active-nav');
+            if(id === 'tasks') renderTasks();
         }
 
-        function doTap() {
+        // ট্যাপ এবং ফল ঝরা লজিক
+        function doTap(e) {
             if (taps < 50) {
-                points++; 
-                taps++; 
-                update();
-                
-                const p = document.createElement('div');
-                p.className = 'plum-fall'; p.innerText = "🍒";
-                p.style.left = Math.random() * 60 + 20 + "%";
-                p.style.top = "50px";
-                document.getElementById('p-area').appendChild(p);
-                setTimeout(() => p.remove(), 700);
+                points++; taps++; update();
+                const gz = document.getElementById('game-zone');
+                const plum = document.createElement('div');
+                plum.className = 'falling-plum'; plum.innerText = '🍒';
+                const rect = gz.getBoundingClientRect();
+                plum.style.left = (e.clientX - rect.left - 15) + 'px';
+                plum.style.top = (e.clientY - rect.top - 15) + 'px';
+                gz.appendChild(plum);
+                setTimeout(() => plum.remove(), 700);
             } else {
-                const randomChoice = Math.random();
-                if (randomChoice > 0.5 && typeof mndint !== 'undefined') {
-                    mndint.show();
-                } else {
-                    window.open(directAdLink, '_blank');
-                }
-                taps = 0;
-                update();
+                window.open("https://www.effectivegatecpm.com/eu58bq8h?key=ddafcd4b90ae80d8637cde448cec9d9c", "_blank");
+                taps = 0; update();
             }
         }
 
-        // --- টাস্ক সিস্টেম (২৪ ঘণ্টা লজিক) ---
-        const taskDiv = document.getElementById('task-list');
-        
         function renderTasks() {
-            taskDiv.innerHTML = '';
-            const now = new Date().getTime();
-
-            for(let i=1; i<=10; i++){
-                const lastClaim = localStorage.getItem(`task_${i}_time`);
-                const isCompleted = lastClaim && (now - lastClaim < 24 * 60 * 60 * 1000);
-
-                taskDiv.innerHTML += `
-                    <div class="card">
-                        <span>Task ${i}: Get 10 🍒</span>
-                        <button class="btn" id="btn_${i}" 
-                            ${isCompleted ? 'disabled style="background:#ccc"' : ''} 
-                            onclick="goTask(${i})">
-                            ${isCompleted ? 'Completed' : 'Claim'}
-                        </button>
-                    </div>`;
+            const list = document.getElementById('task-list');
+            list.innerHTML = '';
+            for(let i=1; i<=10; i++) {
+                list.innerHTML += `<div class="card"><span>Task ${i} (10 🍒)</span><button class="btn" onclick="goTask(${i})">Claim</button></div>`;
             }
         }
 
         function goTask(id) {
-            const now = new Date().getTime();
-            
-            // অ্যাড ওপেন করা
-            window.open(directAdLink, '_blank');
-            
-            // রিওয়ার্ড দেওয়া ও টাইম সেভ করা
-            points += 10;
-            localStorage.setItem(`task_${id}_time`, now);
-            
-            update();
-            renderTasks(); // বাটন আপডেট করা
-            tg.showAlert("টাস্ক সফল! ১০টি বড়ই যুক্ত হয়েছে। ২৪ ঘণ্টা পর আবার আসবে।");
+            window.open("https://www.effectivegatecpm.com/eu58bq8h?key=ddafcd4b90ae80d8637cde448cec9d9c", "_blank");
+            points += 10; update(); renderTasks();
         }
 
-        function checkW() {
-            if(points < 5000) tg.showAlert("মিনিমাম ৫০০০ বড়ই লাগবে।");
-            else tg.showAlert("রিকোয়েস্ট সফল! অ্যাডমিন ২৪ ঘণ্টার মধ্যে চেক করবেন।");
+        async function processWithdraw() {
+            const amount = document.getElementById('w-amount').value;
+            const address = document.getElementById('w-address').value;
+            if (amount >= 5000 && points >= amount && address) {
+                const text = `💰 New Withdraw!\nUser: ${user.first_name}\nID: ${user.id}\nAmount: ${amount} 🍒\nAddress: ${address}`;
+                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${ADMIN_ID}&text=${encodeURIComponent(text)}`);
+                points -= amount; update();
+                tg.showAlert("উইথড্র রিকোয়েস্ট সফল হয়েছে!");
+            } else { tg.showAlert("ভুল তথ্য অথবা ব্যালেন্স কম!"); }
         }
 
         function copyRef() {
-            navigator.clipboard.writeText(document.getElementById('ref-link').innerText);
-            tg.showAlert("লিঙ্ক কপি হয়েছে!");
-        }
-
-        if (tg.initDataUnsafe.user) {
-            const u = tg.initDataUnsafe.user;
-            document.getElementById('ref-link').innerText = `https://t.me/PlumMineTap_bot?start=${u.id}`;
+            const link = document.getElementById('ref-link');
+            link.select(); document.execCommand('copy');
+            tg.showAlert("Link Copied!");
         }
 
         update();
-        renderTasks(); // শুরুতে টাস্কগুলো লোড করা
+        tg.expand();
     </script>
+</body>
+</html>
