@@ -1,5 +1,6 @@
 const axios = require('axios');
 
+// আপনার কনফিগারেশন
 const BOT_TOKEN = "8617357036:AAEs-Q1zfl36_6FdL3A8b12XE3TpTksxpKU";
 const ADMIN_ID = "7741833062";
 const FIREBASE_URL = "https://plumminebot-default-rtdb.firebaseio.com";
@@ -10,51 +11,53 @@ module.exports = async (req, res) => {
         try {
             const { message } = req.body;
             if (message && message.text) {
-                const chatId = message.chat.id.toString(); // আইডি স্ট্রিং হিসেবে নিশ্চিত করা
+                // chatId এবং startParam-কে স্ট্রিং-এ রূপান্তর নিশ্চিত করা (গুরুত্বপূর্ণ)
+                const chatId = String(message.chat.id);
                 const text = message.text;
                 const firstName = message.from.first_name || "User";
 
                 if (text.startsWith('/start')) {
-                    // ১. রেফারেল আইডি আলাদা করা
                     const parts = text.split(' ');
-                    const startParam = parts.length > 1 ? parts[1].toString() : null;
+                    const startParam = parts.length > 1 ? String(parts[1]) : null;
 
-                    // ২. ইউজারের প্রোফাইল তৈরি (এটি সবসময় হবে)
-                    await axios.patch(`${FIREBASE_URL}/users/${chatId}.json`, { name: firstName });
+                    // ১. ইউজারের বেসিক প্রোফাইল তৈরি (patch ব্যবহার করা হয়েছে যাতে ডাটা না মুছে যায়)
+                    await axios.patch(`${FIREBASE_URL}/users/${chatId}.json`, { 
+                        name: firstName 
+                    });
 
-                    // ৩. রেফারেল লজিক (শুধুমাত্র যদি রেফারেল আইডি থাকে এবং তা নিজের না হয়)
+                    // ২. রেফারেল লজিক
                     if (startParam && startParam !== chatId) {
-                        const isReferredResponse = await axios.get(`${FIREBASE_URL}/users/${chatId}/is_referred.json`);
+                        // চেক করা হচ্ছে এই ইউজার আগে কখনো রেফার হয়েছে কি না
+                        const checkRef = await axios.get(`${FIREBASE_URL}/users/${chatId}/is_referred.json`);
                         
-                        if (!isReferredResponse.data) {
+                        if (!checkRef.data) {
                             const refPath = `${FIREBASE_URL}/users/${startParam}`;
-                            const refUser = await axios.get(`${refPath}.json`);
+                            const refResponse = await axios.get(`${refPath}.json`);
                             
-                            if (refUser.data) {
-                                // রেফারারের পয়েন্ট বাড়ানো
-                                await axios.patch(`${refPath}.json`, { 
-                                    points: (refUser.data.points || 0) + 500 
-                                });
-                                // রেফারারের লিস্টে নাম যোগ করা
-                                await axios.patch(`${refPath}/referrals.json`, { 
-                                    [chatId]: firstName 
-                                });
-                                // ইউজারকে মার্ক করা
+                            if (refResponse.data) {
+                                // রেফারারের পয়েন্ট ৫০০ বৃদ্ধি করা
+                                let newPoints = (refResponse.data.points || 0) + 500;
+                                await axios.patch(`${refPath}.json`, { points: newPoints });
+
+                                // রেফারারের 'referrals' লিস্টে নাম যোগ করা
+                                await axios.patch(`${refPath}/referrals.json`, { [chatId]: firstName });
+
+                                // এই ইউজারকে মার্ক করা যাতে একবারই বোনাস দেয়
                                 await axios.put(`${FIREBASE_URL}/users/${chatId}/is_referred.json`, true);
                                 
-                                // এডমিনকে মেসেজ পাঠানো (এটি না আসলে বুঝবেন লজিক কাজ করেনি)
+                                // এডমিনকে সরাসরি মেসেজ পাঠানো
                                 await axios.post(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                                     chat_id: ADMIN_ID,
-                                    text: `📢 নতুন সফল রেফারেল!\n👤 ইউজার: ${firstName}\n🆔 আইডি: ${chatId}\n🤝 রেফারার: ${startParam}\n🎁 বোনাস: ৫০০ চেরি।`
+                                    text: `📢 সফল রেফারেল!\n\n👤 ইউজার: ${firstName}\n🆔 আইডি: ${chatId}\n🤝 রেফারার আইডি: ${startParam}\n🎁 বোনাস: ৫০০ চেরি যোগ হয়েছে।`
                                 });
                             }
                         }
                     }
 
-                    // ৪. ওয়েলকাম মেসেজ
+                    // ৩. ওয়েলকাম মেসেজ
                     await axios.post(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                         chat_id: chatId,
-                        text: `আসসালামু আলাইকুম ${firstName}!\n🧺🍒 PlumMine এ স্বাগতম।`,
+                        text: `আসসালামু আলাইকুম ${firstName}!\n🧺🍒 PlumMine এ আপনাকে স্বাগতম।`,
                         reply_markup: {
                             inline_keyboard: [
                                 [{ text: "🧺 Play PlumMine", web_app: { url: "https://plum-mine.vercel.app" } }],
@@ -64,8 +67,10 @@ module.exports = async (req, res) => {
                     });
                 }
             }
-        } catch (e) { console.error("Error:", e.message); }
+        } catch (error) {
+            console.error("Error:", error.message);
+        }
         return res.status(200).send('OK');
     }
-    return res.status(200).send('Active');
+    return res.status(200).send('PlumMine Active');
 };
