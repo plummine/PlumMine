@@ -158,27 +158,22 @@
                     renderReferrals(data.referrals);
                 } else {
                     userRef.set({ name: user.first_name, points: 0, taps: 0 });
-                    setTimeout(checkReferral, 2000); // নতুন ইউজারের জন্য রেফারেল চেক
+                    setTimeout(checkReferral, 2000);
                 }
             });
         }
 
         function checkReferral() {
             const urlParams = new URLSearchParams(window.location.search);
-            // টেলিগ্রামের নতুন এবং পুরাতন দুই ধরণের প্যারামিটারই চেক করা হচ্ছে
-            let refBy = urlParams.get('start') || urlParams.get('tgWebAppStartParam');
+            let refBy = urlParams.get('tgWebAppStartParam') || urlParams.get('start');
             
             if (refBy && refBy !== user.id.toString() && refBy !== "Guest") {
-                const myRef = db.ref('users/' + user.id + '/is_referred');
-                myRef.once('value', (snapshot) => {
+                const userRef = db.ref('users/' + user.id);
+                userRef.child('is_referred').once('value', (snapshot) => {
                     if (!snapshot.exists()) {
-                        // ১. রেফারারের পয়েন্ট বাড়ানো
                         db.ref('users/' + refBy + '/points').transaction(p => (p || 0) + 500);
-                        // ২. রেফারারের লিস্টে আপনার নাম যোগ করা
                         db.ref('users/' + refBy + '/referrals/' + user.id).set(user.first_name);
-                        // ৩. এই ইউজারকে মার্ক করা যাতে বারবার বোনাস না পায়
-                        myRef.set(true);
-                        console.log("Referral Success!");
+                        userRef.child('is_referred').set(true);
                     }
                 });
             }
@@ -192,7 +187,7 @@
                     list.innerHTML += `<li style="padding:8px 0; border-bottom:1px solid #eee;">👤 ${name}</li>`;
                 });
             } else {
-                list.innerHTML = '<li>এখনো কোনো রেফার নেই। বন্ধুদের ইনভাইট করুন!</li>';
+                list.innerHTML = '<li>কোনো রেফার নেই। বন্ধুদের ইনভাইট করুন!</li>';
             }
         }
 
