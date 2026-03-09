@@ -5,132 +5,96 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>PlumMine - 🧺 Official</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    
-    <!-- Adsterra Pop-under (Original Logic) -->
     <script src="https://pl28882912.effectivegatecpm.com/54/da/79/54da79f3dc63fac794c2e5433a1f8679.js"></script>
-    
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
     
     <style>
-        :root { --primary: #2e7d32; --accent: #8d6e63; --bkash: #e91e63; --binance: #f3ba2f; }
+        :root { --primary: #2e7d32; --accent: #8d6e63; }
         body { font-family: 'Segoe UI', Arial, sans-serif; background: #e3f2fd; margin: 0; padding: 0; user-select: none; overflow: hidden; }
-        
-        .page { display: none; padding: 10px; padding-bottom: 90px; height: 100vh; box-sizing: border-box; text-align: center; overflow-y: auto; }
+        .page { display: none; padding: 10px 15px 90px; height: 100vh; box-sizing: border-box; text-align: center; overflow-y: auto; }
         .active { display: block; }
 
-        /* Floating Gift Box Logic */
-        .gift-box { position: fixed; bottom: 85px; z-index: 2000; cursor: pointer; animation: floatAnim 3s infinite ease-in-out; }
-        .red-gift { right: 20px; } 
-        .green-gift { left: 20px; }
-        .gift-badge { position: absolute; top: -5px; right: -5px; background: red; color: white; border-radius: 50%; padding: 2px 7px; font-size: 10px; font-weight: bold; border: 1.5px solid #fff; display: none; }
+        /* Floating Gift Box - Home Only Logic */
+        .gift-box { position: fixed; bottom: 85px; z-index: 2000; cursor: pointer; animation: floatAnim 3s infinite ease-in-out; display: none; }
+        .red-gift { right: 20px; } .green-gift { left: 20px; }
+        .gift-badge { position: absolute; top: -5px; right: -5px; background: red; color: white; border-radius: 50%; padding: 2px 7px; font-size: 10px; font-weight: bold; border: 1.5px solid #fff; }
         @keyframes floatAnim { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
-        /* Header & Profile */
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 5px 20px; }
-        #user-pic { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--primary); object-fit: cover; background: #fff; }
-
         /* Balance Card */
-        .balance-container { background: #fff9c4; border: 3px solid var(--accent); border-radius: 25px; width: 94%; margin: 5px auto; padding: 15px; position: relative; text-align: left; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .balance-info h1 { font-size: 42px; margin: 5px 0; color: #d84315; font-weight: 800; }
-        .basket-side { position: absolute; right: 10px; top: 15px; width: 85px; animation: bounce 2s infinite ease-in-out; }
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-        
-        .progress-bar-bg { width: 100%; background: #fffde7; height: 12px; border-radius: 10px; border: 1px solid #d7ccc8; overflow: hidden; margin-top: 8px; }
-        #fill { width: 0%; height: 100%; background: linear-gradient(to right, #42a5f5, #1976d2); transition: width 0.3s; }
+        .balance-container { background: #fff9c4; border: 3px solid var(--accent); border-radius: 25px; width: 100%; padding: 15px; position: relative; text-align: left; box-sizing: border-box; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 15px; }
+        .balance-info h1 { font-size: 40px; margin: 5px 0; color: #d84315; font-weight: 800; }
+        .basket-side { position: absolute; right: 10px; top: 10px; width: 80px; }
 
-        /* Game Zone - Tree Size Fixed[span_1](start_span)[span_1](end_span) */
-        .game-zone { height: 40vh; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; margin-top: 10px; }
-        #plum-tree { width: 65%; max-width: 250px; transition: transform 0.05s; }
-        #plum-tree:active { transform: scale(0.95); }
+        /* Game Zone & Falling Fruit */
+        .game-zone { height: 40vh; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+        #plum-tree { width: 75%; max-width: 280px; transition: transform 0.05s; z-index: 5; }
+        .falling-plum { position: absolute; font-size: 25px; z-index: 10; pointer-events: none; animation: fall 0.7s linear forwards; }
+        @keyframes fall { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(200px); opacity: 0; } }
 
         /* Cards & Buttons */
         .card { background: white; padding: 15px; margin: 10px 0; border-radius: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
         .btn { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: bold; width: 100%; }
-        .btn:disabled { background: #ccc; cursor: not-allowed; }
-        input, select { width: 100%; padding: 12px; margin-top: 10px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; }
+        .btn:disabled { background: #ccc; }
 
-        /* Navigation */
+        /* Table Style */
+        .w-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 10px; }
+        .w-table th, .w-table td { border-bottom: 1px solid #eee; padding: 8px 4px; text-align: center; }
+
+        /* Support Cards */
+        .support-card { background: linear-gradient(135deg, #e8f5e9, #c8e6c9); border: 2px solid #81c784; border-radius: 15px; padding: 15px; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; text-align: left; }
+        .support-icon { width: 45px; }
+
+        /* Nav */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #eee; height: 75px; align-items: center; z-index: 1000; }
         .nav-link { text-align: center; font-size: 11px; color: #777; cursor: pointer; flex: 1; }
         .nav-link img { width: 24px; display: block; margin: 0 auto 4px; }
         .nav-link.active-nav { color: #d84315; font-weight: bold; }
-
-        #force-join { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #e3f2fd; z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; }
     </style>
 </head>
 <body>
 
-    <!-- Force Join -->
-    <div id="force-join">
-        <img src="https://i.ibb.co.com/TDnYXwG1/27118-removebg-preview.png" width="100">
-        <h2>চ্যানেলে জয়েন করুন</h2>
-        <p>কাজ শুরু করতে আমাদের অফিশিয়াল চ্যানেলে জয়েন থাকা বাধ্যতামূলক।</p>
-        <button class="btn" onclick="window.open('https://t.me/HasiEarnigZone')">Join Now</button>
-        <button class="btn" style="background:#8d6e63; margin-top:10px;" onclick="location.reload()">জয়েন করেছি</button>
-    </div>
+    <div id="red-gift-box" class="gift-box red-gift"><img src="https://i.ibb.co.com/8gxBtPpT/27630-removebg-preview.png" width="55" onclick="claimGift('red')"><span id="rb" class="gift-badge">0</span></div>
+    <div id="green-gift-box" class="gift-box green-gift"><img src="https://i.ibb.co.com/0RcvhqxK/27633-removebg-preview.png" width="55" onclick="claimGift('green')"><span id="gb" class="gift-badge">0</span></div>
 
-    <!-- Gift Boxes (Added back from Memory) -->
-    <div id="red-gift-box" class="gift-box red-gift" onclick="handleGiftClick('red')">
-        <img src="https://i.ibb.co.com/8gxBtPpT/27630-removebg-preview.png" width="50">
-        <span id="red-badge" class="gift-badge">0</span>
-    </div>
-    <div id="green-gift-box" class="gift-box green-gift" onclick="handleGiftClick('green')">
-        <img src="https://i.ibb.co.com/0RcvhqxK/27633-removebg-preview.png" width="50">
-        <span id="green-badge" class="gift-badge">0</span>
-    </div>
-
-    <!-- Pages -->
     <div id="home" class="page active">
-        <div class="header">
-            <div style="font-size: 20px; font-weight: bold; color: var(--primary);">🧺 PlumMine</div>
-            <img id="user-pic" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="👤">
-        </div>
         <div class="balance-container">
-            <div class="balance-info"><small>TOTAL BALANCE</small><h1 id="bal">0</h1></div>
+            <small>TOTAL BALANCE</small><h1 id="bal">0</h1>
             <img class="basket-side" src="https://i.ibb.co.com/TDnYXwG1/27118-removebg-preview.png">
-            <div style="font-size:11px; font-weight:bold;">Ad Progress: <span id="tc">0</span>/50</div>
-            <div class="progress-bar-bg"><div id="fill"></div></div>
+            <div style="font-size:11px;">Tap Progress: <span id="tc">0</span>/50</div>
         </div>
-        <div class="game-zone" onclick="doTap(event)">
-            <img id="plum-tree" src="https://i.ibb.co.com/TBfn8G8M/27099-removebg-preview.png">
-        </div>
+        <div class="game-zone" id="gz" onclick="doTap(event)"><img id="plum-tree" src="https://i.ibb.co.com/TBfn8G8M/27099-removebg-preview.png"></div>
     </div>
 
     <div id="tasks" class="page">
-        <h2 style="color:var(--primary)">📋 Daily Tasks</h2>
+        <h2>📋 Daily Tasks (24h)</h2>
         <div id="task-list"></div>
     </div>
 
     <div id="refer" class="page">
-        <h2 style="color:var(--primary)">👥 Referral</h2>
-        <div class="card">
-            <input type="text" id="ref-link" readonly>
-            <button class="btn" style="margin-top:10px" onclick="copyRef()">Copy Link</button>
-        </div>
-        <div id="referral-list" style="text-align:left; padding:10px;"></div>
+        <h2>👥 Refer & Earn</h2>
+        <div class="card" style="background:gold">🎁 প্রতি রেফারে ৫০০ 🍒 বোনাস!</div>
+        <div class="card"><input type="text" id="ref-link" readonly style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;"><button class="btn" style="margin-top:10px" onclick="copyLink()">Copy Link</button></div>
+        <div class="card" style="text-align:left"><h4>Referral List:</h4><div id="ref-list"></div></div>
     </div>
 
     <div id="withdraw" class="page">
-        <h2 style="color:var(--primary)">💰 Withdraw</h2>
+        <div id="w-bal-card"></div>
         <div class="card">
-            <select id="w-method">
-                <option value="binance">Binance (Min 5,000)</option>
-                <option value="bkash">Bkash (Min 90,000)</option>
-            </select>
-            <input type="number" id="w-amount" placeholder="🍒 Amount">
-            <input type="text" id="w-address" placeholder="Address/Number">
-            <button class="btn" style="margin-top:10px" onclick="processWithdraw()">Submit Request</button>
+            <select id="w-method" style="width:100%; padding:10px; margin-bottom:10px;"><option value="binance">Binance (Min 5,000)</option><option value="bkash">Bkash (Min 90,000)</option></select>
+            <input type="number" id="w-amount" placeholder="🍒 Amount" style="width:100%; padding:10px; margin-bottom:10px;">
+            <input type="text" id="w-address" placeholder="Address/Number" style="width:100%; padding:10px; margin-bottom:10px;">
+            <button class="btn" onclick="submitWithdraw()">Submit Request</button>
         </div>
+        <div class="card"><h4>📜 History</h4><table class="w-table"><thead><tr><th>Date</th><th>🍒</th><th>Method</th><th>Status</th></tr></thead><tbody id="h-body"></tbody></table></div>
     </div>
 
     <div id="support" class="page">
-        <h2 style="color:var(--primary)">🎧 Support</h2>
-        <div class="card"><button class="btn" onclick="window.open('https://t.me/PlumMineAdmin')">Contact Admin</button></div>
-        <div class="card"><button class="btn" style="background:#0088cc" onclick="window.open('https://t.me/HasiEarnigZone')">Official Channel</button></div>
+        <div class="support-card" onclick="window.open('https://t.me/PlumMineAdmin')"><img src="https://cdn-icons-png.flaticon.com/512/3703/3703259.png" class="support-icon"><div><b>Admin Chat</b><br><small>Support 24/7</small></div></div>
+        <div class="support-card" onclick="window.open('https://t.me/HasiEarnigZone')"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" class="support-icon"><div><b>Official Channel</b><br><small>Get Updates</small></div></div>
+        <div class="support-card" onclick="window.open('https://t.me/PlumMinePaymentProof')"><img src="https://cdn-icons-png.flaticon.com/512/1019/1019607.png" class="support-icon"><div><b>Payment Proof</b><br><small>See Transactions</small></div></div>
     </div>
 
-    <!-- Navigation -->
     <nav class="bottom-nav">
         <div class="nav-link active-nav" onclick="nav('home', this)"><img src="https://i.ibb.co.com/TDnYXwG1/27118-removebg-preview.png">Home</div>
         <div class="nav-link" onclick="nav('tasks', this)"><img src="https://cdn-icons-png.flaticon.com/512/2098/2098402.png">Tasks</div>
@@ -147,72 +111,104 @@
         const tg = window.Telegram.WebApp;
         const user = tg.initDataUnsafe.user || { id: "Guest", first_name: "User" };
 
-        let points = 0, taps = 0, redClaims = 0, greenClaims = 0;
+        let pts = 0, tps = 0, rc = 0, gc = 0;
 
-        async function init() {
-            if(user.photo_url) document.getElementById('user-pic').src = user.photo_url;
-            document.getElementById('ref-link').value = `https://t.me/PlumMineTap_bot?start=${user.id}`;
-            checkMembership();
-            tg.expand();
-        }
-
-        async function checkMembership() {
-            // Simplified check for demo; implement full fetch if needed
+        function loadData() {
             db.ref('users/' + user.id).on('value', snap => {
-                const data = snap.val() || {};
-                points = data.points || 0;
-                taps = data.taps || 0;
-                redClaims = data.redClaims || 0;
-                greenClaims = data.greenClaims || 0;
+                const d = snap.val() || {};
+                pts = d.pts || 0; tps = d.tps || 0; rc = d.rc || 0; gc = d.gc || 0;
                 updateUI();
             });
+            loadHistory(); loadRefs();
         }
 
         function updateUI() {
-            document.getElementById('bal').innerText = points.toLocaleString();
-            document.getElementById('tc').innerText = taps;
-            document.getElementById('fill').style.width = (taps/50)*100 + "%";
-            document.getElementById('red-badge').innerText = redClaims;
-            document.getElementById('red-badge').style.display = redClaims > 0 ? 'block' : 'none';
-            document.getElementById('green-badge').innerText = greenClaims;
-            document.getElementById('green-badge').style.display = greenClaims > 0 ? 'block' : 'none';
+            document.getElementById('bal').innerText = pts.toLocaleString();
+            document.getElementById('tc').innerText = tps;
+            document.getElementById('rb').innerText = rc;
+            document.getElementById('gb').innerText = gc;
+            document.querySelectorAll('.gift-box').forEach(b => b.style.display = (document.getElementById('home').classList.contains('active')) ? 'block' : 'none');
+            document.getElementById('red-gift-box').style.visibility = rc > 0 ? 'visible' : 'hidden';
+            document.getElementById('green-gift-box').style.visibility = gc > 0 ? 'visible' : 'hidden';
         }
 
         function doTap(e) {
-            if(taps < 50) {
-                points++; taps++;
-                if(points % 500 === 0) { redClaims++; greenClaims++; }
-                db.ref('users/' + user.id).update({ points, taps, redClaims, greenClaims });
+            if(tps < 50) {
+                pts++; tps++;
+                if(pts % 500 === 0) { rc++; gc++; }
+                db.ref('users/' + user.id).update({ pts, tps, rc, gc });
+                showFruit(e);
             } else {
                 window.open(SMART_LINK, '_blank');
-                taps = 0; db.ref('users/' + user.id).update({ taps: 0 });
+                tps = 0; db.ref('users/' + user.id).update({ tps: 0 });
             }
         }
 
-        function handleGiftClick(type) {
+        function showFruit(e) {
+            const f = document.createElement('div'); f.className = 'falling-plum'; f.innerText = '🍒';
+            f.style.left = e.clientX + 'px'; f.style.top = e.clientY + 'px';
+            document.getElementById('gz').appendChild(f);
+            setTimeout(() => f.remove(), 700);
+        }
+
+        function claimGift(t) {
             window.open(SMART_LINK, '_blank');
-            if(type === 'red' && redClaims > 0) { points += 5; redClaims--; }
-            else if(type === 'green' && greenClaims > 0) { points += 2; greenClaims--; }
-            db.ref('users/' + user.id).update({ points, redClaims, greenClaims });
+            if(t === 'red') { pts += 5; rc--; } else { pts += 2; gc--; }
+            db.ref('users/' + user.id).update({ pts, rc, gc });
         }
 
         function renderTasks() {
-            const list = document.getElementById('task-list');
-            const now = Date.now();
-            list.innerHTML = '';
-            for(let i=1; i<=10; i++) {
-                list.innerHTML += `<div class="card" style="display:flex; justify-content:space-between; align-items:center;">
-                    <span>Daily Task ${i} (10 🍒)</span>
-                    <button class="btn" style="width:100px" onclick="goTask(${i})">Claim</button>
-                </div>`;
-            }
+            const list = document.getElementById('task-list'); list.innerHTML = '';
+            db.ref('users/' + user.id + '/tasks').once('value', snap => {
+                const td = snap.val() || {};
+                for(let i=1; i<=10; i++) {
+                    const last = td['t'+i] || 0;
+                    const isDone = (Date.now() - last) < 86400000;
+                    list.innerHTML += `<div class="card" style="display:flex; justify-content:space-between; align-items:center;">
+                        <span>Task ${i} (10 🍒)</span>
+                        <button class="btn" style="width:80px" ${isDone?'disabled':''} onclick="goTask(${i})">${isDone?'Done':'Claim'}</button>
+                    </div>`;
+                }
+            });
         }
 
         function goTask(id) {
             window.open(SMART_LINK, '_blank');
-            points += 10;
-            db.ref('users/' + user.id).update({ points });
-            tg.showAlert("Task Claimed!");
+            pts += 10;
+            db.ref('users/' + user.id).update({ pts });
+            db.ref('users/' + user.id + '/tasks').update({ ['t'+id]: Date.now() });
+            renderTasks();
+        }
+
+        function submitWithdraw() {
+            const m = document.getElementById('w-method').value;
+            const a = parseInt(document.getElementById('w-amount').value);
+            const ad = document.getElementById('w-address').value;
+            const min = m === 'bkash' ? 90000 : 5000;
+            if(a >= min && pts >= a && ad) {
+                const h = { date: new Date().toLocaleDateString(), pts: a, method: m, status: 'Pending', addr: ad };
+                db.ref('users/' + user.id + '/history').push(h);
+                pts -= a; db.ref('users/' + user.id).update({ pts });
+                tg.showAlert("Request Sent!");
+            } else { tg.showAlert("Insufficient points or wrong input!"); }
+        }
+
+        function loadHistory() {
+            db.ref('users/' + user.id + '/history').on('value', snap => {
+                const b = document.getElementById('h-body'); b.innerHTML = '';
+                const d = snap.val(); if(d) Object.values(d).reverse().forEach(x => {
+                    b.innerHTML += `<tr><td>${x.date}</td><td>${x.pts}</td><td>${x.method}</td><td>${x.status}</td></tr>`;
+                });
+            });
+        }
+
+        function loadRefs() {
+            db.ref('users/' + user.id + '/referrals').on('value', snap => {
+                const b = document.getElementById('ref-list'); b.innerHTML = '';
+                const d = snap.val(); if(d) Object.values(d).forEach((name, i) => {
+                    b.innerHTML += `<div>${i+1}. 👤 ${name}</div>`;
+                }); else b.innerHTML = 'No referrals yet.';
+            });
         }
 
         function nav(id, el) {
@@ -221,15 +217,17 @@
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active-nav'));
             el.classList.add('active-nav');
             if(id === 'tasks') renderTasks();
+            if(id === 'withdraw') document.getElementById('w-bal-card').innerHTML = `<div class="balance-container"><small>BALANCE</small><h1>${pts.toLocaleString()}</h1></div>`;
+            updateUI();
         }
 
-        function copyRef() {
-            const link = document.getElementById('ref-link');
-            link.select(); document.execCommand('copy');
+        function copyLink() {
+            document.getElementById('ref-link').value = `https://t.me/PlumMineTap_bot?start=${user.id}`;
+            const c = document.getElementById('ref-link'); c.select(); document.execCommand('copy');
             tg.showAlert("Link Copied!");
         }
 
-        init();
+        loadData(); tg.expand();
     </script>
 </body>
 </html>
