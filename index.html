@@ -12,7 +12,7 @@
     <style>
         :root { --primary: #2e7d32; --accent: #8d6e63; }
         body { font-family: 'Segoe UI', Arial, sans-serif; background: #e3f2fd; margin: 0; padding: 0; user-select: none; overflow: hidden; }
-        .page { display: none; padding: 10px 15px 90px; height: 100vh; box-sizing: border-box; text-align: center; overflow-y: auto; }
+        .page { display: none; padding: 10px 15px 120px; height: 100vh; box-sizing: border-box; text-align: center; overflow-y: auto; }
         .active { display: block; }
 
         /* Header */
@@ -61,13 +61,11 @@
         </div>
     </div>
 
-    <!-- Fixed Gifts -->
     <div class="gift-container" id="gift-ui">
         <div class="gift-box" onclick="claimGift('green')"><img src="https://i.ibb.co.com/0RcvhqxK/27633-removebg-preview.png" width="50"><span id="gb" class="gift-badge">0</span></div>
         <div class="gift-box" onclick="claimGift('red')"><img src="https://i.ibb.co.com/8gxBtPpT/27630-removebg-preview.png" width="50"><span id="rb" class="gift-badge">0</span></div>
     </div>
 
-    <!-- Home -->
     <div id="home" class="page active">
         <div class="balance-container">
             <small>TOTAL BALANCE</small><h1 id="bal">0</h1>
@@ -80,13 +78,12 @@
         </div>
     </div>
 
-    <!-- Tasks -->
     <div id="tasks" class="page">
         <h2>📋 Daily Tasks (24h)</h2>
         <div id="task-list"></div>
+        <div style="height: 30px;"></div> <!-- Bottom space for scrolling -->
     </div>
 
-    <!-- Refer -->
     <div id="refer" class="page">
         <h2>👥 Refer & Earn</h2>
         <div style="background:#fff9c4; padding:15px; border-radius:15px; margin-bottom:15px; border:2px dashed #d84315;">🎁 প্রতি সফল রেফারে ৫০০ 🍒 বোনাস!</div>
@@ -95,7 +92,6 @@
         <div style="text-align:left; margin-top:20px;"><b>Referral List:</b><div id="ref-list" style="margin-top:10px;"></div></div>
     </div>
 
-    <!-- Withdraw -->
     <div id="withdraw" class="page">
         <div id="w-bal-card"></div>
         <div style="background:white; padding:15px; border-radius:15px; margin-top:10px;">
@@ -114,7 +110,6 @@
         </table>
     </div>
 
-    <!-- Support -->
     <div id="support" class="page">
         <div class="support-card" onclick="window.open('https://t.me/PlumMineAdmin')">
             <img src="https://cdn-icons-png.flaticon.com/512/906/906377.png">
@@ -174,7 +169,6 @@
                 if(pts % 500 === 0) { rc++; gc++; }
                 db.ref('users/' + user.id).update({ pts, tps, rc, gc });
                 
-                // Falling from center
                 const f = document.createElement('div'); f.className = 'falling-plum'; f.innerText = '🍒';
                 f.style.left = '50%'; f.style.top = '40%';
                 document.getElementById('gz').appendChild(f);
@@ -243,10 +237,11 @@
             db.ref('users/' + user.id + '/tasks').once('value', snap => {
                 const td = snap.val() || {};
                 for(let i=1; i<=10; i++) {
-                    const isDone = (Date.now() - (td['t'+i] || 0)) < 86400000;
-                    list.innerHTML += `<div style="background:white; padding:15px; margin:10px 0; border-radius:15px; display:flex; justify-content:space-between; align-items:center;">
+                    const lastClaim = td['t'+i] || 0;
+                    const isDone = (Date.now() - lastClaim) < 86400000;
+                    list.innerHTML += `<div style="background:white; padding:15px; margin:10px 0; border-radius:15px; display:flex; justify-content:space-between; align-items:center; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
                         <span>Task ${i} (10 🍒)</span>
-                        <button class="btn" style="width:80px" ${isDone?'disabled':''} onclick="goTask(${i})">${isDone?'Done':'Claim'}</button>
+                        <button class="btn" style="width:100px" ${isDone?'disabled':''} id="btn-t${i}" onclick="goTask(${i})">${isDone?'Completed':'Claim'}</button>
                     </div>`;
                 }
             });
@@ -255,9 +250,16 @@
         function goTask(id) {
             window.open(SMART_LINK, '_blank');
             pts += 10;
+            const now = Date.now();
             db.ref('users/' + user.id).update({ pts });
-            db.ref('users/' + user.id + '/tasks').update({ ['t'+id]: Date.now() });
-            renderTasks();
+            db.ref('users/' + user.id + '/tasks').update({ ['t'+id]: now });
+            
+            // Immediate UI feedback
+            const btn = document.getElementById('btn-t'+id);
+            if(btn) {
+                btn.innerText = "Completed";
+                btn.disabled = true;
+            }
         }
 
         function copyLink() {
