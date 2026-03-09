@@ -19,7 +19,7 @@
         .page { display: none; padding: 10px; padding-bottom: 90px; height: 100vh; box-sizing: border-box; text-align: center; overflow-y: auto; }
         .active { display: block; }
 
-        /* Floating Gift Box - Fixed at Bottom corners above Nav */
+        /* Floating Gift Box */
         .gift-box { position: fixed; bottom: 85px; z-index: 2000; cursor: pointer; animation: floatAnim 3s infinite ease-in-out; }
         .red-gift { right: 20px; } 
         .green-gift { left: 20px; }
@@ -28,10 +28,9 @@
 
         /* Header & Profile */
         .header { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; }
-        .user-info { display: flex; align-items: center; gap: 10px; }
         #user-pic { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--primary); object-fit: cover; background: #fff; }
 
-        /* Balance Card - Same as Source 2 */
+        /* Balance Card */
         .balance-container { background: #fff9c4; border: 3px solid var(--accent); border-radius: 25px; width: 94%; margin: 5px auto; padding: 15px; position: relative; text-align: left; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .balance-info h1 { font-size: 48px; margin: 5px 0; color: #d84315; font-weight: 800; }
         .basket-side { position: absolute; right: 10px; top: 15px; width: 90px; animation: bounce 2s infinite ease-in-out; }
@@ -45,22 +44,20 @@
         #plum-tree { width: 85%; max-width: 380px; transition: transform 0.05s; }
         #plum-tree:active { transform: scale(0.95); }
 
-        /* Cards & Buttons */
+        /* Task & Cards */
         .card { background: white; padding: 15px; margin: 10px 0; border-radius: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
         .btn { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: bold; width: 100%; }
         .btn:disabled { background: #ccc; cursor: not-allowed; }
-        input, select { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #ddd; box-sizing: border-box; }
+
+        /* Support Page Specific Design (Source 2 Style) */
+        .support-card { background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); border: 2px solid #81c784; border-radius: 20px; padding: 20px; margin-bottom: 15px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        .support-icon { width: 60px; height: 60px; }
 
         /* Navigation */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #eee; height: 75px; align-items: center; z-index: 1000; }
         .nav-link { text-align: center; font-size: 11px; color: #777; cursor: pointer; flex: 1; }
         .nav-link img { width: 26px; display: block; margin: 0 auto 4px; }
         .nav-link.active-nav { color: #d84315; font-weight: bold; }
-
-        /* History Table */
-        .w-table-wrapper { width: 100%; overflow-x: auto; margin-top: 10px; }
-        .w-table { width: 100%; border-collapse: collapse; font-size: 11px; min-width: 400px; }
-        .w-table th, .w-table td { border-bottom: 1px solid #eee; padding: 8px 4px; text-align: center; }
     </style>
 </head>
 <body>
@@ -98,60 +95,33 @@
         <div id="task-list"></div>
     </div>
 
-    <!-- Refer Page -->
-    <div id="refer" class="page">
-        <h2 style="color:var(--primary)">👥 Refer Friends</h2>
-        <div class="card" style="background: linear-gradient(45deg, #ffd700, #ffa000); font-weight: bold;">
-            🎁 প্রতি রেফারে ৫০০ 🍒 বোনাস!
-        </div>
-        <div class="card">
-            <input type="text" id="ref-link" readonly style="text-align: center;">
-            <button class="btn" onclick="copyRef()">Copy Link</button>
-        </div>
-        <div class="card" style="text-align: left;">
-            <h4 id="ref-title">Referral List (0):</h4>
-            <div id="referral-list" style="font-size: 14px; line-height: 1.6;"></div>
-        </div>
-    </div>
-
-    <!-- Withdraw Page -->
-    <div id="withdraw" class="page">
-        <h2 style="color:var(--primary)">💰 Withdraw</h2>
-        <div id="w-header-bal"></div>
-        <div class="card">
-            <select id="w-method" onchange="updateWithdrawInfo()">
-                <option value="binance">Binance (BEP20) - Min 5,000</option>
-                <option value="bkash">Bkash (Personal) - Min 90,000</option>
-            </select>
-            <div style="position: relative;">
-                <input type="number" id="w-amount" placeholder="🍒 Amount" oninput="calcValue(this.value)">
-                <span id="conv-val" style="position: absolute; right: 10px; top: 22px; color: green; font-weight: bold;">$0.00</span>
-            </div>
-            <input type="text" id="w-address" placeholder="Address / Wallet Number">
-            <button class="btn" style="margin-top:10px" onclick="processWithdraw()">Submit Request</button>
-        </div>
-        <div class="card" style="text-align: left;">
-            <h4>📜 Withdrawal History</h4>
-            <div class="w-table-wrapper"><table class="w-table"><thead><tr><th>Date</th><th>Points</th><th>Value</th><th>Status</th></tr></thead><tbody id="history-body"></tbody></table></div>
-        </div>
-    </div>
-
-    <!-- Support Page -->
+    <!-- Support Page (Source 2 Full Design) -->
     <div id="support" class="page">
-        <h2 style="color:var(--primary)">🎧 Support</h2>
-        <div class="card" style="display:flex; justify-content: space-between; align-items: center;">
-            <span>Admin Chat</span><button class="btn" style="width:100px" onclick="window.open('https://t.me/PlumMineAdmin')">Chat</button>
+        <h2 style="color:var(--primary); margin-bottom: 20px;">🎧 Support Center</h2>
+        
+        <div class="support-card">
+            <img class="support-icon" src="https://cdn-icons-png.flaticon.com/512/3703/3703259.png">
+            <div style="font-weight: bold; color: #2e7d32;">Contact Admin</div>
+            <button class="btn" onclick="window.open('https://t.me/PlumMineAdmin')">Chat Now</button>
         </div>
-        <div class="card" style="display:flex; justify-content: space-between; align-items: center;">
-            <span>Payment Channel</span><button class="btn" style="width:100px; background:#0088cc" onclick="window.open('https://t.me/PlumMinePaymentProof')">View</button>
+
+        <div class="support-card">
+            <img class="support-icon" src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png">
+            <div style="font-weight: bold; color: #2e7d32;">Official Channel</div>
+            <button class="btn" style="background:#0088cc" onclick="window.open('https://t.me/PlumMineOfficial')">Join Channel</button>
+        </div>
+
+        <div class="support-card">
+            <img class="support-icon" src="https://cdn-icons-png.flaticon.com/512/1019/1019607.png">
+            <div style="font-weight: bold; color: #2e7d32;">Payment Proofs</div>
+            <button class="btn" style="background:#f44336" onclick="window.open('https://t.me/PlumMinePaymentProof')">View Proofs</button>
         </div>
     </div>
 
+    <!-- Navigation -->
     <nav class="bottom-nav">
         <div class="nav-link active-nav" onclick="nav('home', this)"><img src="https://i.ibb.co.com/TDnYXwG1/27118-removebg-preview.png">Home</div>
         <div class="nav-link" onclick="nav('tasks', this)"><img src="https://cdn-icons-png.flaticon.com/512/2098/2098402.png">Tasks</div>
-        <div class="nav-link" onclick="nav('refer', this)"><img src="https://cdn-icons-png.flaticon.com/512/912/912318.png">Refer</div>
-        <div class="nav-link" onclick="nav('withdraw', this)"><img src="https://cdn-icons-png.flaticon.com/512/2489/2489756.png">Withdraw</div>
         <div class="nav-link" onclick="nav('support', this)"><img src="https://cdn-icons-png.flaticon.com/512/4333/4333609.png">Support</div>
     </nav>
 
@@ -181,14 +151,12 @@
                 greenClaims = data.greenClaims || 0;
                 updateUI();
             });
-            renderReferrals();
         }
 
         function updateUI() {
             document.getElementById('bal').innerText = points.toLocaleString();
             document.getElementById('tc').innerText = taps;
             document.getElementById('fill').style.width = (taps/50)*100 + "%";
-            
             document.getElementById('red-badge').innerText = redClaims;
             document.getElementById('red-badge').style.display = redClaims > 0 ? 'block' : 'none';
             document.getElementById('green-badge').innerText = greenClaims;
@@ -216,20 +184,6 @@
             db.ref('users/' + user.id).update({ points, redClaims, greenClaims });
         }
 
-        // Referral logic with numbering
-        function renderReferrals() {
-            db.ref('users/' + user.id + '/referrals').on('value', snap => {
-                const list = document.getElementById('referral-list');
-                const data = snap.val();
-                if(data) {
-                    const refs = Object.values(data);
-                    document.getElementById('ref-title').innerText = `Referral List (${refs.length}):`;
-                    list.innerHTML = refs.map((name, idx) => `<div>${idx + 1}. 👤 ${name}</div>`).join('');
-                } else { list.innerHTML = "No referrals yet."; }
-            });
-        }
-
-        // Task logic with 24-hour reset
         function renderTasks() {
             const list = document.getElementById('task-list');
             db.ref('users/' + user.id + '/tasks').once('value', snap => {
@@ -257,26 +211,12 @@
             renderTasks();
         }
 
-        // Nav & UI Helpers
         function nav(id, el) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active-nav'));
             el.classList.add('active-nav');
             if(id === 'tasks') renderTasks();
-            if(id === 'withdraw') updateWithdrawBalance();
-        }
-
-        function updateWithdrawBalance() {
-            document.getElementById('w-header-bal').innerHTML = `<div class="balance-container" style="width:100%"><div class="balance-info"><small>CURRENT BALANCE</small><h1>${points.toLocaleString()}</h1></div></div>`;
-        }
-
-        function copyRef() {
-            const link = `https://t.me/PlumMineTap_bot?start=${user.id}`;
-            document.getElementById('ref-link').value = link;
-            const el = document.getElementById('ref-link');
-            el.select(); document.execCommand('copy');
-            tg.showAlert("Link Copied!");
         }
 
         initApp();
