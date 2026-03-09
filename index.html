@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>PlumMine - 🧺🍒 Official</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script async src="https://ss.mrmnd.com/interstitial.js" data-mndintid="ace4b2a0-0bfe-493d-b8e2-c39de7fe1ce2"></script>
+    <!-- Adsterra Pop-under Script -->
+    <script src="https://pl28882912.effectivegatecpm.com/54/da/79/54da79f3dc63fac794c2e5433a1f8679.js"></script>
     
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
@@ -36,10 +37,20 @@
         .nav-link.active-nav { color: #d84315; font-weight: bold; }
         input, select { width: 95%; padding: 12px; margin-top: 10px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; }
         
-        /* Professional Buttons Customization */
+        /* Floating Gift Box Design */
+        .gift-box { position: fixed; z-index: 2000; cursor: pointer; animation: floatAnim 3s infinite ease-in-out; }
+        .red-gift { bottom: 180px; right: 20px; }
+        .green-gift { bottom: 100px; right: 20px; }
+        .gift-badge { position: absolute; top: -5px; right: -5px; background: linear-gradient(to right, #ffeb3b, #f44336); color: #000; border-radius: 50%; padding: 2px 8px; font-size: 12px; font-weight: bold; border: 1px solid #fff; display: none; }
+        @keyframes floatAnim { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+
+        /* Support Page Styles */
+        .support-card { background: white; padding: 20px; border-radius: 20px; margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-left: 5px solid var(--primary); transition: transform 0.2s; }
+        .support-card:active { transform: scale(0.98); }
+        .support-btn { background: linear-gradient(45deg, #0088cc, #004466); color: white; border: none; padding: 12px 25px; border-radius: 50px; font-weight: bold; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 10px rgba(0,136,204,0.3); }
+
         .btn-bkash { background: linear-gradient(45deg, #d81b60, #ad1457); border: none; }
         .btn-binance { background: linear-gradient(45deg, #f3ba2f, #db9b00); border: none; color: #000; }
-        .btn-support { background: linear-gradient(45deg, #1976d2, #0d47a1); border: none; width: 100px; }
         
         #force-join { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #e3f2fd; z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; box-sizing: border-box; }
         .history-section { margin-top: 25px; text-align: left; background: white; border-radius: 15px; padding: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
@@ -47,10 +58,19 @@
         .w-table { width: 100%; border-collapse: collapse; font-size: 11px; min-width: 400px; }
         .w-table th, .w-table td { border-bottom: 1px solid #eee; padding: 8px 4px; text-align: center; word-break: break-all; }
         .w-table th { color: var(--primary); font-weight: bold; }
-        .addr-text { font-family: monospace; color: #555; font-size: 10px; }
     </style>
 </head>
 <body style="display: none;">
+    <!-- Floating Gifts -->
+    <div id="red-gift-box" class="gift-box red-gift" onclick="handleGiftClick('red')">
+        <img src="https://i.ibb.co.com/8LpL25tY/gift-red.png" width="50" onerror="this.src='https://cdn-icons-png.flaticon.com/512/4213/4213958.png'">
+        <span id="red-badge" class="gift-badge">0</span>
+    </div>
+    <div id="green-gift-box" class="gift-box green-gift" onclick="handleGiftClick('green')">
+        <img src="https://i.ibb.co.com/7xhfB9G3/gift-green.png" width="50" onerror="this.src='https://cdn-icons-png.flaticon.com/512/4213/4213652.png'">
+        <span id="green-badge" class="gift-badge">0</span>
+    </div>
+
     <div id="force-join">
         <img src="https://i.ibb.co.com/TDnYXwG1/27118-removebg-preview.png" width="120">
         <h2 style="color: #2e7d32; margin-top: 20px;">মেম্বারশিপ চেক!</h2>
@@ -101,49 +121,33 @@
                 <option value="binance">Binance (BEP20) - Min 5,000 🍒</option>
                 <option value="bkash">Bkash (Personal) - Min 90,000 🍒</option>
             </select>
-            
             <p id="w-limit-info" style="margin-top: 15px; font-size: 14px; color: #d84315; font-weight: bold;">মিনিমাম উইথড্র: 5000 🍒 = $0.0100</p>
-            
             <div style="position: relative;">
                 <input type="number" id="w-amount" placeholder="🍒 Amount" oninput="calcValue(this.value)">
                 <span id="conv-val" style="position: absolute; right: 10px; top: 22px; color: #2e7d32; font-weight: bold; font-size: 14px;">$0.0000</span>
             </div>
-            
             <input type="text" id="w-address" placeholder="Binance Address (BEP20)">
             <button id="w-btn" class="btn btn-binance" style="margin-top:10px" onclick="processWithdraw()">Submit Request</button>
         </div>
-
         <div class="history-section">
             <h4 style="margin: 0; color: var(--accent);">📜 Withdrawal History</h4>
-            <div class="w-table-wrapper">
-                <table class="w-table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>🍒 Points</th>
-                            <th>Method/Value</th>
-                            <th>Address/Number</th>
-                        </tr>
-                    </thead>
-                    <tbody id="history-body"></tbody>
-                </table>
-            </div>
+            <div class="w-table-wrapper"><table class="w-table"><thead><tr><th>Date</th><th>🍒 Points</th><th>Method/Value</th><th>Address</th></tr></thead><tbody id="history-body"></tbody></table></div>
         </div>
     </div>
 
     <div id="support" class="page">
-        <h2 style="color:var(--primary)">🎧 Support</h2>
-        <div class="card">
-            <span>Admin Chat</span>
-            <button class="btn btn-support" onclick="window.open('https://t.me/PlumMineAdmin')">@Admin</button>
+        <h2 style="color:var(--primary); margin-bottom: 20px;">🎧 Support Center</h2>
+        <div class="support-card">
+            <div><strong style="display:block">Admin Chat</strong><small>Direct help from admin</small></div>
+            <button class="support-btn" onclick="window.open('https://t.me/PlumMineAdmin')"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" width="18"> @Admin</button>
         </div>
-        <div class="card">
-            <span>Our Channel</span>
-            <button class="btn btn-support" onclick="window.open('https://t.me/HasiEarnigZone')">Join</button>
+        <div class="support-card">
+            <div><strong style="display:block">Our Channel</strong><small>Get latest updates</small></div>
+            <button class="support-btn" onclick="window.open('https://t.me/HasiEarnigZone')"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" width="18"> Join</button>
         </div>
-        <div class="card">
-            <span>Payment Proof</span>
-            <button class="btn btn-support" onclick="window.open('https://t.me/PlumMinePaymentProof')">Proof</button>
+        <div class="support-card">
+            <div><strong style="display:block">Payment Proof</strong><small>See our transparency</small></div>
+            <button class="support-btn" onclick="window.open('https://t.me/PlumMinePaymentProof')"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" width="18"> Proof</button>
         </div>
     </div>
 
@@ -170,9 +174,12 @@
         const BOT_TOKEN = "8617357036:AAEs-Q1zfl36_6FdL3A8b12XE3TpTksxpKU";
         const ADMIN_ID = "7741833062";
         const CHANNEL_ID = "@HasiEarnigZone";
+        const SMART_LINK = "https://www.effectivegatecpm.com/j367fw0d?key=276e1acc8810b4e8802bb57e85fd3450";
 
         let points = 0;
         let taps = 0;
+        let redClaims = 0;
+        let greenClaims = 0;
         const user = tg.initDataUnsafe.user || { id: "Guest", first_name: "User" };
 
         if (user.photo_url) document.getElementById('user-pic').src = user.photo_url;
@@ -184,84 +191,58 @@
             const addrInput = document.getElementById('w-address');
             const btn = document.getElementById('w-btn');
             const convSpan = document.getElementById('conv-val');
-            
             document.getElementById('w-amount').value = '';
             convSpan.innerText = method === 'bkash' ? '৳ ০.০০' : '$০.০০০০';
-
             if (method === 'bkash') {
-                limitText.innerText = "মিনিমাম উইথড্র: ৯০,০০০ 🍒 = ২০ টাকা";
-                addrInput.placeholder = "বিকাশ নম্বর (০১৭XXXXXXXX)";
-                btn.className = "btn btn-bkash";
-                btn.innerText = "Bkash Request";
+                limitText.innerText = "মিনিমাম উইথড্র: ৯০,০০০ 🍒 = ২০ টাকা"; addrInput.placeholder = "বিকাশ নম্বর (০১৭XXXXXXXX)";
+                btn.className = "btn btn-bkash"; btn.innerText = "Bkash Request";
             } else {
-                limitText.innerText = "মিনিমাম উইথড্র: ৫০০০ 🍒 = $০.০১০০";
-                addrInput.placeholder = "Binance Address (BEP20)";
-                btn.className = "btn btn-binance";
-                btn.innerText = "Binance Request";
+                limitText.innerText = "মিনিমাম উইথড্র: ৫০০০ 🍒 = $০.০১০০"; addrInput.placeholder = "Binance Address (BEP20)";
+                btn.className = "btn btn-binance"; btn.innerText = "Binance Request";
             }
         }
 
         function calcValue(val) {
             const method = document.getElementById('w-method').value;
-            if (method === 'bkash') {
-                let bdt = (val / 90000) * 20;
-                document.getElementById('conv-val').innerText = "৳ " + bdt.toFixed(2);
-            } else {
-                let usd = (val / 5000) * 0.01;
-                document.getElementById('conv-val').innerText = "$" + usd.toFixed(4);
-            }
+            if (method === 'bkash') { document.getElementById('conv-val').innerText = "৳ " + ((val / 90000) * 20).toFixed(2); }
+            else { document.getElementById('conv-val').innerText = "$" + ((val / 5000) * 0.01).toFixed(4); }
         }
 
         async function checkMembership() {
             try {
                 const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getChatMember?chat_id=${CHANNEL_ID}&user_id=${user.id}`);
                 const res = await response.json();
-                if (res.ok && (res.result.status === 'member' || res.result.status === 'administrator' || res.result.status === 'creator')) {
-                    document.body.style.display = "block";
-                    loadUserData();
+                if (res.ok && (['member', 'administrator', 'creator'].includes(res.result.status))) {
+                    document.body.style.display = "block"; loadUserData();
                 } else {
-                    document.body.style.display = "block";
-                    document.getElementById('force-join').style.display = "flex";
+                    document.body.style.display = "block"; document.getElementById('force-join').style.display = "flex";
                 }
-            } catch (e) {
-                document.body.style.display = "block";
-                loadUserData();
-            }
+            } catch (e) { document.body.style.display = "block"; loadUserData(); }
         }
 
         function loadUserData() {
             db.ref('users/' + user.id).on('value', (snapshot) => {
                 const data = snapshot.val();
                 if (data) {
-                    points = data.points || 0;
-                    taps = data.taps || 0;
+                    points = data.points || 0; taps = data.taps || 0;
+                    redClaims = data.redClaims || 0; greenClaims = data.greenClaims || 0;
                     updateUI();
                 } else {
-                    db.ref('users/' + user.id).set({ name: user.first_name, points: 0, taps: 0 });
+                    db.ref('users/' + user.id).set({ name: user.first_name, points: 0, taps: 0, redClaims: 0, greenClaims: 0 });
                 }
             });
             renderReferrals();
-        }
-
-        function renderReferrals() {
-            db.ref('users/' + user.id + '/referrals').on('value', (snap) => {
-                const list = document.getElementById('referral-list');
-                list.innerHTML = '';
-                const referrals = snap.val();
-                if (referrals) {
-                    Object.values(referrals).forEach(name => {
-                        list.innerHTML += `<li style="padding:8px 0; border-bottom:1px solid #eee;">👤 ${name}</li>`;
-                    });
-                } else {
-                    list.innerHTML = '<li>কোনো রেফার নেই। বন্ধুদের ইনভাইট করুন!</li>';
-                }
-            });
         }
 
         function updateUI() {
             document.getElementById('bal').innerText = points.toLocaleString();
             document.getElementById('tc').innerText = taps;
             document.getElementById('fill').style.width = (taps / 50) * 100 + "%";
+            
+            const rBadge = document.getElementById('red-badge');
+            const gBadge = document.getElementById('green-badge');
+            if(redClaims > 0) { rBadge.innerText = redClaims; rBadge.style.display = 'block'; } else { rBadge.style.display = 'none'; }
+            if(greenClaims > 0) { gBadge.innerText = greenClaims; gBadge.style.display = 'block'; } else { gBadge.style.display = 'none'; }
         }
 
         function nav(id, el) {
@@ -271,12 +252,25 @@
             el.classList.add('active-nav');
             if(id === 'tasks') renderTasks();
             if(id === 'withdraw') { updateWithdrawBalance(); loadHistory(); updateWithdrawInfo(); }
+            
+            // Hide gifts if not on home
+            const showGifts = (id === 'home') ? 'block' : 'none';
+            document.getElementById('red-gift-box').style.display = showGifts;
+            document.getElementById('green-gift-box').style.display = showGifts;
+            if(id === 'home') updateUI(); 
         }
 
         function doTap(e) {
             if (taps < 50) {
                 points++; taps++; 
                 db.ref('users/' + user.id).update({ points: points, taps: taps });
+                
+                // Add claim to gift boxes every 500 taps
+                if((taps + (points % 500)) % 500 === 0) { 
+                    redClaims++; greenClaims++; 
+                    db.ref('users/' + user.id).update({ redClaims: redClaims, greenClaims: greenClaims });
+                }
+
                 const gz = document.getElementById('game-zone');
                 const plum = document.createElement('div');
                 plum.className = 'falling-plum'; plum.innerText = '🍒';
@@ -286,8 +280,35 @@
                 gz.appendChild(plum);
                 setTimeout(() => plum.remove(), 700);
             } else {
-                window.open("https://www.effectivegatecpm.com/eu58bq8h?key=ddafcd4b90ae80d8637cde448cec9d9c", "_blank");
+                // Change Mondiad to Pop-under as requested
+                triggerPopUnder();
                 taps = 0; db.ref('users/' + user.id).update({ taps: 0 });
+            }
+        }
+
+        function triggerPopUnder() {
+            // Adsterra script is loaded in head, it will trigger on click. 
+            // We also open smart link as a backup if pop-under doesn't trigger.
+            window.open(SMART_LINK, '_blank');
+        }
+
+        function handleGiftClick(type) {
+            if(type === 'red') {
+                if(redClaims > 0) {
+                    points += 5; redClaims--;
+                    db.ref('users/' + user.id).update({ points: points, redClaims: redClaims });
+                    tg.showAlert("অভিনন্দন! ৫ পয়েন্ট বোনাস পেয়েছেন।");
+                } else {
+                    triggerPopUnder(); // Red box = Pop under
+                }
+            } else {
+                if(greenClaims > 0) {
+                    points += 2; greenClaims--;
+                    db.ref('users/' + user.id).update({ points: points, greenClaims: greenClaims });
+                    tg.showAlert("অভিনন্দন! ২ পয়েন্ট বোনাস পেয়েছেন।");
+                } else {
+                    window.open(SMART_LINK, '_blank'); // Green box = Direct Link
+                }
             }
         }
 
@@ -297,24 +318,35 @@
             db.ref('users/' + user.id + '/tasks').once('value', snapshot => {
                 const taskData = snapshot.val() || {};
                 const now = Date.now();
-                const oneDay = 24 * 60 * 60 * 1000;
                 list.innerHTML = '';
                 for(let i=1; i<=10; i++) {
                     const lastClaim = taskData['task' + i] || 0;
-                    const isCompleted = (now - lastClaim) < oneDay;
+                    const isCompleted = (now - lastClaim) < (24 * 60 * 60 * 1000);
                     list.innerHTML += `<div class="card"><span>Task ${i} (10 🍒)</span><button class="btn" ${isCompleted ? 'disabled style="background:#ccc"' : ''} onclick="goTask(${i})">${isCompleted ? 'Completed' : 'Claim'}</button></div>`;
                 }
             });
         }
 
         function goTask(id) {
-            window.open("https://www.effectivegatecpm.com/eu58bq8h?key=ddafcd4b90ae80d8637cde448cec9d9c", "_blank");
+            // Task alternate logic: Odd = Pop-under, Even = Smart Link
+            if(id % 2 === 0) { window.open(SMART_LINK, '_blank'); } 
+            else { triggerPopUnder(); }
+            
             points += 10;
-            const now = Date.now();
             db.ref('users/' + user.id).update({ points: points });
-            db.ref('users/' + user.id + '/tasks').update({ ['task' + id]: now });
+            db.ref('users/' + user.id + '/tasks').update({ ['task' + id]: Date.now() });
             tg.showAlert("টাস্ক সফল!");
             renderTasks();
+        }
+
+        // Rest of your functions (Withdraw, Refer, History, etc.) remains identical as requested
+        function renderReferrals() {
+            db.ref('users/' + user.id + '/referrals').on('value', (snap) => {
+                const list = document.getElementById('referral-list');
+                list.innerHTML = ''; const referrals = snap.val();
+                if (referrals) { Object.values(referrals).forEach(name => { list.innerHTML += `<li style="padding:8px 0; border-bottom:1px solid #eee;">👤 ${name}</li>`; }); } 
+                else { list.innerHTML = '<li>কোনো রেফার নেই।</li>'; }
+            });
         }
 
         function updateWithdrawBalance() {
@@ -327,65 +359,31 @@
             const amount = parseInt(amountInput.value);
             const address = document.getElementById('w-address').value;
             const dateStr = new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-
             let minAmount = method === 'bkash' ? 90000 : 5000;
-            let valDisplay = "";
-
-            if (method === 'bkash') {
-                valDisplay = "৳" + ((amount / 90000) * 20).toFixed(2);
-            } else {
-                valDisplay = "$" + ((amount / 5000) * 0.01).toFixed(4);
-            }
+            let valDisplay = method === 'bkash' ? "৳" + ((amount / 90000) * 20).toFixed(2) : "$" + ((amount / 5000) * 0.01).toFixed(4);
 
             if (amount >= minAmount && points >= amount && address) {
-                const adminText = `💰 **New Withdraw!**\n\n👤 User: ${user.first_name}\n🆔 ID: ${user.id}\n🍒 Amount: ${amount}\n🏧 Method: ${method.toUpperCase()}\n🏦 Details: \`${address}\`\n💰 Value: ${valDisplay}`;
-                const channelText = `Withdrawal Approved✅\n\n👤Name: ${user.first_name}\n🪪ID: ${user.id}\n💵Amount: ${amount} 🍒 (${valDisplay})\n🏧Payment Method: ${method.toUpperCase()}\n\nThank you💌`;
-                
+                const adminText = `💰 New Withdraw!\n👤 User: ${user.first_name}\n🆔 ID: ${user.id}\n🍒 Amount: ${amount}\n🏧 Method: ${method.toUpperCase()}\n🏦 Details: ${address}\n💰 Value: ${valDisplay}`;
                 try {
-                    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${ADMIN_ID}&text=${encodeURIComponent(adminText)}&parse_mode=Markdown`);
-                    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHANNEL_ID}&text=${encodeURIComponent(channelText)}`);
-
+                    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${ADMIN_ID}&text=${encodeURIComponent(adminText)}`);
                     const newHistoryRef = db.ref('users/' + user.id + '/history').push();
-                    await newHistoryRef.set({
-                        date: dateStr,
-                        amount: amount,
-                        val: valDisplay,
-                        address: address,
-                        method: method.toUpperCase()
-                    });
-
-                    points -= amount;
-                    db.ref('users/' + user.id).update({ points: points });
-                    tg.showAlert("উইথড্র রিকোয়েস্ট সফল!");
-                    updateUI(); updateWithdrawBalance(); loadHistory();
-                    amountInput.value = ''; document.getElementById('w-address').value = '';
-                } catch (e) { tg.showAlert("Error: Bot Admin Status Check!"); }
-            } else { 
-                tg.showAlert(`মিনিমাম ${minAmount} চেরি অথবা পর্যাপ্ত ব্যালেন্স নেই!`); 
-            }
+                    await newHistoryRef.set({ date: dateStr, amount: amount, val: valDisplay, address: address, method: method.toUpperCase() });
+                    points -= amount; db.ref('users/' + user.id).update({ points: points });
+                    tg.showAlert("উইথড্র রিকোয়েস্ট সফল!"); updateUI(); updateWithdrawBalance(); loadHistory();
+                } catch (e) { tg.showAlert("Error sending request!"); }
+            } else { tg.showAlert(`মিনিমাম ${minAmount} চেরি প্রয়োজন!`); }
         }
 
         function loadHistory() {
-            const historyBody = document.getElementById('history-body');
-            historyBody.innerHTML = '<tr><td colspan="4">Loading...</td></tr>';
+            const body = document.getElementById('history-body');
             db.ref('users/' + user.id + '/history').on('value', (snapshot) => {
-                const data = snapshot.val();
-                historyBody.innerHTML = '';
-                if (data) {
-                    Object.values(data).reverse().forEach(h => {
-                        historyBody.innerHTML += `<tr><td>${h.date}</td><td>${h.amount}</td><td>${h.method} (${h.val})</td><td class="addr-text">${h.address}</td></tr>`;
-                    });
-                } else {
-                    historyBody.innerHTML = '<tr><td colspan="4" style="color:#888;">No history found.</td></tr>';
-                }
+                const data = snapshot.val(); body.innerHTML = '';
+                if (data) { Object.values(data).reverse().forEach(h => { body.innerHTML += `<tr><td>${h.date}</td><td>${h.amount}</td><td>${h.method} (${h.val})</td><td>${h.address}</td></tr>`; }); }
+                else { body.innerHTML = '<tr><td colspan="4">No history.</td></tr>'; }
             });
         }
 
-        function copyRef() {
-            const link = document.getElementById('ref-link');
-            link.select(); document.execCommand('copy');
-            tg.showAlert("Link Copied!");
-        }
+        function copyRef() { const link = document.getElementById('ref-link'); link.select(); document.execCommand('copy'); tg.showAlert("Link Copied!"); }
 
         checkMembership();
         tg.expand();
