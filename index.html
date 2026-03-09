@@ -18,44 +18,55 @@
         .page { display: none; padding: 10px; padding-bottom: 90px; height: 100vh; box-sizing: border-box; text-align: center; overflow-y: auto; }
         .active { display: block; }
         
-        /* Floating Gift Box - Positions */
-        .gift-box { position: fixed; top: 110px; z-index: 2000; cursor: pointer; animation: floatAnim 3s infinite ease-in-out; }
-        .red-gift { right: 10px; } /* পাকা ফল - ডান পাশে */
-        .green-gift { left: 10px; } /* সবুজ ফল - বাম পাশে */
-        
-        .gift-badge { position: absolute; top: -5px; right: -5px; background: linear-gradient(to right, #ffeb3b, #f44336); color: #000; border-radius: 50%; padding: 2px 8px; font-size: 12px; font-weight: bold; border: 1px solid #fff; display: none; }
-        
-        @keyframes floatAnim { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+        /* Floating Gift Box - Bottom Positions (Above Nav) */
+        .gift-box { position: fixed; bottom: 85px; z-index: 2000; cursor: pointer; animation: floatAnim 3s infinite ease-in-out; }
+        .red-gift { right: 20px; } 
+        .green-gift { left: 20px; }
+        .gift-badge { position: absolute; top: -5px; right: -5px; background: red; color: white; border-radius: 50%; padding: 2px 7px; font-size: 10px; font-weight: bold; border: 1px solid #fff; display: none; }
+        @keyframes floatAnim { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
         .header { display: flex; justify-content: space-between; align-items: center; padding: 5px 20px; }
         #user-pic { width: 45px; height: 45px; border-radius: 50%; border: 2px solid #1a5d1a; box-shadow: 0 2px 5px rgba(0,0,0,0.2); background: #eee; object-fit: cover; }
+        
         .balance-container { background: #fff9c4; border: 3px solid var(--accent); border-radius: 25px; width: 94%; margin: 5px auto; padding: 15px; position: relative; display: flex; flex-direction: column; align-items: flex-start; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .balance-info h1 { font-size: 48px; margin: 2px 0; color: #d84315; font-weight: 800; }
         .basket-side { position: absolute; right: 10px; top: 10px; width: 100px; animation: bounce 2s infinite ease-in-out; }
         @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+        
         .progress-bar-bg { width: 100%; background: #fffde7; height: 14px; border-radius: 10px; border: 1px solid #d7ccc8; overflow: hidden; margin-top: 10px; }
         #fill { width: 0%; height: 100%; background: linear-gradient(to right, #42a5f5, #1976d2); transition: width 0.3s; }
+        
         .game-zone { position: relative; height: 45vh; display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; }
         #plum-tree { width: 90%; max-width: 400px; z-index: 5; transition: transform 0.05s; }
         #plum-tree:active { transform: scale(0.95); }
         .falling-plum { position: absolute; font-size: 30px; z-index: 10; pointer-events: none; animation: fallEffect 0.7s ease-in forwards; }
         @keyframes fallEffect { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(300px) rotate(90deg); opacity: 0; } }
 
-        /* Support Page Redesign */
-        .support-card { background: white; padding: 18px; border-radius: 20px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-left: 6px solid #0088cc; transition: 0.3s; }
-        .support-btn { background: linear-gradient(45deg, #0088cc, #005580); color: white; border: none; padding: 10px 22px; border-radius: 50px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 8px rgba(0,136,204,0.3); }
+        /* Referral Styles */
+        .ref-bonus-card { background: linear-gradient(45deg, #ffd700, #ffa000); padding: 15px; border-radius: 15px; margin-bottom: 10px; font-weight: bold; color: #333; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
 
-        .btn { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; }
         .card { background: white; padding: 15px; margin: 10px 0; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .btn { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; }
+        input, select { width: 95%; padding: 12px; margin-top: 10px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; }
+        
+        /* Nav & History Styles */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #eee; height: 75px; align-items: center; z-index: 1000; }
         .nav-link { text-align: center; font-size: 11px; color: #777; cursor: pointer; flex: 1; }
         .nav-link img { width: 26px; display: block; margin: 0 auto 4px; }
         .nav-link.active-nav { color: #d84315; font-weight: bold; }
+        
+        .history-section { margin-top: 25px; text-align: left; background: white; border-radius: 15px; padding: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .w-table-wrapper { width: 100%; overflow-x: auto; margin-top: 10px; }
+        .w-table { width: 100%; border-collapse: collapse; font-size: 11px; min-width: 400px; }
+        .w-table th, .w-table td { border-bottom: 1px solid #eee; padding: 8px 4px; text-align: center; word-break: break-all; }
+        .addr-text { font-family: monospace; color: #555; font-size: 10px; }
+        
+        #force-join { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #e3f2fd; z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; }
     </style>
 </head>
 <body style="display: none;">
 
-    <!-- Home Page Floating Gifts -->
+    <!-- Fixed Bottom Gifts -->
     <div id="red-gift-box" class="gift-box red-gift" onclick="handleGiftClick('red')">
         <img src="https://i.ibb.co.com/8gxBtPpT/27630-removebg-preview.png" width="55">
         <span id="red-badge" class="gift-badge">0</span>
@@ -65,7 +76,15 @@
         <span id="green-badge" class="gift-badge">0</span>
     </div>
 
-    <!-- Home Page Content -->
+    <!-- Force Join -->
+    <div id="force-join">
+        <img src="https://i.ibb.co.com/TDnYXwG1/27118-removebg-preview.png" width="120">
+        <h2>মেম্বারশিপ চেক!</h2>
+        <button class="btn" style="width: 80%;" onclick="window.open('https://t.me/HasiEarnigZone')">Join Channel</button>
+        <button class="btn" style="width: 80%; margin-top: 10px; background: #8d6e63;" onclick="location.reload()">আমি জয়েন করেছি</button>
+    </div>
+
+    <!-- Home Page -->
     <div id="home" class="page active">
         <div class="header">
             <div style="font-size: 22px; font-weight: bold; color: #1a5d1a;">🧺🍒 PlumMine</div>
@@ -77,34 +96,63 @@
             <div style="font-size:12px; font-weight:bold; margin-top:10px;">Next ad in [Tap: <span id="tc">0</span>/50]</div>
             <div class="progress-bar-bg"><div id="fill"></div></div>
         </div>
-        <div class="game-zone" id="game-zone" onclick="doTap(event)">
+        <div class="game-zone" onclick="doTap(event)">
             <img id="plum-tree" src="https://i.ibb.co.com/TBfn8G8M/27099-removebg-preview.png">
+        </div>
+    </div>
+
+    <!-- Refer Page -->
+    <div id="refer" class="page">
+        <h2 style="color:var(--primary)">👥 Referral Link</h2>
+        <div class="ref-bonus-card">🎁 প্রতি রেফারে ৫০০ 🍒 বোনাস!</div>
+        <p style="font-size: 13px; color: #2e7d32; font-weight: bold;">বেশি বেশি রেফার করুন এবং দ্রুত উইথড্র নিন।</p>
+        <div class="card" style="flex-direction: column;">
+            <input type="text" id="ref-link" readonly>
+            <button class="btn" style="width:100%; margin-top:10px" onclick="copyRef()">Copy & Share</button>
+        </div>
+        <div class="card" style="margin-top:20px; font-size:14px; flex-direction: column; align-items: flex-start;">
+            <h4>Your Referrals:</h4>
+            <ul id="referral-list" style="list-style:none; padding:0; width:100%; text-align: left;"><li>Loading...</li></ul>
+        </div>
+    </div>
+
+    <!-- Withdraw Page -->
+    <div id="withdraw" class="page">
+        <h2 style="color:var(--primary)">💰 Withdraw</h2>
+        <div id="w-header-bal"></div>
+        <div class="card" style="flex-direction: column; align-items: stretch;">
+            <select id="w-method" onchange="updateWithdrawInfo()">
+                <option value="binance">Binance (BEP20) - Min 5,000 🍒</option>
+                <option value="bkash">Bkash (Personal) - Min 90,000 🍒</option>
+            </select>
+            <p id="w-limit-info" style="margin-top:10px; font-size:13px; color:red; font-weight:bold;"></p>
+            <div style="position: relative;">
+                <input type="number" id="w-amount" placeholder="🍒 Amount" oninput="calcValue(this.value)">
+                <span id="conv-val" style="position: absolute; right: 10px; top: 22px; color: green; font-weight: bold;">$0.00</span>
+            </div>
+            <input type="text" id="w-address" placeholder="Address/Number">
+            <button id="w-btn" class="btn" style="margin-top:10px" onclick="processWithdraw()">Submit Request</button>
+        </div>
+        <div class="history-section">
+            <h4 style="margin: 0;">📜 Withdrawal History</h4>
+            <div class="w-table-wrapper"><table class="w-table"><thead><tr><th>Date</th><th>🍒 Points</th><th>Value</th><th>Address</th></tr></thead><tbody id="history-body"></tbody></table></div>
         </div>
     </div>
 
     <!-- Support Page -->
     <div id="support" class="page">
-        <h2 style="color:var(--primary); margin-bottom: 25px;">🎧 Support Center</h2>
-        <div class="support-card">
-            <div><strong style="font-size: 16px;">Admin Chat</strong><br><small>Direct help from admin</small></div>
-            <button class="support-btn" onclick="window.open('https://t.me/PlumMineAdmin')"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" width="18"> @Admin</button>
-        </div>
-        <div class="support-card">
-            <div><strong style="font-size: 16px;">Our Channel</strong><br><small>Updates and news</small></div>
-            <button class="support-btn" onclick="window.open('https://t.me/HasiEarnigZone')"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" width="18"> Join</button>
-        </div>
-        <div class="support-card">
-            <div><strong style="font-size: 16px;">Payment Proof</strong><br><small>Payment screenshots</small></div>
-            <button class="support-btn" onclick="window.open('https://t.me/PlumMinePaymentProof')"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" width="18"> Proof</button>
-        </div>
+        <h2 style="color:var(--primary)">🎧 Support</h2>
+        <div class="card"><span>Admin Chat</span><button class="btn" onclick="window.open('https://t.me/PlumMineAdmin')">@Admin</button></div>
+        <div class="card"><span>Our Channel</span><button class="btn" onclick="window.open('https://t.me/HasiEarnigZone')">Join</button></div>
+        <div class="card"><span>Payment Proof</span><button class="btn" onclick="window.open('https://t.me/PlumMinePaymentProof')">Proof</button></div>
     </div>
 
-    <!-- Refer, Task, Withdraw (Keep your original code content here) -->
-    <div id="tasks" class="page">... (Task list logic) ...</div>
-    <div id="refer" class="page">... (Referral code) ...</div>
-    <div id="withdraw" class="page">... (Withdraw code) ...</div>
+    <!-- Tasks Page -->
+    <div id="tasks" class="page">
+        <h2 style="color:var(--primary)">📋 Daily Tasks</h2>
+        <div id="task-list"></div>
+    </div>
 
-    <!-- Bottom Nav -->
     <nav class="bottom-nav">
         <div class="nav-link active-nav" onclick="nav('home', this)"><img src="https://i.ibb.co.com/TDnYXwG1/27118-removebg-preview.png">Home</div>
         <div class="nav-link" onclick="nav('tasks', this)"><img src="https://cdn-icons-png.flaticon.com/512/2098/2098402.png">Tasks</div>
@@ -115,14 +163,13 @@
 
     <script>
         const SMART_LINK = "https://www.effectivegatecpm.com/j367fw0d?key=276e1acc8810b4e8802bb57e85fd3450";
-        // Firebase initialization (Same as your file)
         const firebaseConfig = { apiKey: "AIzaSyDE-YtDEDmxxJsNwya-RLRxVVWy5JJmsq4", authDomain: "plumminebot.firebaseapp.com", databaseURL: "https://plumminebot-default-rtdb.firebaseio.com", projectId: "plumminebot", appId: "1:876718225351:web:3fab78ff3ab25e9734cbe2" };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
         const tg = window.Telegram.WebApp;
-
-        let points = 0; let taps = 0; let redClaims = 0; let greenClaims = 0;
         const user = tg.initDataUnsafe.user || { id: "Guest", first_name: "User" };
+
+        let points = 0, taps = 0, redClaims = 0, greenClaims = 0;
 
         function loadUserData() {
             db.ref('users/' + user.id).on('value', (snapshot) => {
@@ -131,63 +178,58 @@
                     points = data.points || 0; taps = data.taps || 0;
                     redClaims = data.redClaims || 0; greenClaims = data.greenClaims || 0;
                     updateUI();
-                } else { db.ref('users/' + user.id).set({ name: user.first_name, points: 0, taps: 0, redClaims: 0, greenClaims: 0 }); }
+                } else { db.ref('users/' + user.id).set({ name: user.first_name, points: 0, taps: 0 }); }
             });
+            renderReferrals();
         }
 
         function updateUI() {
             document.getElementById('bal').innerText = points.toLocaleString();
             document.getElementById('tc').innerText = taps;
             document.getElementById('fill').style.width = (taps / 50) * 100 + "%";
-            
-            const rBadge = document.getElementById('red-badge');
-            const gBadge = document.getElementById('green-badge');
-            if(redClaims > 0) { rBadge.innerText = redClaims; rBadge.style.display = 'block'; } else { rBadge.style.display = 'none'; }
-            if(greenClaims > 0) { gBadge.innerText = greenClaims; gBadge.style.display = 'block'; } else { gBadge.style.display = 'none'; }
+            document.getElementById('red-badge').innerText = redClaims;
+            document.getElementById('red-badge').style.display = redClaims > 0 ? 'block' : 'none';
+            document.getElementById('green-badge').innerText = greenClaims;
+            document.getElementById('green-badge').style.display = greenClaims > 0 ? 'block' : 'none';
         }
 
-        // Tap Logic: No interruption during 50 taps
         function doTap(e) {
             if (taps < 50) {
-                points++; taps++; 
+                points++; taps++;
                 db.ref('users/' + user.id).update({ points: points, taps: taps });
-                
-                // Bonus generation at 500 tap intervals
                 if(points % 500 === 0 && points !== 0) { 
                     redClaims++; greenClaims++; 
-                    db.ref('users/' + user.id).update({ redClaims: redClaims, greenClaims: greenClaims });
+                    db.ref('users/' + user.id).update({ redClaims, greenClaims }); 
                 }
-
-                // Visual Effect
-                const gz = document.getElementById('game-zone');
+                const gz = e.currentTarget;
                 const plum = document.createElement('div');
                 plum.className = 'falling-plum'; plum.innerText = '🍒';
-                const rect = gz.getBoundingClientRect();
-                plum.style.left = (e.clientX - rect.left - 15) + 'px';
-                plum.style.top = (e.clientY - rect.top - 15) + 'px';
+                plum.style.left = (e.clientX - gz.getBoundingClientRect().left - 15) + 'px';
+                plum.style.top = (e.clientY - gz.getBoundingClientRect().top - 15) + 'px';
                 gz.appendChild(plum);
                 setTimeout(() => plum.remove(), 700);
             } else {
-                // Ad trigger after 50 taps
                 window.open(SMART_LINK, '_blank');
                 taps = 0; db.ref('users/' + user.id).update({ taps: 0 });
             }
         }
 
         function handleGiftClick(type) {
-            if(type === 'red') {
-                if(redClaims > 0) {
-                    points += 5; redClaims--;
-                    db.ref('users/' + user.id).update({ points: points, redClaims: redClaims });
-                    tg.showAlert("আপনি ৫ পয়েন্ট বোনাস পেয়েছেন!");
-                } else { window.open(SMART_LINK, '_blank'); } // Red Box Pop-under
-            } else {
-                if(greenClaims > 0) {
-                    points += 2; greenClaims--;
-                    db.ref('users/' + user.id).update({ points: points, greenClaims: greenClaims });
-                    tg.showAlert("আপনি ২ পয়েন্ট বোনাস পেয়েছেন!");
-                } else { window.open(SMART_LINK, '_blank'); } // Green Box Direct Link
-            }
+            window.open(SMART_LINK, '_blank');
+            if(type === 'red' && redClaims > 0) { points += 5; redClaims--; }
+            else if(type === 'green' && greenClaims > 0) { points += 2; greenClaims--; }
+            db.ref('users/' + user.id).update({ points, redClaims, greenClaims });
+        }
+
+        // Withdraw & Task functions (Keeping original Source 2 logic)
+        function updateWithdrawInfo() {
+            const m = document.getElementById('w-method').value;
+            document.getElementById('w-limit-info').innerText = m === 'bkash' ? "মিনিমাম ৯০,০০০ 🍒 = ২০ টাকা" : "মিনিমাম ৫০০০ 🍒 = $০.০১";
+        }
+
+        function calcValue(val) {
+            const m = document.getElementById('w-method').value;
+            document.getElementById('conv-val').innerText = m === 'bkash' ? "৳"+((val/90000)*20).toFixed(2) : "$"+((val/5000)*0.01).toFixed(4);
         }
 
         function nav(id, el) {
@@ -195,18 +237,60 @@
             document.getElementById(id).classList.add('active');
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active-nav'));
             el.classList.add('active-nav');
-            
-            // Show gifts only on Home
-            const giftsVisibility = (id === 'home') ? 'block' : 'none';
-            document.getElementById('red-gift-box').style.display = giftsVisibility;
-            document.getElementById('green-gift-box').style.display = giftsVisibility;
+            const g = document.querySelectorAll('.gift-box');
+            g.forEach(i => i.style.display = id === 'home' ? 'block' : 'none');
+            if(id === 'withdraw') { loadHistory(); updateWithdrawInfo(); updateWithdrawBalance(); }
             if(id === 'tasks') renderTasks();
         }
 
-        // Remaining functions (Task render, Withdraw, etc. from your original code)
+        function updateWithdrawBalance() {
+            document.getElementById('w-header-bal').innerHTML = `<div class="balance-container" style="width:100%"><div class="balance-info"><small>BALANCE</small><h1>${points.toLocaleString()}</h1></div></div>`;
+        }
 
-        document.body.style.display = "block";
+        function loadHistory() {
+            db.ref('users/' + user.id + '/history').on('value', snap => {
+                const body = document.getElementById('history-body');
+                body.innerHTML = '';
+                const data = snap.val();
+                if(data) {
+                    Object.values(data).reverse().forEach(h => {
+                        body.innerHTML += `<tr><td>${h.date}</td><td>${h.amount}</td><td>${h.val}</td><td class="addr-text">${h.address}</td></tr>`;
+                    });
+                } else { body.innerHTML = '<tr><td colspan="4">No History</td></tr>'; }
+            });
+        }
+
+        function copyRef() {
+            const link = document.getElementById('ref-link');
+            link.value = `https://t.me/PlumMineTap_bot?start=${user.id}`;
+            link.select(); document.execCommand('copy');
+            tg.showAlert("Copied!");
+        }
+
+        function renderReferrals() {
+            db.ref('users/' + user.id + '/referrals').on('value', snap => {
+                const list = document.getElementById('referral-list');
+                const refs = snap.val();
+                list.innerHTML = refs ? Object.values(refs).map(n => `<li>👤 ${n}</li>`).join('') : "<li>No Referrals</li>";
+            });
+        }
+
+        function renderTasks() {
+            const list = document.getElementById('task-list');
+            list.innerHTML = '';
+            for(let i=1; i<=10; i++) {
+                list.innerHTML += `<div class="card"><span>Task ${i} (10 🍒)</span><button class="btn" onclick="goTask(${i})">Claim</button></div>`;
+            }
+        }
+
+        function goTask(id) {
+            window.open(SMART_LINK, '_blank');
+            points += 10; db.ref('users/' + user.id).update({ points });
+            tg.showAlert("Success!");
+        }
+
         loadUserData();
+        document.body.style.display = "block";
         tg.expand();
     </script>
 </body>
