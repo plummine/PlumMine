@@ -15,84 +15,117 @@
         .page { display: none; padding: 10px 15px 90px; height: 100vh; box-sizing: border-box; text-align: center; overflow-y: auto; }
         .active { display: block; }
 
-        /* Floating Gift Box - Home Only Logic */
-        .gift-box { position: fixed; bottom: 85px; z-index: 2000; cursor: pointer; animation: floatAnim 3s infinite ease-in-out; display: none; }
+        /* Gifts - Fixed Visibility */
+        .gift-box { position: fixed; bottom: 85px; z-index: 2000; cursor: pointer; animation: floatAnim 3s infinite ease-in-out; }
         .red-gift { right: 20px; } .green-gift { left: 20px; }
-        .gift-badge { position: absolute; top: -5px; right: -5px; background: red; color: white; border-radius: 50%; padding: 2px 7px; font-size: 10px; font-weight: bold; border: 1.5px solid #fff; }
+        .gift-badge { position: absolute; top: -5px; right: -5px; background: red; color: white; border-radius: 50%; padding: 2px 8px; font-size: 11px; font-weight: bold; border: 1.5px solid #fff; }
         @keyframes floatAnim { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
         /* Balance Card */
-        .balance-container { background: #fff9c4; border: 3px solid var(--accent); border-radius: 25px; width: 100%; padding: 15px; position: relative; text-align: left; box-sizing: border-box; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 15px; }
-        .balance-info h1 { font-size: 40px; margin: 5px 0; color: #d84315; font-weight: 800; }
-        .basket-side { position: absolute; right: 10px; top: 10px; width: 80px; }
+        .balance-container { background: #fff9c4; border: 3px solid var(--accent); border-radius: 25px; width: 100%; padding: 15px; position: relative; text-align: left; box-sizing: border-box; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 10px; }
+        .balance-info h1 { font-size: 38px; margin: 5px 0; color: #d84315; font-weight: 800; }
+        .basket-side { position: absolute; right: 10px; top: 10px; width: 75px; }
 
-        /* Game Zone & Falling Fruit */
-        .game-zone { height: 40vh; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
-        #plum-tree { width: 75%; max-width: 280px; transition: transform 0.05s; z-index: 5; }
-        .falling-plum { position: absolute; font-size: 25px; z-index: 10; pointer-events: none; animation: fall 0.7s linear forwards; }
-        @keyframes fall { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(200px); opacity: 0; } }
+        /* Game Zone - Fixed Tree & Fruit Animation */
+        .game-zone { height: 45vh; display: flex; align-items: center; justify-content: center; position: relative; overflow: visible; }
+        #plum-tree { width: 85%; max-width: 320px; transition: transform 0.05s; pointer-events: auto; }
+        .falling-plum { position: absolute; font-size: 30px; z-index: 9999; pointer-events: none; animation: fall 0.8s ease-in forwards; }
+        @keyframes fall { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(350px) rotate(90deg); opacity: 0; } }
 
-        /* Cards & Buttons */
-        .card { background: white; padding: 15px; margin: 10px 0; border-radius: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        .btn { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: bold; width: 100%; }
-        .btn:disabled { background: #ccc; }
+        /* Support Design with Big Icons */
+        .support-card { background: white; border-radius: 15px; padding: 15px; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; text-align: left; border-left: 5px solid var(--primary); box-shadow: 0 3px 6px rgba(0,0,0,0.1); position: relative; overflow: hidden; }
+        .support-card img { width: 45px; z-index: 2; }
+        .tg-bg-icon { position: absolute; right: -10px; bottom: -10px; width: 80px !important; opacity: 0.1; transform: rotate(-20deg); }
 
-        /* Table Style */
-        .w-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 10px; }
-        .w-table th, .w-table td { border-bottom: 1px solid #eee; padding: 8px 4px; text-align: center; }
-
-        /* Support Cards */
-        .support-card { background: linear-gradient(135deg, #e8f5e9, #c8e6c9); border: 2px solid #81c784; border-radius: 15px; padding: 15px; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; text-align: left; }
-        .support-icon { width: 45px; }
+        /* Table */
+        .w-table { width: 100%; border-collapse: collapse; font-size: 10px; margin-top: 10px; background: white; }
+        .w-table th { background: #f5f5f5; padding: 8px; border: 1px solid #ddd; }
+        .w-table td { padding: 8px; border: 1px solid #ddd; word-break: break-all; }
 
         /* Nav */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #eee; height: 75px; align-items: center; z-index: 1000; }
         .nav-link { text-align: center; font-size: 11px; color: #777; cursor: pointer; flex: 1; }
         .nav-link img { width: 24px; display: block; margin: 0 auto 4px; }
         .nav-link.active-nav { color: #d84315; font-weight: bold; }
+        
+        .btn { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: bold; width: 100%; }
+        input, select { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; }
     </style>
 </head>
 <body>
 
-    <div id="red-gift-box" class="gift-box red-gift"><img src="https://i.ibb.co.com/8gxBtPpT/27630-removebg-preview.png" width="55" onclick="claimGift('red')"><span id="rb" class="gift-badge">0</span></div>
-    <div id="green-gift-box" class="gift-box green-gift"><img src="https://i.ibb.co.com/0RcvhqxK/27633-removebg-preview.png" width="55" onclick="claimGift('green')"><span id="gb" class="gift-badge">0</span></div>
+    <!-- Gifts visible on Home Only via JS -->
+    <div id="red-gift-box" class="gift-box red-gift" onclick="claimGift('red')"><img src="https://i.ibb.co.com/8gxBtPpT/27630-removebg-preview.png" width="55"><span id="rb" class="gift-badge">0</span></div>
+    <div id="green-gift-box" class="gift-box green-gift" onclick="claimGift('green')"><img src="https://i.ibb.co.com/0RcvhqxK/27633-removebg-preview.png" width="55"><span id="gb" class="gift-badge">0</span></div>
 
     <div id="home" class="page active">
         <div class="balance-container">
             <small>TOTAL BALANCE</small><h1 id="bal">0</h1>
             <img class="basket-side" src="https://i.ibb.co.com/TDnYXwG1/27118-removebg-preview.png">
-            <div style="font-size:11px;">Tap Progress: <span id="tc">0</span>/50</div>
+            <div style="font-size:12px; font-weight:bold;">Taps: <span id="tc">0</span>/50</div>
         </div>
-        <div class="game-zone" id="gz" onclick="doTap(event)"><img id="plum-tree" src="https://i.ibb.co.com/TBfn8G8M/27099-removebg-preview.png"></div>
+        <div class="game-zone" id="gz" onmousedown="doTap(event)" ontouchstart="doTap(event)">
+            <img id="plum-tree" src="https://i.ibb.co.com/TBfn8G8M/27099-removebg-preview.png">
+        </div>
     </div>
 
     <div id="tasks" class="page">
-        <h2>📋 Daily Tasks (24h)</h2>
+        <h2>📋 Daily Tasks</h2>
         <div id="task-list"></div>
     </div>
 
     <div id="refer" class="page">
         <h2>👥 Refer & Earn</h2>
-        <div class="card" style="background:gold">🎁 প্রতি রেফারে ৫০০ 🍒 বোনাস!</div>
-        <div class="card"><input type="text" id="ref-link" readonly style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;"><button class="btn" style="margin-top:10px" onclick="copyLink()">Copy Link</button></div>
-        <div class="card" style="text-align:left"><h4>Referral List:</h4><div id="ref-list"></div></div>
+        <div class="card" style="background:#fff9c4; border:2px dashed #d84315; padding:15px; border-radius:15px;">🎁 প্রতি সফল রেফারে পাবেন ৫০০ 🍒 বোনাস!</div>
+        <div class="card" style="margin-top:15px;">
+            <input type="text" id="ref-link" readonly>
+            <button class="btn" style="margin-top:10px" onclick="copyLink()">Copy Referral Link</button>
+        </div>
+        <div class="card" style="text-align:left;">
+            <b>Referral History:</b>
+            <div id="ref-list" style="margin-top:10px; font-size:14px;"></div>
+        </div>
     </div>
 
     <div id="withdraw" class="page">
         <div id="w-bal-card"></div>
         <div class="card">
-            <select id="w-method" style="width:100%; padding:10px; margin-bottom:10px;"><option value="binance">Binance (Min 5,000)</option><option value="bkash">Bkash (Min 90,000)</option></select>
-            <input type="number" id="w-amount" placeholder="🍒 Amount" style="width:100%; padding:10px; margin-bottom:10px;">
-            <input type="text" id="w-address" placeholder="Address/Number" style="width:100%; padding:10px; margin-bottom:10px;">
-            <button class="btn" onclick="submitWithdraw()">Submit Request</button>
+            <select id="w-method" onchange="updateCalc()">
+                <option value="binance">Binance (Min 5,000 🍒 = $0.01)</option>
+                <option value="bkash">Bkash (Min 90,000 🍒 = 20 BDT)</option>
+            </select>
+            <div style="position:relative; margin: 15px 0;">
+                <input type="number" id="w-amount" placeholder="🍒 Amount" oninput="updateCalc()">
+                <span id="w-calc" style="position:absolute; right:10px; top:12px; font-weight:bold; color:green;">= $0.00</span>
+            </div>
+            <input type="text" id="w-address" placeholder="Address or Number">
+            <button class="btn" style="margin-top:15px;" onclick="submitWithdraw()">Withdraw Now</button>
         </div>
-        <div class="card"><h4>📜 History</h4><table class="w-table"><thead><tr><th>Date</th><th>🍒</th><th>Method</th><th>Status</th></tr></thead><tbody id="h-body"></tbody></table></div>
+        <div style="overflow-x:auto;">
+            <h4>Withdraw History</h4>
+            <table class="w-table">
+                <thead><tr><th>Date</th><th>Cherry</th><th>Value</th><th>Method</th><th>Address</th></tr></thead>
+                <tbody id="h-body"></tbody>
+            </table>
+        </div>
     </div>
 
     <div id="support" class="page">
-        <div class="support-card" onclick="window.open('https://t.me/PlumMineAdmin')"><img src="https://cdn-icons-png.flaticon.com/512/3703/3703259.png" class="support-icon"><div><b>Admin Chat</b><br><small>Support 24/7</small></div></div>
-        <div class="support-card" onclick="window.open('https://t.me/HasiEarnigZone')"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" class="support-icon"><div><b>Official Channel</b><br><small>Get Updates</small></div></div>
-        <div class="support-card" onclick="window.open('https://t.me/PlumMinePaymentProof')"><img src="https://cdn-icons-png.flaticon.com/512/1019/1019607.png" class="support-icon"><div><b>Payment Proof</b><br><small>See Transactions</small></div></div>
+        <div class="support-card" onclick="window.open('https://t.me/PlumMineAdmin')">
+            <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png">
+            <div><b>Contact Admin</b><br><small>Direct Telegram Support</small></div>
+            <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" class="tg-bg-icon">
+        </div>
+        <div class="support-card" onclick="window.open('https://t.me/HasiEarnigZone')">
+            <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png">
+            <div><b>Official Channel</b><br><small>Daily Updates & News</small></div>
+            <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" class="tg-bg-icon">
+        </div>
+        <div class="support-card" onclick="window.open('https://t.me/PlumMinePaymentProof')">
+            <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png">
+            <div><b>Payment Proof</b><br><small>All Withdrawal History</small></div>
+            <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" class="tg-bg-icon">
+        </div>
     </div>
 
     <nav class="bottom-nav">
@@ -109,14 +142,14 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
         const tg = window.Telegram.WebApp;
-        const user = tg.initDataUnsafe.user || { id: "Guest", first_name: "User" };
+        const user = tg.initDataUnsafe.user || { id: "12345", first_name: "TestUser" };
 
         let pts = 0, tps = 0, rc = 0, gc = 0;
 
         function loadData() {
             db.ref('users/' + user.id).on('value', snap => {
-                const d = snap.val() || {};
-                pts = d.pts || 0; tps = d.tps || 0; rc = d.rc || 0; gc = d.gc || 0;
+                const d = snap.val() || { pts:0, tps:0, rc:0, gc:0 };
+                pts = d.pts; tps = d.tps; rc = d.rc; gc = d.gc;
                 updateUI();
             });
             loadHistory(); loadRefs();
@@ -127,34 +160,58 @@
             document.getElementById('tc').innerText = tps;
             document.getElementById('rb').innerText = rc;
             document.getElementById('gb').innerText = gc;
-            document.querySelectorAll('.gift-box').forEach(b => b.style.display = (document.getElementById('home').classList.contains('active')) ? 'block' : 'none');
-            document.getElementById('red-gift-box').style.visibility = rc > 0 ? 'visible' : 'hidden';
-            document.getElementById('green-gift-box').style.visibility = gc > 0 ? 'visible' : 'hidden';
+            
+            const isHome = document.getElementById('home').classList.contains('active');
+            document.getElementById('red-gift-box').style.display = (isHome && rc > 0) ? 'block' : 'none';
+            document.getElementById('green-gift-box').style.display = (isHome && gc > 0) ? 'block' : 'none';
         }
 
         function doTap(e) {
+            e.preventDefault();
             if(tps < 50) {
                 pts++; tps++;
                 if(pts % 500 === 0) { rc++; gc++; }
                 db.ref('users/' + user.id).update({ pts, tps, rc, gc });
-                showFruit(e);
+                
+                const f = document.createElement('div'); f.className = 'falling-plum'; f.innerText = '🍒';
+                const x = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+                const y = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
+                f.style.left = x + 'px'; f.style.top = y + 'px';
+                document.getElementById('gz').appendChild(f);
+                setTimeout(() => f.remove(), 800);
             } else {
                 window.open(SMART_LINK, '_blank');
                 tps = 0; db.ref('users/' + user.id).update({ tps: 0 });
             }
         }
 
-        function showFruit(e) {
-            const f = document.createElement('div'); f.className = 'falling-plum'; f.innerText = '🍒';
-            f.style.left = e.clientX + 'px'; f.style.top = e.clientY + 'px';
-            document.getElementById('gz').appendChild(f);
-            setTimeout(() => f.remove(), 700);
+        function claimGift(type) {
+            window.open(SMART_LINK, '_blank');
+            if(type === 'red') { pts += 5; rc--; } else { pts += 2; gc--; }
+            db.ref('users/' + user.id).update({ pts, rc, gc });
         }
 
-        function claimGift(t) {
-            window.open(SMART_LINK, '_blank');
-            if(t === 'red') { pts += 5; rc--; } else { pts += 2; gc--; }
-            db.ref('users/' + user.id).update({ pts, rc, gc });
+        function updateCalc() {
+            const m = document.getElementById('w-method').value;
+            const a = document.getElementById('w-amount').value || 0;
+            const c = document.getElementById('w-calc');
+            if(m === 'bkash') c.innerText = "= " + ((a/90000)*20).toFixed(2) + " BDT";
+            else c.innerText = "= $" + ((a/5000)*0.01).toFixed(4);
+        }
+
+        function submitWithdraw() {
+            const m = document.getElementById('w-method').value;
+            const a = parseInt(document.getElementById('w-amount').value);
+            const ad = document.getElementById('w-address').value;
+            const val = document.getElementById('w-calc').innerText.replace('= ', '');
+            const min = m === 'bkash' ? 90000 : 5000;
+
+            if(a >= min && pts >= a && ad) {
+                const h = { date: new Date().toLocaleDateString('en-GB'), cherry: a, value: val, method: m, address: ad };
+                db.ref('users/' + user.id + '/history').push(h);
+                pts -= a; db.ref('users/' + user.id).update({ pts });
+                tg.showAlert("Withdrawal Request Submitted!");
+            } else { tg.showAlert("Invalid amount or insufficient balance!"); }
         }
 
         function renderTasks() {
@@ -165,8 +222,8 @@
                     const last = td['t'+i] || 0;
                     const isDone = (Date.now() - last) < 86400000;
                     list.innerHTML += `<div class="card" style="display:flex; justify-content:space-between; align-items:center;">
-                        <span>Task ${i} (10 🍒)</span>
-                        <button class="btn" style="width:80px" ${isDone?'disabled':''} onclick="goTask(${i})">${isDone?'Done':'Claim'}</button>
+                        <span>Daily Task ${i} (10 🍒)</span>
+                        <button class="btn" style="width:85px" ${isDone?'disabled':''} onclick="goTask(${i})">${isDone?'Done':'Claim'}</button>
                     </div>`;
                 }
             });
@@ -180,25 +237,12 @@
             renderTasks();
         }
 
-        function submitWithdraw() {
-            const m = document.getElementById('w-method').value;
-            const a = parseInt(document.getElementById('w-amount').value);
-            const ad = document.getElementById('w-address').value;
-            const min = m === 'bkash' ? 90000 : 5000;
-            if(a >= min && pts >= a && ad) {
-                const h = { date: new Date().toLocaleDateString(), pts: a, method: m, status: 'Pending', addr: ad };
-                db.ref('users/' + user.id + '/history').push(h);
-                pts -= a; db.ref('users/' + user.id).update({ pts });
-                tg.showAlert("Request Sent!");
-            } else { tg.showAlert("Insufficient points or wrong input!"); }
-        }
-
         function loadHistory() {
             db.ref('users/' + user.id + '/history').on('value', snap => {
                 const b = document.getElementById('h-body'); b.innerHTML = '';
                 const d = snap.val(); if(d) Object.values(d).reverse().forEach(x => {
-                    b.innerHTML += `<tr><td>${x.date}</td><td>${x.pts}</td><td>${x.method}</td><td>${x.status}</td></tr>`;
-                });
+                    b.innerHTML += `<tr><td>${x.date}</td><td>${x.cherry}</td><td>${x.value}</td><td>${x.method}</td><td>${x.address}</td></tr>`;
+                }); else b.innerHTML = '<tr><td colspan="5">No history yet.</td></tr>';
             });
         }
 
@@ -206,7 +250,7 @@
             db.ref('users/' + user.id + '/referrals').on('value', snap => {
                 const b = document.getElementById('ref-list'); b.innerHTML = '';
                 const d = snap.val(); if(d) Object.values(d).forEach((name, i) => {
-                    b.innerHTML += `<div>${i+1}. 👤 ${name}</div>`;
+                    b.innerHTML += `<div style="padding:5px 0;">${i+1}. 👤 ${name}</div>`;
                 }); else b.innerHTML = 'No referrals yet.';
             });
         }
@@ -217,14 +261,19 @@
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active-nav'));
             el.classList.add('active-nav');
             if(id === 'tasks') renderTasks();
-            if(id === 'withdraw') document.getElementById('w-bal-card').innerHTML = `<div class="balance-container"><small>BALANCE</small><h1>${pts.toLocaleString()}</h1></div>`;
+            if(id === 'withdraw') {
+                document.getElementById('w-bal-card').innerHTML = `<div class="balance-container"><small>AVAILABLE BALANCE</small><h1>${pts.toLocaleString()}</h1></div>`;
+                updateCalc();
+            }
             updateUI();
         }
 
         function copyLink() {
-            document.getElementById('ref-link').value = `https://t.me/PlumMineTap_bot?start=${user.id}`;
-            const c = document.getElementById('ref-link'); c.select(); document.execCommand('copy');
-            tg.showAlert("Link Copied!");
+            const link = `https://t.me/PlumMineTap_bot?start=${user.id}`;
+            const dummy = document.createElement("textarea");
+            document.body.appendChild(dummy); dummy.value = link; dummy.select();
+            document.execCommand("copy"); document.body.removeChild(dummy);
+            tg.showAlert("Referral Link Copied!");
         }
 
         loadData(); tg.expand();
