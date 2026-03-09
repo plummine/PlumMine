@@ -11,7 +11,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
     
     <style>
-        :root { --primary: #2e7d32; --accent: #8d6e63; }
+        :root { --primary: #2e7d32; --accent: #8d6e63; --bkash: #e91e63; --binance: #f3ba2f; }
         body { font-family: 'Segoe UI', Arial, sans-serif; background: #e3f2fd; margin: 0; padding: 0; user-select: none; overflow: hidden; }
         .page { display: none; padding: 10px; padding-bottom: 90px; height: 100vh; box-sizing: border-box; text-align: center; overflow-y: auto; }
         .active { display: block; }
@@ -34,10 +34,14 @@
         .nav-link { text-align: center; font-size: 11px; color: #777; cursor: pointer; flex: 1; }
         .nav-link img { width: 26px; display: block; margin: 0 auto 4px; }
         .nav-link.active-nav { color: #d84315; font-weight: bold; }
-        input { width: 95%; padding: 12px; margin-top: 10px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; }
-        #force-join { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #e3f2fd; z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; box-sizing: border-box; }
+        input, select { width: 95%; padding: 12px; margin-top: 10px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; }
         
-        /* History Table Style */
+        /* Professional Buttons Customization */
+        .btn-bkash { background: linear-gradient(45deg, #d81b60, #ad1457); border: none; }
+        .btn-binance { background: linear-gradient(45deg, #f3ba2f, #db9b00); border: none; color: #000; }
+        .btn-support { background: linear-gradient(45deg, #1976d2, #0d47a1); border: none; width: 100px; }
+        
+        #force-join { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #e3f2fd; z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; box-sizing: border-box; }
         .history-section { margin-top: 25px; text-align: left; background: white; border-radius: 15px; padding: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
         .w-table-wrapper { width: 100%; overflow-x: auto; margin-top: 10px; }
         .w-table { width: 100%; border-collapse: collapse; font-size: 11px; min-width: 400px; }
@@ -92,13 +96,21 @@
         <h2 style="color:var(--primary)">💰 Withdraw</h2>
         <div id="w-header-bal"></div>
         <div class="card" style="flex-direction: column; align-items: stretch;">
-            <p>মিনিমাম উইথড্র: 5000 🍒 = $0.0100</p>
+            <label style="text-align: left; font-size: 13px; font-weight: bold; margin-bottom: -5px;">Select Method:</label>
+            <select id="w-method" onchange="updateWithdrawInfo()">
+                <option value="binance">Binance (BEP20) - Min 5,000 🍒</option>
+                <option value="bkash">Bkash (Personal) - Min 90,000 🍒</option>
+            </select>
+            
+            <p id="w-limit-info" style="margin-top: 15px; font-size: 14px; color: #d84315; font-weight: bold;">মিনিমাম উইথড্র: 5000 🍒 = $0.0100</p>
+            
             <div style="position: relative;">
-                <input type="number" id="w-amount" placeholder="🍒 Amount" oninput="calcUsd(this.value)">
-                <span id="usd-val" style="position: absolute; right: 10px; top: 22px; color: #2e7d32; font-weight: bold; font-size: 14px;">$0.0000</span>
+                <input type="number" id="w-amount" placeholder="🍒 Amount" oninput="calcValue(this.value)">
+                <span id="conv-val" style="position: absolute; right: 10px; top: 22px; color: #2e7d32; font-weight: bold; font-size: 14px;">$0.0000</span>
             </div>
-            <input type="text" id="w-address" placeholder="Binance BSC (BEP20) Address">
-            <button class="btn" style="margin-top:10px" onclick="processWithdraw()">Submit Request</button>
+            
+            <input type="text" id="w-address" placeholder="Binance Address (BEP20)">
+            <button id="w-btn" class="btn btn-binance" style="margin-top:10px" onclick="processWithdraw()">Submit Request</button>
         </div>
 
         <div class="history-section">
@@ -109,8 +121,8 @@
                         <tr>
                             <th>Date</th>
                             <th>🍒 Points</th>
-                            <th>USD Value</th>
-                            <th>Binance Address (BEP20)</th>
+                            <th>Method/Value</th>
+                            <th>Address/Number</th>
                         </tr>
                     </thead>
                     <tbody id="history-body"></tbody>
@@ -121,8 +133,18 @@
 
     <div id="support" class="page">
         <h2 style="color:var(--primary)">🎧 Support</h2>
-        <div class="card" onclick="window.open('https://t.me/SumaiyaJannatHasi')"><span>Admin Chat</span><button class="btn">Chat</button></div>
-        <div class="card" onclick="window.open('https://t.me/HasiEarnigZone')"><span>Our Channel</span><button class="btn">Join</button></div>
+        <div class="card">
+            <span>Admin Chat</span>
+            <button class="btn btn-support" onclick="window.open('https://t.me/PlumMineAdmin')">@Admin</button>
+        </div>
+        <div class="card">
+            <span>Our Channel</span>
+            <button class="btn btn-support" onclick="window.open('https://t.me/HasiEarnigZone')">Join</button>
+        </div>
+        <div class="card">
+            <span>Payment Proof</span>
+            <button class="btn btn-support" onclick="window.open('https://t.me/PlumMinePaymentProof')">Proof</button>
+        </div>
     </div>
 
     <nav class="bottom-nav">
@@ -155,6 +177,40 @@
 
         if (user.photo_url) document.getElementById('user-pic').src = user.photo_url;
         document.getElementById('ref-link').value = `https://t.me/PlumMineTap_bot?start=${user.id}`;
+
+        function updateWithdrawInfo() {
+            const method = document.getElementById('w-method').value;
+            const limitText = document.getElementById('w-limit-info');
+            const addrInput = document.getElementById('w-address');
+            const btn = document.getElementById('w-btn');
+            const convSpan = document.getElementById('conv-val');
+            
+            document.getElementById('w-amount').value = '';
+            convSpan.innerText = method === 'bkash' ? '৳ ০.০০' : '$০.০০০০';
+
+            if (method === 'bkash') {
+                limitText.innerText = "মিনিমাম উইথড্র: ৯০,০০০ 🍒 = ২০ টাকা";
+                addrInput.placeholder = "বিকাশ নম্বর (০১৭XXXXXXXX)";
+                btn.className = "btn btn-bkash";
+                btn.innerText = "Bkash Request";
+            } else {
+                limitText.innerText = "মিনিমাম উইথড্র: ৫০০০ 🍒 = $০.০১০০";
+                addrInput.placeholder = "Binance Address (BEP20)";
+                btn.className = "btn btn-binance";
+                btn.innerText = "Binance Request";
+            }
+        }
+
+        function calcValue(val) {
+            const method = document.getElementById('w-method').value;
+            if (method === 'bkash') {
+                let bdt = (val / 90000) * 20;
+                document.getElementById('conv-val').innerText = "৳ " + bdt.toFixed(2);
+            } else {
+                let usd = (val / 5000) * 0.01;
+                document.getElementById('conv-val').innerText = "$" + usd.toFixed(4);
+            }
+        }
 
         async function checkMembership() {
             try {
@@ -208,18 +264,13 @@
             document.getElementById('fill').style.width = (taps / 50) * 100 + "%";
         }
 
-        function calcUsd(val) {
-            let usd = (val / 5000) * 0.01;
-            document.getElementById('usd-val').innerText = "$" + usd.toFixed(4);
-        }
-
         function nav(id, el) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active-nav'));
             el.classList.add('active-nav');
             if(id === 'tasks') renderTasks();
-            if(id === 'withdraw') { updateWithdrawBalance(); loadHistory(); }
+            if(id === 'withdraw') { updateWithdrawBalance(); loadHistory(); updateWithdrawInfo(); }
         }
 
         function doTap(e) {
@@ -271,69 +322,58 @@
         }
 
         async function processWithdraw() {
+            const method = document.getElementById('w-method').value;
             const amountInput = document.getElementById('w-amount');
             const amount = parseInt(amountInput.value);
             const address = document.getElementById('w-address').value;
-            const usdVal = (amount / 5000) * 0.01;
             const dateStr = new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
 
-            if (amount >= 5000 && points >= amount && address) {
-                // এডমিনকে পাঠানো মেসেজ
-                const adminText = `💰 **New Withdraw!**\n\n👤 User: ${user.first_name}\n🆔 ID: ${user.id}\n🍒 Amount: ${amount}\n💵 USD: $${usdVal.toFixed(4)}\n🏦 Address: \`${address}\``;
-                
-                // চ্যানেলে পাঠানো মেসেজ (সম্পূর্ণ নাম এবং আইডি সহ)
-                const channelText = `Withdrawal Approved✅\n\n👤Name: ${user.first_name}\n🪪ID: ${user.id}\n💵Amount: ${amount} 🍒 ($${usdVal.toFixed(4)})\n🏧Payment Method: Binance (BEP20)\n\nThank you💌`;
+            let minAmount = method === 'bkash' ? 90000 : 5000;
+            let valDisplay = "";
+
+            if (method === 'bkash') {
+                valDisplay = "৳" + ((amount / 90000) * 20).toFixed(2);
+            } else {
+                valDisplay = "$" + ((amount / 5000) * 0.01).toFixed(4);
+            }
+
+            if (amount >= minAmount && points >= amount && address) {
+                const adminText = `💰 **New Withdraw!**\n\n👤 User: ${user.first_name}\n🆔 ID: ${user.id}\n🍒 Amount: ${amount}\n🏧 Method: ${method.toUpperCase()}\n🏦 Details: \`${address}\`\n💰 Value: ${valDisplay}`;
+                const channelText = `Withdrawal Approved✅\n\n👤Name: ${user.first_name}\n🪪ID: ${user.id}\n💵Amount: ${amount} 🍒 (${valDisplay})\n🏧Payment Method: ${method.toUpperCase()}\n\nThank you💌`;
                 
                 try {
-                    // Send to Admin
                     await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${ADMIN_ID}&text=${encodeURIComponent(adminText)}&parse_mode=Markdown`);
-                    
-                    // Send to Channel
                     await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHANNEL_ID}&text=${encodeURIComponent(channelText)}`);
 
-                    // Save to User History
                     const newHistoryRef = db.ref('users/' + user.id + '/history').push();
                     await newHistoryRef.set({
                         date: dateStr,
                         amount: amount,
-                        usd: usdVal.toFixed(4),
-                        address: address
+                        val: valDisplay,
+                        address: address,
+                        method: method.toUpperCase()
                     });
 
                     points -= amount;
                     db.ref('users/' + user.id).update({ points: points });
-                    
-                    tg.showAlert("উইথড্র রিকোয়েস্ট সফল! চ্যানেলে পেমেন্ট প্রুফ পাঠানো হয়েছে।");
-                    updateUI();
-                    updateWithdrawBalance();
-                    loadHistory();
-                    amountInput.value = '';
-                    document.getElementById('w-address').value = '';
-                } catch (e) {
-                    tg.showAlert("Error: বটকে কি চ্যানেলে এডমিন করেছেন?");
-                }
+                    tg.showAlert("উইথড্র রিকোয়েস্ট সফল!");
+                    updateUI(); updateWithdrawBalance(); loadHistory();
+                    amountInput.value = ''; document.getElementById('w-address').value = '';
+                } catch (e) { tg.showAlert("Error: Bot Admin Status Check!"); }
             } else { 
-                tg.showAlert("মিনিমাম ৫০০০ চেরি অথবা পর্যাপ্ত ব্যালেন্স নেই!"); 
+                tg.showAlert(`মিনিমাম ${minAmount} চেরি অথবা পর্যাপ্ত ব্যালেন্স নেই!`); 
             }
         }
 
         function loadHistory() {
             const historyBody = document.getElementById('history-body');
             historyBody.innerHTML = '<tr><td colspan="4">Loading...</td></tr>';
-
             db.ref('users/' + user.id + '/history').on('value', (snapshot) => {
                 const data = snapshot.val();
                 historyBody.innerHTML = '';
                 if (data) {
                     Object.values(data).reverse().forEach(h => {
-                        historyBody.innerHTML += `
-                            <tr>
-                                <td>${h.date}</td>
-                                <td>${h.amount}</td>
-                                <td>$${h.usd}</td>
-                                <td class="addr-text">${h.address}</td>
-                            </tr>
-                        `;
+                        historyBody.innerHTML += `<tr><td>${h.date}</td><td>${h.amount}</td><td>${h.method} (${h.val})</td><td class="addr-text">${h.address}</td></tr>`;
                     });
                 } else {
                     historyBody.innerHTML = '<tr><td colspan="4" style="color:#888;">No history found.</td></tr>';
