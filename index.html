@@ -10,265 +10,353 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
     
     <style>
-        :root { --primary: #2e7d32; --accent: #8d6e63; }
+        :root { --primary: #2e7d32; --accent: #8d6e63; --bkash: #e91e63; --binance: #f3ba2f; }
         body { font-family: 'Segoe UI', Arial, sans-serif; background: #e3f2fd; margin: 0; padding: 0; user-select: none; overflow: hidden; }
         .page { display: none; padding: 10px 15px 120px; height: 100vh; box-sizing: border-box; text-align: center; overflow-y: auto; }
         .active { display: block; }
+        
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 10px 5px; }
+        #u-pic { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--primary); background: #eee; }
+        
+        .bal-card { background: #fff9c4; border: 3px solid var(--accent); border-radius: 20px; padding: 20px; position: relative; text-align: left; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .bal-card h1 { font-size: 45px; margin: 5px 0; color: #d84315; }
+        .basket-img { position: absolute; right: 10px; top: 10px; width: 80px; animation: bounce 2s infinite; }
+        
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+        
+        .prog-bg { width: 100%; background: #eee; height: 12px; border-radius: 10px; overflow: hidden; margin-top: 10px; border: 1px solid #ddd; }
+        #prog-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #4caf50, #2e7d32); transition: 0.3s; }
+        
+        .tree-zone { height: 40vh; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        #tree-img { width: 80%; max-width: 300px; transition: 0.1s; }
+        #tree-img:active { transform: scale(0.9); }
+        
+        .btn { border: none; padding: 12px 20px; border-radius: 12px; color: white; font-weight: bold; cursor: pointer; transition: 0.3s; display: inline-block; text-decoration: none; }
+        .btn-primary { background: var(--primary); }
+        
+        /* Unique Button Styling */
+        .btn-bkash { background: linear-gradient(45deg, #d81b60, #e91e63); box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3); }
+        .btn-binance { background: linear-gradient(45deg, #f3ba2f, #f1b000); color: #000; box-shadow: 0 4px 15px rgba(243, 186, 47, 0.3); }
+        .btn-grad-blue { background: linear-gradient(45deg, #1976d2, #0288d1); box-shadow: 0 4px 12px rgba(25, 118, 210, 0.2); width: 110px; }
 
-        /* Header */
-        .header { display: flex; align-items: center; justify-content: space-between; padding: 10px 20px; background: white; border-bottom: 1px solid #ddd; }
-        #user-pic { width: 35px; height: 35px; border-radius: 50%; border: 2px solid var(--primary); }
+        input, select { width: 100%; padding: 12px; margin-top: 10px; border-radius: 10px; border: 1px solid #ccc; box-sizing: border-box; font-size: 14px; }
+        
+        .nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #eee; z-index: 100; }
+        .nav-item { text-align: center; font-size: 11px; color: #888; flex: 1; }
+        .nav-item.active { color: var(--primary); font-weight: bold; }
+        .nav-item img { width: 24px; display: block; margin: 0 auto 5px; }
 
-        /* Gifts - Fixed above Nav */
-        .gift-container { position: fixed; bottom: 85px; width: 100%; display: flex; justify-content: space-between; padding: 0 20px; box-sizing: border-box; z-index: 2000; pointer-events: none; }
-        .gift-box { pointer-events: auto; position: relative; cursor: pointer; }
-        .gift-badge { position: absolute; top: -5px; right: -5px; background: red; color: white; border-radius: 50%; padding: 2px 7px; font-size: 10px; font-weight: bold; }
-
-        /* Balance & Progress */
-        .balance-container { background: #fff9c4; border: 3px solid var(--accent); border-radius: 25px; width: 100%; padding: 15px; position: relative; text-align: left; box-sizing: border-box; margin-top: 10px; }
-        .balance-info h1 { font-size: 35px; margin: 5px 0; color: #d84315; font-weight: 800; }
-        .progress-line-bg { width: 100%; height: 8px; background: #eee; border-radius: 10px; margin-top: 5px; overflow: hidden; }
-        #progress-fill { height: 100%; width: 0%; background: var(--primary); transition: width 0.3s; }
-
-        /* Game Zone */
-        .game-zone { height: 45vh; display: flex; align-items: center; justify-content: center; position: relative; }
-        #plum-tree { width: 85%; max-width: 300px; z-index: 5; }
-        .falling-plum { position: absolute; font-size: 30px; z-index: 4; pointer-events: none; animation: fallCenter 0.8s linear forwards; }
-        @keyframes fallCenter { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(250px); } }
-
-        /* Support Cards */
-        .support-card { background: white; border-radius: 15px; padding: 15px; margin-bottom: 12px; display: flex; align-items: center; gap: 15px; text-align: left; box-shadow: 0 2px 5px rgba(0,0,0,0.1); border-left: 5px solid #0088cc; }
-        .support-card img { width: 40px; }
-
-        /* History Table */
-        .w-table { width: 100%; border-collapse: collapse; font-size: 11px; background: white; margin-top: 10px; }
-        .w-table th, .w-table td { border: 1px solid #ddd; padding: 8px 4px; text-align: center; }
-
-        /* Navigation */
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #eee; height: 75px; align-items: center; z-index: 1000; }
-        .nav-link { text-align: center; font-size: 11px; color: #777; cursor: pointer; flex: 1; }
-        .nav-link img { width: 24px; display: block; margin: 0 auto 4px; }
-        .nav-link.active-nav { color: #d84315; font-weight: bold; }
-        .btn { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: bold; width: 100%; cursor: pointer; }
+        .f-join { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #e3f2fd; z-index: 1000; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 30px; box-sizing: border-box; text-align: center; }
+        
+        .history-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 12px; background: white; border-radius: 10px; overflow: hidden; }
+        .history-table th, .history-table td { padding: 10px; border-bottom: 1px solid #eee; text-align: center; }
     </style>
 </head>
-<body>
+<body style="display:none">
 
-    <div class="header">
-        <div style="display:flex; align-items:center; gap:10px;">
-            <img id="user-pic" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
-            <span style="font-weight:bold; color:var(--primary);">PlumMine🧺🍒</span>
-        </div>
-    </div>
-
-    <div class="gift-container" id="gift-ui">
-        <div class="gift-box" onclick="claimGift('green')"><img src="https://i.ibb.co.com/0RcvhqxK/27633-removebg-preview.png" width="50"><span id="gb" class="gift-badge">0</span></div>
-        <div class="gift-box" onclick="claimGift('red')"><img src="https://i.ibb.co.com/8gxBtPpT/27630-removebg-preview.png" width="50"><span id="rb" class="gift-badge">0</span></div>
+    <div id="f-join" class="f-join">
+        <img src="https://i.ibb.co.com/TDnYXwG1/27118-removebg-preview.png" width="100">
+        <h2 style="color:var(--primary)">মেম্বারশিপ চেক!</h2>
+        <p>গেমটি খেলতে আমাদের অফিশিয়াল চ্যানেলে জয়েন করুন।</p>
+        <button class="btn btn-primary" style="width:100%; margin-top:10px;" onclick="window.open('https://t.me/HasiEarnigZone')">Join Channel</button>
+        <button class="btn" style="width:100%; margin-top:10px; background:#aaa" onclick="location.reload()">আমি জয়েন করেছি</button>
     </div>
 
     <div id="home" class="page active">
-        <div class="balance-container">
-            <small>TOTAL BALANCE</small><h1 id="bal">0</h1>
-            <div style="font-size:11px; margin-top:5px;">Taps: <span id="tc">0</span>/50</div>
-            <div class="progress-line-bg"><div id="progress-fill"></div></div>
-            <img class="basket-side" src="https://i.ibb.co.com/TDnYXwG1/27118-removebg-preview.png" style="position:absolute; right:10px; top:10px; width:70px;">
+        <div class="header">
+            <span style="font-weight:bold; font-size:20px; color:var(--primary)">🧺 PlumMine</span>
+            <img id="u-pic" src="">
         </div>
-        <div class="game-zone" id="gz" onmousedown="doTap(event)" ontouchstart="doTap(event)">
-            <img id="plum-tree" src="https://i.ibb.co.com/TBfn8G8M/27099-removebg-preview.png">
+        <div class="bal-card">
+            <small>TOTAL CHERRIES</small>
+            <h1 id="bal">0</h1>
+            <img class="basket-img" src="https://i.ibb.co.com/TDnYXwG1/27118-removebg-preview.png">
+            <div style="font-size:12px; font-weight:bold">Ad Progress: <span id="tap-count">0</span>/50</div>
+            <div class="prog-bg"><div id="prog-fill"></div></div>
+        </div>
+        <div class="tree-zone" onclick="handleTap(event)">
+            <img id="tree-img" src="https://i.ibb.co.com/TBfn8G8M/27099-removebg-preview.png">
         </div>
     </div>
 
     <div id="tasks" class="page">
-        <h2>📋 Daily Tasks (24h)</h2>
+        <h2 style="color:var(--primary)">📋 Daily Tasks</h2>
         <div id="task-list"></div>
-        <div style="height: 30px;"></div> <!-- Bottom space for scrolling -->
     </div>
 
     <div id="refer" class="page">
-        <h2>👥 Refer & Earn</h2>
-        <div style="background:#fff9c4; padding:15px; border-radius:15px; margin-bottom:15px; border:2px dashed #d84315;">🎁 প্রতি সফল রেফারে ৫০০ 🍒 বোনাস!</div>
-        <input type="text" id="ref-link" readonly style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #ccc;">
-        <button class="btn" onclick="copyLink()">Copy Link</button>
-        <div style="text-align:left; margin-top:20px;"><b>Referral List:</b><div id="ref-list" style="margin-top:10px;"></div></div>
+        <h2 style="color:var(--primary)">👥 Invite Friends</h2>
+        <div style="background:white; padding:20px; border-radius:20px; box-shadow:0 2px 10px rgba(0,0,0,0.05)">
+            <input type="text" id="ref-link" readonly>
+            <button class="btn btn-primary" style="width:100%; margin-top:15px" onclick="copyLink()">Copy Link</button>
+        </div>
     </div>
 
     <div id="withdraw" class="page">
-        <div id="w-bal-card"></div>
-        <div style="background:white; padding:15px; border-radius:15px; margin-top:10px;">
-            <select id="w-method" style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px;">
-                <option value="Binance">Binance (Min 5,000)</option>
-                <option value="Bkash">Bkash (Min 90,000)</option>
+        <h2 style="color:var(--primary)">💰 Withdraw Money</h2>
+        <div id="w-bal-show"></div>
+        
+        <div style="background:white; padding:20px; border-radius:20px; text-align:left">
+            <label style="font-weight:bold; font-size:13px">Payment Method:</label>
+            <select id="w-method" onchange="toggleMethod()">
+                <option value="bkash">Bkash (Personal)</option>
+                <option value="binance">Binance (BEP20)</option>
             </select>
-            <input type="number" id="w-amount" placeholder="🍒 Amount" style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #ccc;">
-            <input type="text" id="w-address" placeholder="Address/Number" style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #ccc;">
-            <button class="btn" onclick="submitWithdraw()">Withdraw Now</button>
+
+            <div id="method-desc" style="margin-top:15px; background:#f9f9f9; padding:10px; border-radius:10px; border-left:4px solid var(--bkash)">
+                <b id="w-limit-text" style="color:var(--bkash)">মিনিমাম ৯০,০০০ 🍒 = ২০ টাকা</b>
+            </div>
+
+            <div style="position:relative; margin-top:15px">
+                <input type="number" id="w-amount" placeholder="Cherry Amount" oninput="calcW(this.value)">
+                <span id="w-calc" style="position:absolute; right:15px; top:25px; color:var(--primary); font-weight:bold">৳ ০.০০</span>
+            </div>
+
+            <input type="text" id="w-address" placeholder="বিকাশ নম্বর দিন" style="margin-top:10px">
+            
+            <button id="w-submit-btn" class="btn btn-bkash" style="width:100%; margin-top:20px" onclick="submitW()">Withdraw Now</button>
         </div>
-        <h4 style="margin-top:20px;">📜 History</h4>
-        <table class="w-table">
-            <thead><tr><th>Date</th><th>Cherry</th><th>Value</th><th>Method</th><th>Address</th></tr></thead>
-            <tbody id="h-body"></tbody>
-        </table>
+
+        <div style="margin-top:20px; text-align:left">
+            <h4 style="margin-bottom:10px">History</h4>
+            <div style="overflow-x:auto">
+                <table class="history-table">
+                    <thead><tr><th>Date</th><th>🍒</th><th>Method</th><th>Status</th></tr></thead>
+                    <tbody id="h-body"></tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
     <div id="support" class="page">
-        <div class="support-card" onclick="window.open('https://t.me/PlumMineAdmin')">
-            <img src="https://cdn-icons-png.flaticon.com/512/906/906377.png">
-            <div><b>Contact Admin</b><br><small>Get Direct Help</small></div>
-        </div>
-        <div class="support-card" onclick="window.open('https://t.me/HasiEarnigZone')">
-            <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png">
-            <div><b>Official Channel</b><br><small>Latest Updates</small></div>
-        </div>
-        <div class="support-card" onclick="window.open('https://t.me/PlumMinePaymentProof')">
-            <img src="https://cdn-icons-png.flaticon.com/512/1019/1019607.png">
-            <div><b>Payment Proof</b><br><small>Withdrawal Proofs</small></div>
+        <h2 style="color:var(--primary)">🎧 Support Center</h2>
+        <div style="background:white; padding:10px; border-radius:20px">
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:15px; border-bottom:1px solid #eee">
+                <span>Admin Support</span>
+                <button class="btn btn-grad-blue" onclick="window.open('https://t.me/PlumMineAdmin')">Chat</button>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:15px; border-bottom:1px solid #eee">
+                <span>Official Channel</span>
+                <button class="btn btn-grad-blue" onclick="window.open('https://t.me/HasiEarnigZone')">Join</button>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:15px">
+                <span>Payment Proof</span>
+                <button class="btn btn-grad-blue" onclick="window.open('https://t.me/PlumMinePaymentProof')">Proof</button>
+            </div>
         </div>
     </div>
 
-    <nav class="bottom-nav">
-        <div class="nav-link active-nav" onclick="nav('home', this)"><img src="https://i.ibb.co.com/TDnYXwG1/27118-removebg-preview.png">Home</div>
-        <div class="nav-link" onclick="nav('tasks', this)"><img src="https://cdn-icons-png.flaticon.com/512/2098/2098402.png">Tasks</div>
-        <div class="nav-link" onclick="nav('refer', this)"><img src="https://cdn-icons-png.flaticon.com/512/912/912318.png">Refer</div>
-        <div class="nav-link" onclick="nav('withdraw', this)"><img src="https://cdn-icons-png.flaticon.com/512/2489/2489756.png">Withdraw</div>
-        <div class="nav-link" onclick="nav('support', this)"><img src="https://cdn-icons-png.flaticon.com/512/4333/4333609.png">Support</div>
-    </nav>
+    <div class="nav">
+        <div class="nav-item active" onclick="showP('home', this)"><img src="https://cdn-icons-png.flaticon.com/512/619/619153.png">Home</div>
+        <div class="nav-item" onclick="showP('tasks', this)"><img src="https://cdn-icons-png.flaticon.com/512/2645/2645827.png">Tasks</div>
+        <div class="nav-item" onclick="showP('refer', this)"><img src="https://cdn-icons-png.flaticon.com/512/912/912318.png">Refer</div>
+        <div class="nav-item" onclick="showP('withdraw', this)"><img src="https://cdn-icons-png.flaticon.com/512/2489/2489756.png">Wallet</div>
+        <div class="nav-item" onclick="showP('support', this)"><img src="https://cdn-icons-png.flaticon.com/512/4333/4333609.png">Support</div>
+    </div>
 
     <script>
-        const SMART_LINK = "https://www.effectivegatecpm.com/eu58bq8h?key=ddafcd4b90ae80d8637cde448cec9d9c";
-        const firebaseConfig = { apiKey: "AIzaSyDE-YtDEDmxxJsNwya-RLRxVVWy5JJmsq4", authDomain: "plumminebot.firebaseapp.com", databaseURL: "https://plumminebot-default-rtdb.firebaseio.com", projectId: "plumminebot", appId: "1:876718225351:web:3fab78ff3ab25e9734cbe2" };
+        const firebaseConfig = {
+            apiKey: "AIzaSyDE-YtDEDmxxJsNwya-RLRxVVWy5JJmsq4",
+            authDomain: "plumminebot.firebaseapp.com",
+            databaseURL: "https://plumminebot-default-rtdb.firebaseio.com",
+            projectId: "plumminebot",
+            appId: "1:876718225351:web:3fab78ff3ab25e9734cbe2"
+        };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
         const tg = window.Telegram.WebApp;
-        const user = tg.initDataUnsafe.user || { id: "Guest", first_name: "Player" };
+        const user = tg.initDataUnsafe.user || { id: 12345, first_name: "Guest" };
+        const BOT_TOKEN = "8617357036:AAEs-Q1zfl36_6FdL3A8b12XE3TpTksxpKU";
+        const ADMIN_ID = "7741833062";
+        const SMART_LINK = "https://www.effectivegatecpm.com/eu58bq8h?key=ddafcd4b90ae80d8637cde448cec9d9c";
 
-        let pts = 0, tps = 0, rc = 0, gc = 0;
+        let pts = 0, tps = 0;
 
-        function loadData() {
-            if(user.photo_url) document.getElementById('user-pic').src = user.photo_url;
-            db.ref('users/' + user.id).on('value', snap => {
-                const d = snap.val() || { pts:0, tps:0, rc:0, gc:0 };
-                pts = d.pts; tps = d.tps; rc = d.rc; gc = d.gc;
-                updateUI();
+        function showP(id, el) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            el.classList.add('active');
+            if(id === 'tasks') loadT();
+            if(id === 'withdraw') { updateWBal(); loadH(); }
+        }
+
+        async function checkM() {
+            try {
+                const r = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getChatMember?chat_id=@HasiEarnigZone&user_id=${user.id}`);
+                const d = await r.json();
+                if(d.ok && ['member','administrator','creator'].includes(d.result.status)) {
+                    document.body.style.display = "block";
+                    initU();
+                } else {
+                    document.body.style.display = "block";
+                    document.getElementById('f-join').style.display = "flex";
+                }
+            } catch(e) { document.body.style.display = "block"; initU(); }
+        }
+
+        function initU() {
+            if(user.photo_url) document.getElementById('u-pic').src = user.photo_url;
+            document.getElementById('ref-link').value = `https://t.me/PlumMineTap_bot?start=${user.id}`;
+            
+            db.ref('users/' + user.id).on('value', s => {
+                const d = s.val();
+                if(d) {
+                    pts = d.pts || 0;
+                    tps = d.tps || 0;
+                    updateUI();
+                } else {
+                    db.ref('users/' + user.id).set({ name: user.first_name, pts: 0, tps: 0 });
+                }
             });
-            loadHistory(); loadRefs();
         }
 
         function updateUI() {
             document.getElementById('bal').innerText = pts.toLocaleString();
-            document.getElementById('tc').innerText = tps;
-            document.getElementById('progress-fill').style.width = (tps/50)*100 + "%";
-            document.getElementById('rb').innerText = rc;
-            document.getElementById('gb').innerText = gc;
-            document.getElementById('gift-ui').style.display = document.getElementById('home').classList.contains('active') ? 'flex' : 'none';
+            document.getElementById('tap-count').innerText = tps;
+            document.getElementById('prog-fill').style.width = (tps / 50 * 100) + "%";
         }
 
-        function doTap(e) {
-            e.preventDefault();
+        function handleTap(e) {
             if(tps < 50) {
                 pts++; tps++;
-                if(pts % 500 === 0) { rc++; gc++; }
-                db.ref('users/' + user.id).update({ pts, tps, rc, gc });
-                
-                const f = document.createElement('div'); f.className = 'falling-plum'; f.innerText = '🍒';
-                f.style.left = '50%'; f.style.top = '40%';
-                document.getElementById('gz').appendChild(f);
-                setTimeout(() => f.remove(), 800);
+                db.ref('users/' + user.id).update({ pts, tps });
+                showAnim(e);
             } else {
                 window.open(SMART_LINK, '_blank');
-                tps = 0; db.ref('users/' + user.id).update({ tps: 0 });
+                tps = 0;
+                db.ref('users/' + user.id).update({ tps: 0 });
             }
         }
 
-        function claimGift(type) {
-            window.open(SMART_LINK, '_blank');
-            if(type === 'red' && rc > 0) { pts += 5; rc--; } 
-            else if(type === 'green' && gc > 0) { pts += 2; gc--; }
-            db.ref('users/' + user.id).update({ pts, rc, gc });
+        function showAnim(e) {
+            const f = document.createElement('div');
+            f.innerText = "🍒";
+            f.style.position = "absolute";
+            f.style.left = e.clientX + "px";
+            f.style.top = e.clientY + "px";
+            f.style.fontSize = "24px";
+            f.style.pointerEvents = "none";
+            f.style.animation = "float 0.8s ease-out forwards";
+            document.body.appendChild(f);
+            setTimeout(() => f.remove(), 800);
         }
 
-        function submitWithdraw() {
+        // Withdraw Logic
+        function toggleMethod() {
             const m = document.getElementById('w-method').value;
-            const a = parseInt(document.getElementById('w-amount').value);
-            const ad = document.getElementById('w-address').value;
-            const val = m === 'Bkash' ? ((a/90000)*20).toFixed(2)+" BDT" : "$"+((a/5000)*0.01).toFixed(4);
-            const min = m === 'Bkash' ? 90000 : 5000;
-
-            if(a >= min && pts >= a && ad) {
-                const h = { date: new Date().toLocaleDateString('en-GB'), cherry: a, value: val, method: m, address: ad };
-                db.ref('users/' + user.id + '/history').push(h);
-                pts -= a; db.ref('users/' + user.id).update({ pts });
-                tg.showAlert("Success!");
-            } else { tg.showAlert("Error!"); }
+            const l = document.getElementById('w-limit-text');
+            const d = document.getElementById('method-desc');
+            const a = document.getElementById('w-address');
+            const b = document.getElementById('w-submit-btn');
+            
+            if(m === 'bkash') {
+                l.innerText = "মিনিমাম ৯০,০০০ 🍒 = ২০ টাকা";
+                l.style.color = "var(--bkash)";
+                d.style.borderLeftColor = "var(--bkash)";
+                a.placeholder = "বিকাশ নম্বর দিন";
+                b.className = "btn btn-bkash";
+                calcW(document.getElementById('w-amount').value);
+            } else {
+                l.innerText = "Minimum 5,000 🍒 = $0.0100";
+                l.style.color = "var(--binance)";
+                d.style.borderLeftColor = "var(--binance)";
+                a.placeholder = "Binance BEP20 Address";
+                b.className = "btn btn-binance";
+                calcW(document.getElementById('w-amount').value);
+            }
         }
 
-        function loadHistory() {
-            db.ref('users/' + user.id + '/history').on('value', snap => {
-                const b = document.getElementById('h-body'); b.innerHTML = '';
-                const d = snap.val();
-                if(d) Object.values(d).reverse().forEach(x => {
-                    b.innerHTML += `<tr><td>${x.date}</td><td>${x.cherry}</td><td>${x.value}</td><td>${x.method}</td><td>${x.address}</td></tr>`;
-                });
+        function calcW(v) {
+            const m = document.getElementById('w-method').value;
+            const c = document.getElementById('w-calc');
+            if(m === 'bkash') {
+                c.innerText = "৳ " + ((v/90000)*20).toFixed(2);
+            } else {
+                c.innerText = "$ " + ((v/5000)*0.01).toFixed(4);
+            }
+        }
+
+        async function submitW() {
+            const m = document.getElementById('w-method').value;
+            const amt = parseInt(document.getElementById('w-amount').value);
+            const adr = document.getElementById('w-address').value;
+            const min = m === 'bkash' ? 90000 : 5000;
+
+            if(amt >= min && pts >= amt && adr.length > 5) {
+                const val = m === 'bkash' ? "৳"+((amt/90000)*20).toFixed(2) : "$"+((amt/5000)*0.01).toFixed(4);
+                const txt = `💰 **Withdraw Request**\n\n👤 User: ${user.first_name}\n🆔 ID: ${user.id}\n🍒 Amount: ${amt}\n🏧 Method: ${m.toUpperCase()}\n🏦 Details: \`${adr}\`\n💵 Value: ${val}`;
+                
+                try {
+                    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${ADMIN_ID}&text=${encodeURIComponent(txt)}&parse_mode=Markdown`);
+                    
+                    const hRef = db.ref('users/' + user.id + '/history').push();
+                    hRef.set({ date: new Date().toLocaleDateString(), amt, m, status: "Pending" });
+                    
+                    pts -= amt;
+                    db.ref('users/' + user.id).update({ pts });
+                    tg.showAlert("অনুরোধ সফল হয়েছে!");
+                    document.getElementById('w-amount').value = "";
+                    document.getElementById('w-address').value = "";
+                } catch(e) { tg.showAlert("Error sending request."); }
+            } else {
+                tg.showAlert(`মিনিমাম ${min} চেরি প্রয়োজন!`);
+            }
+        }
+
+        function loadH() {
+            db.ref('users/' + user.id + '/history').on('value', s => {
+                const b = document.getElementById('h-body');
+                b.innerHTML = "";
+                const d = s.val();
+                if(d) {
+                    Object.values(d).reverse().forEach(i => {
+                        b.innerHTML += `<tr><td>${i.date}</td><td>${i.amt}</td><td>${i.m}</td><td style="color:orange">${i.status}</td></tr>`;
+                    });
+                }
             });
         }
 
-        function loadRefs() {
-            db.ref('users/' + user.id + '/referrals').on('value', snap => {
-                const list = document.getElementById('ref-list'); list.innerHTML = '';
-                const d = snap.val();
-                if(d) Object.values(d).forEach((name, i) => {
-                    list.innerHTML += `<div>${i+1}. 👤 ${name}</div>`;
-                }); else list.innerHTML = 'No referrals yet.';
-            });
-        }
-
-        function nav(id, el) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active-nav'));
-            el.classList.add('active-nav');
-            if(id === 'tasks') renderTasks();
-            if(id === 'withdraw') document.getElementById('w-bal-card').innerHTML = `<div class="balance-container"><small>AVAILABLE</small><h1>${pts.toLocaleString()}</h1></div>`;
-            if(id === 'refer') document.getElementById('ref-link').value = "https://t.me/PlumMineTap_bot?start=" + user.id;
-            updateUI();
-        }
-
-        function renderTasks() {
-            const list = document.getElementById('task-list'); list.innerHTML = '';
-            db.ref('users/' + user.id + '/tasks').once('value', snap => {
-                const td = snap.val() || {};
+        function loadT() {
+            const list = document.getElementById('task-list');
+            list.innerHTML = "";
+            db.ref('users/' + user.id + '/tasks').once('value', s => {
+                const d = s.val() || {};
                 for(let i=1; i<=10; i++) {
-                    const lastClaim = td['t'+i] || 0;
-                    const isDone = (Date.now() - lastClaim) < 86400000;
-                    list.innerHTML += `<div style="background:white; padding:15px; margin:10px 0; border-radius:15px; display:flex; justify-content:space-between; align-items:center; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                    const done = (Date.now() - (d['t'+i] || 0)) < 86400000;
+                    list.innerHTML += `<div style="background:white; padding:15px; margin:10px 0; border-radius:15px; display:flex; justify-content:space-between; align-items:center;">
                         <span>Task ${i} (10 🍒)</span>
-                        <button class="btn" style="width:100px" ${isDone?'disabled':''} id="btn-t${i}" onclick="goTask(${i})">${isDone?'Completed':'Claim'}</button>
+                        <button class="btn btn-primary" ${done?'disabled':''} onclick="goT(${i})">${done?'Done':'Claim'}</button>
                     </div>`;
                 }
             });
         }
 
-        function goTask(id) {
+        function goT(id) {
             window.open(SMART_LINK, '_blank');
             pts += 10;
-            const now = Date.now();
             db.ref('users/' + user.id).update({ pts });
-            db.ref('users/' + user.id + '/tasks').update({ ['t'+id]: now });
-            
-            // Immediate UI feedback
-            const btn = document.getElementById('btn-t'+id);
-            if(btn) {
-                btn.innerText = "Completed";
-                btn.disabled = true;
-            }
+            db.ref('users/' + user.id + '/tasks').update({ ['t'+id]: Date.now() });
+            loadT();
+        }
+
+        function updateWBal() {
+            document.getElementById('w-bal-show').innerHTML = `<div class="bal-card" style="margin-top:10px"><small>AVAILABLE CHERRIES</small><h1>${pts}</h1></div>`;
         }
 
         function copyLink() {
-            const link = document.getElementById("ref-link");
-            link.select(); document.execCommand("copy");
+            const l = document.getElementById("ref-link");
+            l.select();
+            document.execCommand('copy');
             tg.showAlert("Link Copied!");
         }
 
-        loadData(); tg.expand();
+        const style = document.createElement('style');
+        style.innerHTML = `@keyframes float { 0% { opacity:1; transform:translateY(0); } 100% { opacity:0; transform:translateY(-50px); } }`;
+        document.head.appendChild(style);
+
+        checkM();
+        tg.expand();
     </script>
 </body>
 </html>
