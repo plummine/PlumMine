@@ -15,38 +15,39 @@
         .page { display: none; padding: 10px 15px 120px; height: 100vh; box-sizing: border-box; text-align: center; overflow-y: auto; }
         .active { display: block; }
 
-        /* UI Elements */
-        .bal-card { background: #fff9c4; border: 3px solid var(--accent); border-radius: 20px; padding: 15px; position: relative; text-align: left; margin-bottom: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        .bal-card h1 { font-size: 32px; margin: 5px 0; color: #d84315; }
-        .prog-bg { width: 100%; height: 8px; background: #eee; border-radius: 10px; margin-top: 5px; overflow: hidden; }
+        /* User Welcome Header */
+        .user-welcome { display: flex; flex-direction: column; align-items: center; margin-bottom: 15px; }
+        .bot-name { font-size: 28px; font-weight: 800; color: var(--primary); margin: 0; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
+        .welcome-msg { display: flex; align-items: center; gap: 8px; margin-top: 5px; color: #555; font-weight: 600; }
+        #u-pic-big { width: 45px; height: 45px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+
+        /* Large Balance Card */
+        .bal-card-large { background: linear-gradient(135deg, #fff9c4 0%, #fff176 100%); border: 3px solid var(--accent); border-radius: 30px; padding: 25px 20px; position: relative; text-align: left; margin-bottom: 20px; box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
+        .bal-card-large small { font-weight: bold; color: #8d6e63; letter-spacing: 1px; }
+        .bal-card-large h1 { font-size: 45px; margin: 10px 0; color: #d84315; font-weight: 900; }
+        .prog-bg { width: 100%; height: 12px; background: rgba(0,0,0,0.05); border-radius: 10px; margin-top: 10px; overflow: hidden; }
         #prog-fill { height: 100%; width: 0%; background: var(--primary); transition: width 0.3s; }
 
-        /* Gifts on Dashboard */
+        /* Gifts & Tree */
         .gift-container { position: fixed; bottom: 85px; width: 100%; display: flex; justify-content: space-between; padding: 0 20px; box-sizing: border-box; z-index: 100; pointer-events: none; }
         .gift-box { pointer-events: auto; position: relative; cursor: pointer; }
-        .badge { position: absolute; top: -5px; right: -5px; background: red; color: white; border-radius: 50%; padding: 2px 6px; font-size: 10px; }
+        .badge { position: absolute; top: -5px; right: -5px; background: red; color: white; border-radius: 50%; padding: 2px 7px; font-size: 11px; font-weight: bold; border: 1px solid white; }
+        .game-zone { height: 30vh; display: flex; align-items: center; justify-content: center; position: relative; }
+        #tree-img { width: 85%; max-width: 260px; z-index: 5; }
+        .falling-plum { position: absolute; font-size: 28px; z-index: 4; animation: fallCenter 0.8s ease-in forwards; }
+        @keyframes fallCenter { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(180px); opacity: 0; } }
 
-        /* Tree Zone */
-        .game-zone { height: 35vh; display: flex; align-items: center; justify-content: center; position: relative; }
-        #tree-img { width: 80%; max-width: 250px; z-index: 5; }
-        .falling-plum { position: absolute; font-size: 25px; z-index: 4; animation: fall 0.8s linear forwards; }
-        @keyframes fall { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(150px); opacity: 0; } }
-
-        /* Buttons */
+        /* Buttons & Tables */
         .btn { border: none; padding: 12px; border-radius: 12px; color: white; font-weight: bold; cursor: pointer; transition: 0.3s; width: 100%; margin-top: 10px; }
-        .btn-green { background: #4caf50; }
-        .btn-grey { background: #aaa !important; cursor: not-allowed; }
-        .btn-bkash { background: linear-gradient(45deg, #d81b60, #e91e63); }
-        .btn-support { background: white; color: #333; display: flex; align-items: center; justify-content: space-between; padding: 15px; border: 1px solid #eee; margin-bottom: 10px; text-decoration: none; }
-
-        /* Table Style */
-        .history-box { background: white; border-radius: 15px; padding: 10px; margin-top: 15px; text-align: left; }
-        table { width: 100%; border-collapse: collapse; font-size: 12px; }
-        th { border-bottom: 2px solid #eee; padding: 8px; text-align: left; }
-        td { padding: 8px; border-bottom: 1px solid #f9f9f9; }
+        .btn-green { background: #4caf50; box-shadow: 0 4px 0 #388e3c; }
+        .btn-grey { background: #aaa !important; cursor: not-allowed; box-shadow: none; }
+        .history-box { background: white; border-radius: 15px; padding: 10px; margin-top: 15px; text-align: left; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 10px; }
+        th { border-bottom: 2px solid #eee; padding: 10px 5px; text-align: left; color: #666; }
+        td { padding: 10px 5px; border-bottom: 1px solid #f1f1f1; }
 
         /* Nav */
-        .nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #eee; }
+        .nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #eee; height: 75px; align-items: center; z-index: 1000; }
         .nav-item { text-align: center; font-size: 11px; color: #888; flex: 1; cursor: pointer; }
         .nav-item.active { color: var(--primary); font-weight: bold; }
         .nav-item img { width: 24px; display: block; margin: 0 auto 5px; }
@@ -55,92 +56,93 @@
 <body style="display:none">
 
     <div class="gift-container" id="dash-gifts">
-        <div class="gift-box" onclick="claimG('green')"><img src="https://i.ibb.co.com/0RcvhqxK/27633-removebg-preview.png" width="50"><span id="gb" class="badge">0</span></div>
-        <div class="gift-box" onclick="claimG('red')"><img src="https://i.ibb.co.com/8gxBtPpT/27630-removebg-preview.png" width="50"><span id="rb" class="badge">0</span></div>
+        <div class="gift-box" onclick="claimG('green')"><img src="https://i.ibb.co.com/0RcvhqxK/27633-removebg-preview.png" width="55"><span id="gb" class="badge">0</span></div>
+        <div class="gift-box" onclick="claimG('red')"><img src="https://i.ibb.co.com/8gxBtPpT/27630-removebg-preview.png" width="55"><span id="rb" class="badge">0</span></div>
     </div>
 
     <div id="home" class="page active">
-        <div class="bal-card">
-            <small>MY BALANCE</small>
-            <h1 id="bal">0</h1>
-            <div style="font-size:11px;">Energy: <span id="tc">0</span>/50</div>
-            <div class="prog-bg"><div id="prog-fill"></div></div>
-            <img src="https://i.ibb.co.com/TDnYXwG1/27118-removebg-preview.png" style="position:absolute; right:10px; top:10px; width:65px;">
+        <div class="user-welcome">
+            <h1 class="bot-name">PlumMine🧺🍒</h1>
+            <div class="welcome-msg">
+                <img id="u-pic-big" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+                <span>Welcome, <span id="u-name">Player</span>!</span>
+            </div>
         </div>
+
+        <div class="bal-card-large">
+            <small>TOTAL CHERRY BALANCE</small>
+            <h1 id="bal">0</h1>
+            <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:bold;">
+                <span>Mining Energy</span>
+                <span><span id="tc">0</span>/50</span>
+            </div>
+            <div class="prog-bg"><div id="prog-fill"></div></div>
+            <img src="https://i.ibb.co.com/TDnYXwG1/27118-removebg-preview.png" style="position:absolute; right:15px; top:20px; width:80px; opacity:0.9;">
+        </div>
+
         <div class="game-zone" onclick="doTap(event)">
             <img id="tree-img" src="https://i.ibb.co.com/TBfn8G8M/27099-removebg-preview.png">
         </div>
     </div>
 
     <div id="tasks" class="page">
-        <h2 style="color:var(--primary)">📋 Daily Tasks</h2>
+        <h2 style="color:var(--primary)">📋 Daily Tasks (24h)</h2>
         <div id="task-list"></div>
     </div>
 
     <div id="refer" class="page">
-        <h2 style="color:var(--primary)">👥 Refer & Earn</h2>
-        <div class="bal-card" style="text-align: center; background: #e8f5e9;">
-            <p style="margin: 0; font-weight: bold; color: #2e7d32;">প্রতি সফল রেফারে পাবেন ৫০০ 🍒 চেরি!</p>
+        <h2 style="color:var(--primary)">👥 Referral System</h2>
+        <div class="history-box" style="background:#e8f5e9; border:1px dashed #2e7d32; text-align:center;">
+            <p style="margin:0; font-weight:bold;">প্রতি সফল রেফারে পাবেন ৫০০ 🍒 চেরি!</p>
         </div>
-        <div style="background:white; padding:15px; border-radius:15px;">
-            <input type="text" id="ref-link" readonly style="width:100%; padding:10px; border-radius:8px; border:1px solid #ddd;">
-            <button class="btn btn-green" onclick="copyRef()">Copy Referral Link</button>
+        <div style="background:white; padding:15px; border-radius:15px; margin-top:15px;">
+            <input type="text" id="ref-link" readonly style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
+            <button class="btn btn-green" onclick="copyRef()">Copy Invite Link</button>
         </div>
         <div class="history-box">
-            <strong style="display:block; margin-bottom:10px;">Referral List:</strong>
-            <table id="ref-table">
-                <thead><tr><th>Name</th><th>Date</th><th>Reward</th></tr></thead>
+            <strong>Referral History:</strong>
+            <table>
+                <thead><tr><th>User Name</th><th>Date</th><th>Reward</th></tr></thead>
                 <tbody id="ref-list"></tbody>
             </table>
         </div>
     </div>
 
     <div id="withdraw" class="page">
-        <h2 style="color:var(--primary)">💰 Withdraw</h2>
+        <h2 style="color:var(--primary)">💰 Withdraw Wallet</h2>
         <div id="w-bal-card"></div>
         <div style="background:white; padding:15px; border-radius:15px; text-align: left;">
-            <label>Method:</label>
-            <select id="w-method" onchange="updateWUI()" style="width:100%; padding:10px; margin-top:5px;">
+            <select id="w-method" onchange="updateWUI()" style="width:100%; padding:12px; border-radius:8px; border:1px solid #ddd;">
                 <option value="bkash">Bkash (Personal)</option>
                 <option value="binance">Binance (BEP20)</option>
             </select>
-            <p id="w-info" style="font-size:12px; font-weight:bold; margin:10px 0; color:var(--bkash);">Min: 90,000 🍒 = 20 BDT</p>
-            <input type="number" id="w-amt" placeholder="Cherry Amount" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
-            <input type="text" id="w-adr" placeholder="Wallet Address / Number" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; margin-top:10px;">
-            <button class="btn btn-bkash" onclick="sendW()">Withdraw Now</button>
+            <p id="w-info" style="font-size:13px; font-weight:bold; margin:10px 0; color:var(--bkash);">Min: 90,000 🍒 = 20 BDT</p>
+            <input type="number" id="w-amt" placeholder="Cherry Amount" style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px; margin-bottom:10px; box-sizing: border-box;">
+            <input type="text" id="w-adr" placeholder="Account Details" style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px; box-sizing: border-box;">
+            <button class="btn btn-green" style="background:var(--primary); margin-top:15px;" onclick="sendW()">Submit Request</button>
         </div>
         <div class="history-box">
-            <strong>Withdraw History:</strong>
+            <strong>Withdraw Log (Last Requests):</strong>
             <table>
-                <thead><tr><th>Date</th><th>Amount</th><th>Status</th></tr></thead>
+                <thead><tr><th>Date</th><th>Amount</th><th>Method</th></tr></thead>
                 <tbody id="w-history"></tbody>
             </table>
         </div>
     </div>
 
     <div id="support" class="page">
-        <h2 style="color:var(--primary)">🎧 Support Center</h2>
-        <a href="https://t.me/PlumMineAdmin" class="btn-support">
-            <div style="display:flex; align-items:center; gap:10px;">
-                <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" width="30">
-                <span>Contact Admin</span>
-            </div>
-            <span>➔</span>
-        </a>
-        <a href="https://t.me/HasiEarnigZone" class="btn-support">
-            <div style="display:flex; align-items:center; gap:10px;">
-                <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" width="30">
-                <span>Official Channel</span>
-            </div>
-            <span>➔</span>
-        </a>
-        <a href="https://t.me/PlumMinePaymentProof" class="btn-support">
-            <div style="display:flex; align-items:center; gap:10px;">
-                <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" width="30">
-                <span>Payment Proof</span>
-            </div>
-            <span>➔</span>
-        </a>
+        <h2 style="color:var(--primary)">🎧 Support</h2>
+        <div style="background:white; border-radius:15px; overflow:hidden;">
+            <a href="https://t.me/PlumMineAdmin" style="display:flex; justify-content:space-between; padding:20px; text-decoration:none; color:#333; border-bottom:1px solid #eee;">
+                <span>Admin Chat</span><span>➔</span>
+            </a>
+            <a href="https://t.me/HasiEarnigZone" style="display:flex; justify-content:space-between; padding:20px; text-decoration:none; color:#333; border-bottom:1px solid #eee;">
+                <span>Official Channel</span><span>➔</span>
+            </a>
+            <a href="https://t.me/PlumMinePaymentProof" style="display:flex; justify-content:space-between; padding:20px; text-decoration:none; color:#333;">
+                <span>Payment Proofs</span><span>➔</span>
+            </a>
+        </div>
     </div>
 
     <nav class="nav">
@@ -163,14 +165,17 @@
 
         let pts = 0, tps = 0, rc = 0, gc = 0;
 
-        function loadData() {
+        function initApp() {
+            document.getElementById('u-name').innerText = user.first_name;
+            if(user.photo_url) document.getElementById('u-pic-big').src = user.photo_url;
             document.getElementById('ref-link').value = "https://t.me/PlumMineTap_bot?start=" + user.id;
+
             db.ref('users/' + user.id).on('value', snap => {
                 const d = snap.val() || { pts:0, tps:0, rc:0, gc:0 };
                 pts = d.pts; tps = d.tps; rc = d.rc; gc = d.gc;
                 updateUI();
             });
-            loadHistory();
+            loadLog();
         }
 
         function updateUI() {
@@ -188,8 +193,8 @@
                 db.ref('users/' + user.id).update({ pts, tps, rc, gc });
                 
                 const f = document.createElement('div'); f.className = 'falling-plum'; f.innerText = '🍒';
-                f.style.left = e.clientX + 'px'; f.style.top = '40%';
-                document.body.appendChild(f);
+                f.style.left = '50%'; f.style.top = '45%';
+                document.getElementById('home').appendChild(f);
                 setTimeout(() => f.remove(), 800);
             } else {
                 window.open(AD_LINK, '_blank');
@@ -221,10 +226,8 @@
                 for(let i=1; i<=10; i++) {
                     const isDone = (Date.now() - (td['t'+i] || 0)) < 86400000;
                     list.innerHTML += `<div style="background:white; padding:15px; margin:10px 0; border-radius:15px; display:flex; justify-content:space-between; align-items:center;">
-                        <span>Task ${i} (10 🍒)</span>
-                        <button class="btn ${isDone ? 'btn-grey' : 'btn-green'}" style="width:100px; margin:0;" ${isDone ? 'disabled' : ''} onclick="goT(${i})">
-                            ${isDone ? 'Completed' : 'Claim'}
-                        </button>
+                        <span style="font-weight:bold;">Task ${i} (10 🍒)</span>
+                        <button class="btn ${isDone?'btn-grey':'btn-green'}" style="width:100px; margin:0;" ${isDone?'disabled':''} onclick="goT(${i})">${isDone?'Completed':'Claim'}</button>
                     </div>`;
                 }
             });
@@ -240,9 +243,8 @@
 
         function updateWUI() {
             const m = document.getElementById('w-method').value;
-            const info = document.getElementById('w-info');
-            info.innerText = (m === 'bkash') ? "Min: 90,000 🍒 = 20 BDT" : "Min: 5,000 🍒 = $0.01 USD";
-            document.getElementById('w-bal-card').innerHTML = `<div class="bal-card"><h1>${pts.toLocaleString()}</h1><small>AVAILABLE CHERRIES</small></div>`;
+            document.getElementById('w-info').innerText = (m === 'bkash') ? "Min: 90,000 🍒 = 20 BDT" : "Min: 5,000 🍒 = $0.01 USD";
+            document.getElementById('w-bal-card').innerHTML = `<div class="bal-card-large" style="padding:15px; margin-bottom:10px;"><h1>${pts.toLocaleString()}</h1><small>AVAILABLE FOR WITHDRAW</small></div>`;
         }
 
         function sendW() {
@@ -254,33 +256,33 @@
                 const txt = `💰 Withdraw Request\nUser: ${user.first_name}\nAmt: ${a}\nMethod: ${m}\nAddr: ${adr}`;
                 fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${ADMIN_ID}&text=${encodeURIComponent(txt)}`);
                 const key = db.ref('users/' + user.id + '/history').push().key;
-                db.ref('users/' + user.id + '/history/' + key).set({ date: new Date().toLocaleDateString(), amount: a, status: 'Pending' });
+                db.ref('users/' + user.id + '/history/' + key).set({ date: new Date().toLocaleDateString(), amount: a, method: m });
                 pts -= a; db.ref('users/' + user.id).update({ pts });
-                tg.showAlert("Withdraw Request Sent!");
-            } else { tg.showAlert("Insufficient balance or invalid info!"); }
+                tg.showAlert("Withdraw Request Submitted!");
+            } else { tg.showAlert("Invalid details or low balance!"); }
         }
 
-        function loadHistory() {
+        function loadLog() {
             db.ref('users/' + user.id + '/history').on('value', snap => {
                 const h = snap.val();
                 const list = document.getElementById('w-history'); list.innerHTML = '';
-                if(h) Object.values(h).reverse().forEach(v => {
-                    list.innerHTML += `<tr><td>${v.date}</td><td>${v.amount}</td><td style="color:orange">${v.status}</td></tr>`;
+                if(h) Object.values(h).reverse().slice(0, 10).forEach(v => {
+                    list.innerHTML += `<tr><td>${v.date}</td><td>${v.amount}</td><td>${v.method}</td></tr>`;
                 });
             });
             db.ref('users/' + user.id + '/ref_list').on('value', snap => {
                 const r = snap.val();
                 const list = document.getElementById('ref-list'); list.innerHTML = '';
-                if(r) Object.values(r).forEach(v => {
-                    list.innerHTML += `<tr><td>${v.name}</td><td>${v.date}</td><td>+500 🍒</td></tr>`;
+                if(r) Object.values(r).reverse().forEach(v => {
+                    list.innerHTML += `<tr><td>${v.name}</td><td>${v.date || '---'}</td><td>+500 🍒</td></tr>`;
                 });
             });
         }
 
-        function copyRef() { const l = document.getElementById("ref-link"); l.select(); document.execCommand('copy'); tg.showAlert("Link Copied!"); }
+        function copyRef() { const l = document.getElementById("ref-link"); l.select(); document.execCommand('copy'); tg.showAlert("Invite Link Copied!"); }
 
         document.body.style.display = "block";
-        loadData();
+        initApp();
         tg.expand();
     </script>
 </body>
