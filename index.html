@@ -17,83 +17,76 @@
 
         /* Header */
         .header { display: flex; align-items: center; justify-content: space-between; padding: 10px 20px; background: white; border-bottom: 1px solid #ddd; }
-        #user-pic { width: 35px; height: 35px; border-radius: 50%; border: 2px solid var(--primary); background: #eee; }
+        #u-pic { width: 35px; height: 35px; border-radius: 50%; border: 2px solid var(--primary); background: #eee; }
         
-        /* Dashboard - Fixed above Nav */
-        .dash-overlay { position: fixed; bottom: 85px; width: 100%; display: flex; justify-content: space-between; padding: 0 20px; box-sizing: border-box; z-index: 2000; pointer-events: none; }
-        .gift-box { pointer-events: auto; position: relative; cursor: pointer; }
-        .gift-badge { position: absolute; top: -5px; right: -5px; background: red; color: white; border-radius: 50%; padding: 2px 7px; font-size: 10px; font-weight: bold; }
+        /* Dashboard Overlay Gifts - Navigation বারের উপরে */
+        .gift-overlay { position: fixed; bottom: 85px; width: 100%; display: flex; justify-content: space-between; padding: 0 20px; box-sizing: border-box; z-index: 2000; pointer-events: none; }
+        .gift-box { pointer-events: auto; position: relative; cursor: pointer; transition: transform 0.2s; }
+        .gift-box:active { transform: scale(0.9); }
+        .badge { position: absolute; top: -5px; right: -5px; background: red; color: white; border-radius: 50%; padding: 2px 7px; font-size: 10px; font-weight: bold; border: 1px solid white; }
 
-        /* Balance & Progress */
-        .balance-container { background: #fff9c4; border: 3px solid var(--accent); border-radius: 25px; width: 100%; padding: 15px; position: relative; text-align: left; box-sizing: border-box; margin-top: 10px; }
-        .balance-info h1 { font-size: 35px; margin: 5px 0; color: #d84315; font-weight: 800; }
-        .progress-line-bg { width: 100%; height: 8px; background: #eee; border-radius: 10px; margin-top: 5px; overflow: hidden; }
-        #progress-fill { height: 100%; width: 0%; background: var(--primary); transition: width 0.3s; }
+        /* Balance Card */
+        .bal-card { background: #fff9c4; border: 3px solid var(--accent); border-radius: 25px; width: 100%; padding: 15px; position: relative; text-align: left; box-sizing: border-box; margin-top: 10px; }
+        .bal-card h1 { font-size: 35px; margin: 5px 0; color: #d84315; font-weight: 800; }
+        .prog-bg { width: 100%; height: 8px; background: #eee; border-radius: 10px; margin-top: 5px; overflow: hidden; }
+        #prog-fill { height: 100%; width: 0%; background: var(--primary); transition: width 0.3s; }
 
-        /* Game Zone */
-        .game-zone { height: 45vh; display: flex; align-items: center; justify-content: center; position: relative; }
-        #plum-tree { width: 85%; max-width: 300px; z-index: 5; }
-        .falling-plum { position: absolute; font-size: 30px; z-index: 4; pointer-events: none; animation: fallCenter 0.8s linear forwards; }
-        @keyframes fallCenter { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(250px); } }
-
-        /* General Button Styling */
-        .btn { background: var(--primary); color: white; border: none; padding: 12px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; transition: 0.3s; text-decoration: none; }
-        .btn-grad-blue { background: linear-gradient(45deg, #1976d2, #0288d1); box-shadow: 0 4px 12px rgba(25,118,210,0.2); width: 110px; }
-        .btn-primary { background: var(--primary); }
-
-        /* Task Buttons */
-        .task-btn { width: 110px; }
-        .task-btn-green { background: #4caf50; }
-        .task-btn-grey { background: #aaa !important; cursor: not-allowed; }
-
-        /* Unique Withdraw Buttons */
-        .btn-bkash { background: linear-gradient(45deg, #d81b60, #e91e63); box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3); }
-        .btn-binance { background: linear-gradient(45deg, #f3ba2f, #f1b000); color: #000; box-shadow: 0 4px 15px rgba(243, 186, 47, 0.3); }
-
-        /* Forms */
-        input, select { width: 100%; padding: 12px; margin-top: 10px; border-radius: 10px; border: 1px solid #ccc; box-sizing: border-box; font-size: 14px; }
+        /* Game Zone - Tree */
+        .game-zone { height: 40vh; display: flex; align-items: center; justify-content: center; position: relative; }
+        #tree-img { width: 80%; max-width: 280px; z-index: 5; }
+        .falling-plum { position: absolute; font-size: 28px; z-index: 4; pointer-events: none; animation: fallFromCenter 0.8s ease-in forwards; }
         
-        /* Force Join */
-        .f-join { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #e3f2fd; z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 30px; text-align: center; }
+        @keyframes fallFromCenter { 
+            0% { opacity: 1; transform: translate(-50%, 0); } 
+            100% { opacity: 0; transform: translate(-50%, 200px); } 
+        }
 
+        /* Buttons */
+        .btn { border: none; padding: 12px 20px; border-radius: 12px; color: white; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-green { background: #4caf50; }
+        .btn-grey { background: #aaa !important; cursor: not-allowed; }
+        .btn-bkash { background: linear-gradient(45deg, #d81b60, #e91e63); }
+        .btn-binance { background: linear-gradient(45deg, #f3ba2f, #f1b000); color: #000; }
+        .btn-support { background: linear-gradient(45deg, #1976d2, #0288d1); width: 110px; }
+
+        input, select { width: 100%; padding: 12px; margin-top: 10px; border-radius: 10px; border: 1px solid #ccc; box-sizing: border-box; }
+        
         /* Navigation */
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #eee; height: 75px; align-items: center; z-index: 1000; }
-        .nav-link { text-align: center; font-size: 11px; color: #777; cursor: pointer; flex: 1; }
-        .nav-link img { width: 24px; display: block; margin: 0 auto 4px; }
-        .nav-link.active-nav { color: #d84315; font-weight: bold; }
+        .nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #eee; height: 75px; align-items: center; z-index: 1000; }
+        .nav-item { text-align: center; font-size: 11px; color: #777; cursor: pointer; flex: 1; }
+        .nav-item img { width: 24px; display: block; margin: 0 auto 4px; }
+        .nav-item.active { color: #d84315; font-weight: bold; }
     </style>
 </head>
 <body style="display:none">
 
-    <div id="f-join" class="f-join">
-        <img src="https://i.ibb.co.com/TDnYXwG1/27118-removebg-preview.png" width="100">
-        <h2 style="color:var(--primary)">মেম্বারশিপ চেক!</h2>
-        <p>গেমটি খেলতে আমাদের অফিশিয়াল চ্যানেলে জয়েন করুন।</p>
-        <button class="btn btn-primary" style="width:100%; margin-top:10px;" onclick="window.open('https://t.me/HasiEarnigZone')">Join Channel</button>
-        <button class="btn" style="width:100%; margin-top:10px; background:#aaa" onclick="location.reload()">আমি জয়েন করেছি</button>
-    </div>
-
     <div class="header">
         <div style="display:flex; align-items:center; gap:10px;">
-            <img id="user-pic" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+            <img id="u-pic" src="">
             <span style="font-weight:bold; color:var(--primary);">PlumMine🧺🍒</span>
         </div>
     </div>
 
-    <div class="dash-overlay" id="dash-gifts" style="display:none;">
-        <div class="gift-box" onclick="claimG('green')"><img src="https://i.ibb.co.com/0RcvhqxK/27633-removebg-preview.png" width="50"><span id="gb" class="gift-badge">0</span></div>
-        <div class="gift-box" onclick="claimG('red')"><img src="https://i.ibb.co.com/8gxBtPpT/27630-removebg-preview.png" width="50"><span id="rb" class="gift-badge">0</span></div>
+    <div class="gift-overlay" id="gift-ui">
+        <div class="gift-box" onclick="claimGift('green')">
+            <img src="https://i.ibb.co.com/0RcvhqxK/27633-removebg-preview.png" width="55">
+            <span id="gb" class="badge">0</span>
+        </div>
+        <div class="gift-box" onclick="claimGift('red')">
+            <img src="https://i.ibb.co.com/8gxBtPpT/27630-removebg-preview.png" width="55">
+            <span id="rb" class="badge">0</span>
+        </div>
     </div>
 
     <div id="home" class="page active">
-        <div class="balance-container">
-            <small>TOTAL BALANCE</small><h1 id="bal">0</h1>
-            <div style="font-size:11px; margin-top:5px;">Ad Progress: <span id="tc">0</span>/50</div>
-            <div class="progress-line-bg"><div id="progress-fill"></div></div>
-            <img class="basket-side" src="https://i.ibb.co.com/TDnYXwG1/27118-removebg-preview.png" style="position:absolute; right:10px; top:10px; width:70px;">
+        <div class="bal-card">
+            <small>TOTAL CHERRIES</small><h1 id="bal">0</h1>
+            <div style="font-size:11px;">Tap Progress: <span id="tc">0</span>/50</div>
+            <div class="prog-bg"><div id="prog-fill"></div></div>
+            <img src="https://i.ibb.co.com/TDnYXwG1/27118-removebg-preview.png" style="position:absolute; right:15px; top:15px; width:70px;">
         </div>
         <div class="game-zone" id="gz" onclick="doTap(event)">
-            <img id="plum-tree" src="https://i.ibb.co.com/TBfn8G8M/27099-removebg-preview.png">
+            <img id="tree-img" src="https://i.ibb.co.com/TBfn8G8M/27099-removebg-preview.png">
         </div>
     </div>
 
@@ -102,49 +95,40 @@
         <div id="task-list"></div>
     </div>
 
-    <div id="refer" class="page">
-        <h2 style="color:var(--primary)">👥 Invite Friends</h2>
-        <div style="background:white; padding:20px; border-radius:20px; box-shadow:0 2px 10px rgba(0,0,0,0.05)">
-            <input type="text" id="ref-link" readonly>
-            <button class="btn btn-primary" style="width:100%; margin-top:15px" onclick="copyLink()">Copy Link</button>
-        </div>
-    </div>
-
     <div id="withdraw" class="page">
-        <h2 style="color:var(--primary)">💰 Withdraw Money</h2>
+        <h2 style="color:var(--primary)">💰 Withdraw</h2>
         <div id="w-bal-show"></div>
         <div style="background:white; padding:20px; border-radius:20px; text-align:left">
-            <select id="w-method" onchange="toggleM()">
+            <select id="w-method" onchange="updateW()">
                 <option value="bkash">Bkash (Personal)</option>
                 <option value="binance">Binance (BEP20)</option>
             </select>
-            <p id="w-limit-text" style="color:var(--bkash); font-weight:bold; margin-top:10px">মিনিমাম ৯০,০০০ 🍒 = ২০ টাকা</p>
-            <input type="number" id="w-amount" placeholder="Cherry Amount" oninput="calcW(this.value)">
-            <input type="text" id="w-address" placeholder="বিকাশ নম্বর দিন" style="margin-top:10px">
-            <button id="w-submit-btn" class="btn btn-bkash" style="width:100%; margin-top:20px" onclick="submitW()">Withdraw Now</button>
+            <p id="w-limit" style="color:var(--bkash); font-weight:bold; margin-top:10px">মিনিমাম ৯০,০০০ 🍒 = ২০ টাকা</p>
+            <input type="number" id="w-amt" placeholder="Amount" oninput="calcW(this.value)">
+            <input type="text" id="w-adr" placeholder="বিকাশ নম্বর">
+            <button id="w-btn" class="btn btn-bkash" style="width:100%; margin-top:20px" onclick="sendW()">Submit</button>
         </div>
     </div>
 
     <div id="support" class="page">
-        <h2 style="color:var(--primary)">🎧 Support Center</h2>
-        <div style="background:white; padding:10px; border-radius:20px">
-            <div style="display:flex; justify-content:space-between; align-items:center; padding:15px; border-bottom:1px solid #eee">
-                <span>Admin Support</span>
-                <button class="btn btn-grad-blue" onclick="window.open('https://t.me/PlumMineAdmin')">@Admin</button>
+        <h2 style="color:var(--primary)">🎧 Support</h2>
+        <div style="background:white; padding:15px; border-radius:20px">
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; border-bottom:1px solid #eee">
+                <span>Admin Chat</span>
+                <button class="btn btn-support" onclick="window.open('https://t.me/PlumMineAdmin')">@Admin</button>
             </div>
-            <div style="display:flex; justify-content:space-between; align-items:center; padding:15px">
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:10px">
                 <span>Payment Proof</span>
-                <button class="btn btn-grad-blue" onclick="window.open('https://t.me/PlumMinePaymentProof')">Proof Channel</button>
+                <button class="btn btn-support" onclick="window.open('https://t.me/PlumMinePaymentProof')">Proof</button>
             </div>
         </div>
     </div>
 
-    <nav class="bottom-nav">
-        <div class="nav-link active-nav" onclick="nav('home', this)"><img src="https://i.ibb.co.com/TDnYXwG1/27118-removebg-preview.png">Home</div>
-        <div class="nav-link" onclick="nav('tasks', this)"><img src="https://cdn-icons-png.flaticon.com/512/2098/2098402.png">Tasks</div>
-        <div class="nav-link" onclick="nav('refer', this)"><img src="https://cdn-icons-png.flaticon.com/512/912/912318.png">Refer</div>
-        <div class="nav-link" onclick="nav('withdraw', this)"><img src="https://cdn-icons-png.flaticon.com/512/2489/2489756.png">Withdraw</div>
-        <div class="nav-link" onclick="nav('support', this)"><img src="https://cdn-icons-png.flaticon.com/512/4333/4333609.png">Support</div>
+    <nav class="nav">
+        <div class="nav-item active" onclick="nav('home', this)"><img src="https://i.ibb.co.com/TDnYXwG1/27118-removebg-preview.png">Home</div>
+        <div class="nav-item" onclick="nav('tasks', this)"><img src="https://cdn-icons-png.flaticon.com/512/2098/2098402.png">Tasks</div>
+        <div class="nav-item" onclick="nav('withdraw', this)"><img src="https://cdn-icons-png.flaticon.com/512/2489/2489756.png">Wallet</div>
+        <div class="nav-item" onclick="nav('support', this)"><img src="https://cdn-icons-png.flaticon.com/512/4333/4333609.png">Support</div>
     </nav>
 
     <script>
@@ -155,13 +139,12 @@
         const user = tg.initDataUnsafe.user || { id: "Guest", first_name: "Player" };
         const BOT_TOKEN = "8617357036:AAEs-Q1zfl36_6FdL3A8b12XE3TpTksxpKU";
         const ADMIN_ID = "7741833062";
-        const SMART_LINK = "https://www.effectivegatecpm.com/eu58bq8h?key=ddafcd4b90ae80d8637cde448cec9d9c";
+        const AD_LINK = "https://www.effectivegatecpm.com/eu58bq8h?key=ddafcd4b90ae80d8637cde448cec9d9c";
 
         let pts = 0, tps = 0, rc = 0, gc = 0;
 
-        function loadD() {
-            if(user.photo_url) document.getElementById('user-pic').src = user.photo_url;
-            document.getElementById('ref-link').value = `https://t.me/PlumMineTap_bot?start=${user.id}`;
+        function loadData() {
+            if(user.photo_url) document.getElementById('u-pic').src = user.photo_url;
             db.ref('users/' + user.id).on('value', snap => {
                 const d = snap.val() || { pts:0, tps:0, rc:0, gc:0 };
                 pts = d.pts; tps = d.tps; rc = d.rc; gc = d.gc;
@@ -171,8 +154,8 @@
 
         function updateUI() {
             document.getElementById('bal').innerText = pts.toLocaleString();
-            document.getElementById('tap-count').innerText = tps;
-            document.getElementById('progress-fill').style.width = (tps/50)*100 + "%";
+            document.getElementById('tc').innerText = tps;
+            document.getElementById('prog-fill').style.width = (tps/50)*100 + "%";
             document.getElementById('rb').innerText = rc;
             document.getElementById('gb').innerText = gc;
         }
@@ -183,77 +166,46 @@
                 if(pts % 500 === 0) { rc++; gc++; }
                 db.ref('users/' + user.id).update({ pts, tps, rc, gc });
                 
+                // ফল গাছের মাঝখান থেকে পড়বে
                 const f = document.createElement('div'); f.className = 'falling-plum'; f.innerText = '🍒';
-                f.style.left = '50%'; f.style.top = '40%'; // Center falling from trunk area
+                f.style.left = '50%'; f.style.top = '45%'; 
                 document.getElementById('gz').appendChild(f);
                 setTimeout(() => f.remove(), 800);
             } else {
-                window.open(SMART_LINK, '_blank');
+                window.open(AD_LINK, '_blank');
                 tps = 0; db.ref('users/' + user.id).update({ tps: 0 });
             }
         }
 
-        function claimG(type) {
-            window.open(SMART_LINK, '_blank');
+        function claimGift(type) {
+            window.open(AD_LINK, '_blank');
             if(type === 'red' && rc > 0) { pts += 5; rc--; } 
             else if(type === 'green' && gc > 0) { pts += 2; gc--; }
             db.ref('users/' + user.id).update({ pts, rc, gc });
         }
 
-        function toggleM() {
-            const m = document.getElementById('w-method').value;
-            const l = document.getElementById('w-limit-text');
-            const a = document.getElementById('w-address');
-            const b = document.getElementById('w-submit-btn');
-            if(m === 'bkash') {
-                l.innerText = "মিনিমাম ৯০,০০০ 🍒 = ২০ টাকা"; l.style.color = "var(--bkash)";
-                a.placeholder = "বিকাশ নম্বর দিন"; b.className = "btn btn-bkash";
-            } else {
-                l.innerText = "Minimum 5,000 🍒 = $0.0100"; l.style.color = "var(--binance)";
-                a.placeholder = "Binance Address"; b.className = "btn btn-binance";
-            }
-        }
-
-        function submitW() {
-            const m = document.getElementById('w-method').value;
-            const a = parseInt(document.getElementById('w-amount').value);
-            const ad = document.getElementById('w-address').value;
-            const min = m === 'bkash' ? 90000 : 5000;
-
-            if(a >= min && pts >= a && ad) {
-                const val = m === 'bkash' ? "৳"+((a/90000)*20).toFixed(2) : "$"+((a/5000)*0.01).toFixed(4);
-                const txt = `💰 **New Withdraw!**\n\n👤 User: ${user.first_name}\n🆔 ID: ${user.id}\n🍒 Amount: ${a}\n🏧 Method: ${m.toUpperCase()}\n🏦 Details: \`${ad}\`\n💵 Value: ${val}`;
-                fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${ADMIN_ID}&text=${encodeURIComponent(txt)}&parse_mode=Markdown`);
-                pts -= a; db.ref('users/' + user.id).update({ pts });
-                tg.showAlert("Success!");
-            } else { tg.showAlert("Error!"); }
-        }
-
         function nav(id, el) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active-nav'));
-            el.classList.add('active-nav');
+            document.querySelectorAll('.nav-item').forEach(l => l.classList.remove('active'));
+            el.classList.add('active');
             
-            // Dashboard gift overlay visibility
-            document.getElementById('dash-gifts').style.display = (id === 'home') ? 'flex' : 'none';
+            // ড্যাশবোর্ডের গিফট শুধু হোম পেজে থাকবে
+            document.getElementById('gift-ui').style.display = (id === 'home') ? 'flex' : 'none';
             
-            if(id === 'tasks') renderTasks();
+            if(id === 'tasks') renderT();
             if(id === 'withdraw') updateWBal();
         }
 
-        function renderTasks() {
+        function renderT() {
             const list = document.getElementById('task-list'); list.innerHTML = '';
             db.ref('users/' + user.id + '/tasks').once('value', snap => {
                 const td = snap.val() || {};
-                const now = Date.now();
                 for(let i=1; i<=10; i++) {
-                    const lastClaim = td['t'+i] || 0;
-                    const isDone = (now - lastClaim) < 86400000; // 24 Hours Logic
-
+                    const isDone = (Date.now() - (td['t'+i] || 0)) < 86400000;
                     list.innerHTML += `<div style="background:white; padding:15px; margin:10px 0; border-radius:15px; display:flex; justify-content:space-between; align-items:center;">
                         <span>Task ${i} (10 🍒)</span>
-                        <button class="btn task-btn ${isDone ? 'task-btn-grey' : 'task-btn-green'}" ${isDone ? 'disabled' : ''} onclick="goTask(${i})">
+                        <button class="btn ${isDone ? 'btn-grey' : 'btn-green'}" ${isDone ? 'disabled' : ''} onclick="goT(${i})">
                             ${isDone ? 'Completed' : 'Claim'}
                         </button>
                     </div>`;
@@ -261,22 +213,47 @@
             });
         }
 
-        function goTask(id) {
-            window.open(SMART_LINK, '_blank');
+        function goT(id) {
+            window.open(AD_LINK, '_blank');
             pts += 10;
             db.ref('users/' + user.id).update({ pts });
             db.ref('users/' + user.id + '/tasks').update({ ['t'+id]: Date.now() });
-            renderTasks();
+            renderT();
         }
 
-        function updateWBal() { document.getElementById('w-bal-show').innerHTML = `<div class="bal-card"><small>AVAILABLE</small><h1>${pts}</h1></div>`; }
-        function copyLink() { const l = document.getElementById("ref-link"); l.select(); document.execCommand('copy'); tg.showAlert("Link Copied!"); }
+        function updateW() {
+            const m = document.getElementById('w-method').value;
+            const l = document.getElementById('w-limit');
+            const ad = document.getElementById('w-adr');
+            const btn = document.getElementById('w-btn');
+            if(m === 'bkash') {
+                l.innerText = "মিনিমাম ৯০,০০০ 🍒 = ২০ টাকা"; l.style.color = "var(--bkash)";
+                ad.placeholder = "বিকাশ নম্বর"; btn.className = "btn btn-bkash";
+            } else {
+                l.innerText = "Min 5,000 🍒 = $0.0100"; l.style.color = "var(--binance)";
+                ad.placeholder = "Binance Address"; btn.className = "btn btn-binance";
+            }
+        }
 
-        tg.expand();
-        // Skip membership check for this implementation as BOT_TOKEN/CHANNEL_ID are hardcoded and intended for admin use. 
-        // Directly load data.
+        function sendW() {
+            const m = document.getElementById('w-method').value;
+            const a = parseInt(document.getElementById('w-amt').value);
+            const adr = document.getElementById('w-adr').value;
+            const min = m === 'bkash' ? 90000 : 5000;
+            if(a >= min && pts >= a && adr) {
+                const val = m === 'bkash' ? "৳"+((a/90000)*20).toFixed(2) : "$"+((a/5000)*0.01).toFixed(4);
+                const txt = `💰 Withdraw Request\nUser: ${user.first_name}\nAmt: ${a}\nMethod: ${m}\nAddr: ${adr}\nValue: ${val}`;
+                fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${ADMIN_ID}&text=${encodeURIComponent(txt)}`);
+                pts -= a; db.ref('users/' + user.id).update({ pts });
+                tg.showAlert("Success!");
+            } else { tg.showAlert("Error!"); }
+        }
+
+        function updateWBal() { document.getElementById('w-bal-show').innerHTML = `<div class="bal-card"><h1>${pts}</h1></div>`; }
+
         document.body.style.display = "block";
-        loadD();
+        loadData();
+        tg.expand();
     </script>
 </body>
 </html>
