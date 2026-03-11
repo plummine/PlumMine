@@ -1,7 +1,9 @@
 {
-  "name": "plum-mine-bot",
+  "name": "plum-mine-tap-bot",
   "version": "1.0.0",
+  "description": "PlumMine Telegram Mini App with Smooth Tapping",
+  "main": "api/index.js",
   "dependencies": {
-    "axios": "^1.6.0"
+    "node-fetch": "^2.6.7"
   }
 }
