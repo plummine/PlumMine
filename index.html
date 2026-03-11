@@ -14,7 +14,7 @@
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 0; user-select: none; overflow: hidden; height: 100vh; }
         
-        /* Loading & Verification */
+        /* Verification Layer */
         #loading-screen, #verify-screen { position: fixed; inset: 0; background: white; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10000; padding: 20px; text-align: center; }
         .spinner { width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -32,7 +32,7 @@
         .progress-line { width: 100%; height: 12px; background: #eee; border-radius: 10px; overflow: hidden; margin-top: 10px; }
         .progress-fill { height: 100%; width: 0%; background: var(--primary); transition: 0.3s; }
 
-        /* Tree Area (আগের চেয়ে বড়) */
+        /* Tree Area */
         .tree-section { display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; min-height: 280px; }
         .tree-container { width: 230px; cursor: pointer; transition: transform 0.1s; z-index: 10; }
         .tree-container:active { transform: scale(0.92); }
@@ -42,17 +42,17 @@
         .box-item { width: 70px; text-align: center; cursor: pointer; position: relative; }
         .box-badge { position: absolute; top: -5px; right: -5px; background: red; color: white; border-radius: 50%; padding: 2px 7px; font-size: 12px; font-weight: bold; }
 
-        /* Pages */
+        /* General Pages */
         .page { display: none; padding: 20px; animation: fadeIn 0.4s; }
         .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .card { background: white; padding: 18px; border-radius: 20px; margin-bottom: 15px; border: 1px solid #f0f0f0; }
 
-        /* Table Design */
+        /* Table */
         .table-container { overflow-x: auto; width: 100%; }
-        table { width: 100%; background: white; border-radius: 15px; overflow: hidden; border-collapse: collapse; margin-top: 10px; min-width: 400px; }
+        table { width: 100%; background: white; border-radius: 15px; overflow: hidden; border-collapse: collapse; margin-top: 10px; min-width: 450px; }
         th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; font-size: 12px; }
-        th { background: var(--primary); color: white; white-space: nowrap; }
+        th { background: var(--primary); color: white; }
 
         /* Buttons */
         .btn-action { width: 100%; background: var(--primary); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; }
@@ -77,10 +77,11 @@
     <div id="verify-screen" style="display:none;">
         <div class="card">
             <h3 style="color:var(--primary)">Account Verification 🍒</h3>
-            <p>নিচের চ্যানেল এবং বটে জয়েন করে ড্যাশবোর্ড আনলক করুন</p>
+            <p>নিচের চ্যানেল এবং বটে জয়েন না করে ভেরিফাই হবে না।</p>
             <button onclick="tg.openTelegramLink('https://t.me/HasiEarnigZone')" class="btn-action" style="background:#24A1DE; margin-bottom:10px;">Join Channel 👉</button>
             <button onclick="tg.openTelegramLink('https://t.me/taskcashpro_official_bot?start=r03512472386')" class="btn-action" style="background:#24A1DE; margin-bottom:15px;">Join Bot 👉</button>
-            <button onclick="checkVerify()" class="btn-action">VERIFY NOW ✅</button>
+            <button onclick="realVerifyCheck()" id="v-btn" class="btn-action">VERIFY NOW ✅</button>
+            <p id="v-error" style="color:red; font-size:12px; margin-top:10px; display:none;">Error: আপনি এখনো জয়েন করেননি!</p>
         </div>
     </div>
 
@@ -90,15 +91,14 @@
                 <h1 class="bot-name-3d">PlumMine</h1>
                 <div class="user-info">
                     <div>Welcome, <b id="u-name">Miner</b> 👋</div>
-                    <img id="u-photo" class="user-photo-circle" src="https://via.placeholder.com/55">
+                    <img id="u-photo" class="user-photo-circle" src="">
                 </div>
                 <div class="balance-card">
                     <h2 id="total-bal">0 🍒</h2>
                     <div class="progress-line"><div id="p-fill" class="progress-fill"></div></div>
-                    <small id="p-count">0 / 50 Taps to Ad</small>
+                    <small id="p-count">0 / 50 Taps</small>
                 </div>
                 <div class="tree-section">
-                    <p style="font-weight:bold; color:var(--primary); margin-bottom:10px;">গাছের উপর ট্যাপ ট্যাপ করুন</p>
                     <div class="tree-container" onclick="handleTap(event)">
                         <img src="https://i.ibb.co.com/TBfn8G8M/27099-removebg-preview.png" class="tree-img">
                     </div>
@@ -139,7 +139,7 @@
                 <h4>Withdraw History</h4>
                 <div class="table-container">
                     <table>
-                        <thead><tr><th>Date</th><th>Amount🍒</th><th>Method</th><th>Number/Address</th></tr></thead>
+                        <thead><tr><th>Date</th><th>Amount🍒</th><th>Method</th><th>Target</th></tr></thead>
                         <tbody id="w-history"></tbody>
                     </table>
                 </div>
@@ -149,10 +149,8 @@
                 <div class="card" style="text-align:center;">
                     <img src="https://i.ibb.co/V3p8R7y/support-girl.png" style="width:80px; border-radius:50%; margin-bottom:10px;">
                     <h3>Support Center 🎧</h3>
-                    <p style="font-size:14px; color:#555;">আপনার যেকোনো সমস্যা বা পেমেন্ট সংক্রান্ত তথ্যের জন্য আমাদের জয়েন করুন।</p>
-                    <button onclick="tg.openTelegramLink('https://t.me/HasiEarnigZone')" class="btn-action" style="background:#24A1DE; margin-top:10px;">
-                        <i class="fab fa-telegram"></i> JOIN NOW
-                    </button>
+                    <p>আপনার যেকোনো সমস্যার জন্য নিচে জয়েন করুন।</p>
+                    <button onclick="tg.openTelegramLink('https://t.me/HasiEarnigZone')" class="btn-action" style="background:#24A1DE; margin-top:10px;">JOIN NOW</button>
                 </div>
                 <div class="card" onclick="tg.openTelegramLink('https://t.me/PlumMineAdmin')"><b>Admin Support:</b> @PlumMineAdmin</div>
                 <div class="card" onclick="tg.openTelegramLink('https://t.me/PlumMinePaymentProof')"><b>Payment Proof Group</b> ✅</div>
@@ -175,15 +173,16 @@
         const tg = window.Telegram.WebApp;
         tg.expand();
         const user = tg.initDataUnsafe.user || { id: "7613003641", first_name: "Miner", photo_url: "" };
+        const botToken = "8617357036:AAEs-Q1zfl36_6FdL3A8b12XE3TpTksxpKU"; // আপনার বট টোকেন
+        const channelId = "@HasiEarnigZone"; // আপনার চ্যানেল ইউজারনেম
 
         const firebaseConfig = { databaseURL: "https://plummine-tap-project-default-rtdb.firebaseio.com/" };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        let score = 0, rb = 0, gb = 0, taps = 0, saveTimer;
-        const ads = ["https://www.effectivegatecpm.com/hxm4wpfp4?key=53227d2b29be87d8351178c6412882f3","https://www.effectivegatecpm.com/b1hixejydi?key=d536c017bbfff7dc4cca0099e085f5a4","https://www.effectivegatecpm.com/j367fw0d?key=276e1acc8810b4e8802bb57e85fd3450"];
-        let adIdx = 0;
+        let score = 0, rb = 0, gb = 0, taps = 0;
 
+        // Step 1: Loading 2s
         setTimeout(() => {
             document.getElementById('loading-screen').style.display = 'none';
             db.ref('users/' + user.id + '/verified').once('value', snap => {
@@ -192,9 +191,30 @@
             });
         }, 2000);
 
-        function checkVerify() {
-            db.ref('users/' + user.id).update({ verified: true });
-            startApp();
+        // REAL VERIFY CHECK (চ্যানেল মেম্বারশিপ চেক)
+        async function realVerifyCheck() {
+            const btn = document.getElementById('v-btn');
+            const err = document.getElementById('v-error');
+            btn.innerText = "Checking...";
+            
+            try {
+                // Telegram API দিয়ে ইউজারকে চেক করা (পাবলিক চ্যানেল হলে কাজ করবে)
+                const res = await fetch(`https://api.telegram.org/bot${botToken}/getChatMember?chat_id=${channelId}&user_id=${user.id}`);
+                const data = await res.json();
+                
+                if (data.ok && (data.result.status === 'member' || data.result.status === 'administrator' || data.result.status === 'creator')) {
+                    db.ref('users/' + user.id).update({ verified: true });
+                    startApp();
+                } else {
+                    err.style.display = 'block';
+                    btn.innerText = "VERIFY NOW ✅";
+                    tg.showAlert("আপনি এখনো আমাদের চ্যানেলে জয়েন করেননি!");
+                }
+            } catch (e) {
+                // যদি API ফেল করে, তবে ব্যাকআপ হিসেবে জয়েন লিঙ্ক ওপেন করতে বলা হবে
+                tg.showAlert("Verification Error! দয়া করে চ্যানেলে জয়েন করে কিছুক্ষণ অপেক্ষা করুন।");
+                btn.innerText = "VERIFY NOW ✅";
+            }
         }
 
         function startApp() {
@@ -227,25 +247,24 @@
             score++; taps++;
             if(score % 100 === 0) rb++;
             if(score % 1000 === 0) gb++;
-            if(taps >= 50) { taps = 0; tg.openLink(ads[adIdx % 3]); adIdx++; }
-
+            if(taps >= 50) { 
+                taps = 0; 
+                tg.openLink("https://www.effectivegatecpm.com/hxm4wpfp4?key=53227d2b29be87d8351178c6412882f3"); 
+            }
             document.getElementById('p-fill').style.width = (taps/50)*100 + "%";
-            document.getElementById('p-count').innerText = `${taps} / 50 Taps`;
+            updateDisplay();
+            db.ref('users/' + user.id).update({ pts: score, rb: rb, gb: gb });
             
             const drop = document.createElement('div');
             drop.className = 'cherry-drop'; drop.innerText = '🍒';
             drop.style.left = e.clientX + 'px'; drop.style.top = (e.clientY - 30) + 'px';
             document.body.appendChild(drop);
             setTimeout(() => drop.remove(), 700);
-
-            updateDisplay();
-            clearTimeout(saveTimer);
-            saveTimer = setTimeout(() => db.ref('users/' + user.id).update({ pts: score, rb: rb, gb: gb }), 1000);
             tg.HapticFeedback.impactOccurred('light');
         }
 
         function claimBox(t) {
-            tg.openLink(ads[1]);
+            tg.openLink("https://www.effectivegatecpm.com/b1hixejydi?key=d536c017bbfff7dc4cca0099e085f5a4");
             if(t==='red' && rb > 0) { score += 5; rb--; }
             if(t==='green' && gb > 0) { score += 2; gb--; }
             db.ref('users/' + user.id).update({ pts: score, rb: rb, gb: gb });
@@ -262,20 +281,19 @@
                     const isDone = (now - last) < 86400000;
                     list.innerHTML += `<div class="card" style="display:flex; justify-content:space-between; align-items:center;">
                         <span>Task #${i} (+10 🍒)</span>
-                        <button class="btn-task ${isDone ? 'disabled' : 'enabled'}" onclick="${isDone ? '' : 'doTask('+i+')'}">${isDone ? 'Done' : 'Start 10s'}</button>
+                        <button class="btn-task ${isDone ? 'disabled' : 'enabled'}" onclick="${isDone ? '' : 'doTask('+i+')'}">${isDone ? 'Done' : 'Start'}</button>
                     </div>`;
                 }
             });
         }
 
         function doTask(id) {
-            tg.openLink(ads[id % 3]);
+            tg.openLink("https://www.effectivegatecpm.com/j367fw0d?key=276e1acc8810b4e8802bb57e85fd3450");
             setTimeout(() => {
                 score += 10;
                 db.ref('users/' + user.id).update({ pts: score });
                 db.ref('users/' + user.id + '/tasks').update({ [id]: Date.now() });
                 renderTasks();
-                tg.showAlert("Task Completed! 10 🍒 Added.");
             }, 10000);
         }
 
@@ -291,24 +309,18 @@
             const m = document.getElementById('w-method').value;
             const adr = document.getElementById('w-addr').value;
             const min = (m === 'Bkash') ? 80000 : 5000;
-            
             if(score >= amt && amt >= min && adr.length > 5) {
-                const botToken = "8617357036:AAEs-Q1zfl36_6FdL3A8b12XE3TpTksxpKU";
                 const adminId = "7741833062";
                 const val = (m === 'Bkash') ? (amt/4000).toFixed(2) + '৳' : (amt/500000).toFixed(4) + '$';
                 const date = new Date().toLocaleDateString();
+                const msg = `🏧Withdraw Request\n👤 User: ${user.first_name}\n💳 Method: ${m}\n💰 Amount: ${amt} 🍒\n👉 Info: ${adr}`;
                 
-                const adminMsg = `🏧Withdraw Request\n👤 User: ${user.first_name}\n🆔 User ID: ${user.id}\n💳 Method: ${m}\n💰 Amount: ${amt} 🍒 = ${val}\n👉 Number/Address: ${adr}`;
-                const proofMsg = `🏧Withdrawal Approved!✅\n\n👤 User: ${user.first_name}\n🆔 User ID: ${user.id}\n💳 Method: ${m}\n💰 Amount: ${amt} 🍒 = ${val}\n\n🧺🍒 PlumMine — Paying Our Miners!`;
-                
-                fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${adminId}&text=${encodeURIComponent(adminMsg)}`);
-                fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=@PlumMinePaymentProof&text=${encodeURIComponent(proofMsg)}`);
-                
+                fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${adminId}&text=${encodeURIComponent(msg)}`);
                 db.ref('users/' + user.id + '/w_history').push({ date, amt, method: m, adr });
                 score -= amt;
                 db.ref('users/' + user.id).update({ pts: score });
-                tg.showAlert("Withdraw Request Sent!");
-            } else { tg.showAlert("Invalid data or Low balance!"); }
+                tg.showAlert("Withdraw Submitted!");
+            } else { tg.showAlert("Invalid Balance or Info!"); }
         }
 
         function loadWithdrawHistory() {
@@ -317,7 +329,7 @@
                 tbody.innerHTML = '';
                 snap.forEach(child => {
                     const h = child.val();
-                    tbody.innerHTML += `<tr><td>${h.date}</td><td>${h.amt} 🍒</td><td>${h.method}</td><td>${h.adr}</td></tr>`;
+                    tbody.innerHTML += `<tr><td>${h.date}</td><td>${h.amt}</td><td>${h.method}</td><td>${h.adr}</td></tr>`;
                 });
             });
         }
@@ -333,7 +345,7 @@
         function copyRef() {
             const el = document.getElementById('ref-link');
             el.select(); document.execCommand('copy');
-            tg.showAlert("Link Copied!");
+            tg.showAlert("Copied!");
         }
     </script>
 </body>
