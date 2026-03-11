@@ -69,7 +69,7 @@
                 <img id="user-photo" src="https://via.placeholder.com/35" alt="">
                 <span id="user-name">Miner</span>
             </div>
-            <div class="badge">PRO</div>
+            <div class="badge" style="background: #e8f5e9; color: #2e7d32; padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold;">PRO</div>
         </div>
 
         <div id="home" class="page active">
@@ -80,12 +80,12 @@
 
             <div class="boxes-container">
                 <div class="box-item">
-                    <span class="box-name" id="g-box-name">Green Box</span>
+                    <span class="box-name" id="g-box-name">Loading...</span>
                     <img src="https://cdn-icons-png.flaticon.com/512/679/679821.png" alt="">
                     <div class="box-val" id="gc-val">0</div>
                 </div>
                 <div class="box-item">
-                    <span class="box-name" id="r-box-name">Red Box</span>
+                    <span class="box-name" id="r-box-name">Loading...</span>
                     <img src="https://cdn-icons-png.flaticon.com/512/679/679739.png" alt="">
                     <div class="box-val" id="rc-val">0</div>
                 </div>
@@ -109,24 +109,21 @@
                 <br><br>
                 <button class="btn" onclick="copyRef()">Copy Link</button>
             </div>
-            <div id="ref-list-container">
-                <h4>My Referrals</h4>
-                <div id="ref-list"></div>
-            </div>
+            <div id="ref-list"></div>
         </div>
 
         <div id="withdraw" class="page">
             <h3>Cash Out 🏧</h3>
             <div class="balance-card">
-                <input type="number" id="w-amt" placeholder="Amount (min 1000)" style="width:90%; padding:10px; margin-bottom:10px;">
-                <select id="w-method" style="width:95%; padding:10px; margin-bottom:10px;">
+                <input type="number" id="w-amt" placeholder="Amount (min 1000)" style="width:90%; padding:10px; margin-bottom:10px; border: 1px solid #ddd; border-radius: 8px;">
+                <select id="w-method" style="width:95%; padding:10px; margin-bottom:10px; border: 1px solid #ddd; border-radius: 8px;">
                     <option value="bKash">bKash</option>
                     <option value="Nagad">Nagad</option>
                     <option value="Binance">Binance (USDT)</option>
                 </select>
-                <input type="text" id="w-addr" placeholder="Address / Number" style="width:90%; padding:10px;">
+                <input type="text" id="w-addr" placeholder="Address / Number" style="width:90%; padding:10px; border: 1px solid #ddd; border-radius: 8px;">
                 <br><br>
-                <button class="btn" onclick="requestWithdraw()">Submit Request</button>
+                <button class="btn" style="width: 100%;" onclick="requestWithdraw()">Submit Request</button>
             </div>
         </div>
 
@@ -154,9 +151,8 @@
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
-        const user = tg.initDataUnsafe.user || { id: 12345, first_name: "LocalUser", photo_url: "" };
+        const user = tg.initDataUnsafe.user || { id: 12345, first_name: "Miner", photo_url: "" };
 
-        // Firebase Config
         const firebaseConfig = { databaseURL: "https://plummine-tap-project-default-rtdb.firebaseio.com/" };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
@@ -176,7 +172,7 @@
             document.getElementById('loading-screen').style.display = 'none';
         });
 
-        // Load Box Names
+        // Load Box Names from DB
         db.ref('green_box').on('value', s => document.getElementById('g-box-name').innerText = s.val() || "Green Box");
         db.ref('red_box').on('value', s => document.getElementById('r-box-name').innerText = s.val() || "Red Box");
 
@@ -190,27 +186,18 @@
         }
 
         // Tapper Logic
-        const tapBtn = document.getElementById('tap-btn');
-        tapBtn.addEventListener('click', (e) => {
+        document.getElementById('tap-btn').addEventListener('click', (e) => {
             score += 1;
             
-            // Green Box Logic (Per 100 Taps)
-            if (Math.floor(score) % 100 === 0) {
-                gc += 1;
-                tg.HapticFeedback.notificationOccurred('success');
-            }
-            
-            // Red Box Logic (Per 1000 Taps)
-            if (Math.floor(score) % 1000 === 0) {
-                rc += 1;
-                tg.HapticFeedback.notificationOccurred('warning');
-            }
+            // Boxes Logic
+            if (Math.floor(score) % 100 === 0) { gc += 1; tg.HapticFeedback.notificationOccurred('success'); }
+            if (Math.floor(score) % 1000 === 0) { rc += 1; tg.HapticFeedback.notificationOccurred('warning'); }
 
             updateUI();
             showFloatingText(e.clientX, e.clientY);
             tg.HapticFeedback.impactOccurred('light');
 
-            // Auto-Save Optimization (Prevents Lag)
+            // Save after 1s of inactivity to prevent lag
             clearTimeout(autoSaveTimeout);
             autoSaveTimeout = setTimeout(() => {
                 db.ref('users/' + user.id).update({ pts: score, gc: gc, rc: rc });
@@ -221,17 +208,14 @@
             const txt = document.createElement('div');
             txt.className = 'floating-text';
             txt.innerText = '+1';
-            txt.style.left = x + 'px';
-            txt.style.top = y + 'px';
+            txt.style.left = x + 'px'; txt.style.top = y + 'px';
             document.body.appendChild(txt);
             setTimeout(() => txt.remove(), 800);
         }
 
-        // Tasks Logic
         const tasks = [
             { id: 1, title: "Subscribe Channel", reward: 10, link: "https://t.me/plummine_official" },
-            { id: 2, title: "Join Discussion", reward: 10, link: "https://t.me/plum_discuss" },
-            { id: 3, title: "Follow Twitter", reward: 10, link: "#" }
+            { id: 2, title: "Join Discussion", reward: 10, link: "https://t.me/plum_discuss" }
         ];
 
         function renderTasks() {
@@ -243,10 +227,7 @@
                     const isDone = done[t.id];
                     container.innerHTML += `
                         <div class="task-card">
-                            <div>
-                                <strong>${t.title}</strong><br>
-                                <small>+${t.reward} Cherries</small>
-                            </div>
+                            <div><strong>${t.title}</strong><br><small>+${t.reward} 🍒</small></div>
                             <button class="btn" onclick="completeTask(${t.id}, '${t.link}', ${t.reward})" ${isDone ? 'disabled' : ''}>
                                 ${isDone ? 'Completed' : 'Claim'}
                             </button>
@@ -262,34 +243,25 @@
                 db.ref(`users/${user.id}/tasks/${id}`).set(true);
                 score += reward;
                 db.ref('users/' + user.id).update({ pts: score });
-                updateUI();
-                renderTasks();
-                tg.showAlert(`অভিনন্দন! আপনি ${reward} চেরি বোনাস পেয়েছেন।`);
+                updateUI(); renderTasks();
+                tg.showAlert(`Reward Claimed! +${reward} 🍒`);
             }, 2000);
         }
 
-        // Withdrawal Logic
         function requestWithdraw() {
             const amt = parseInt(document.getElementById('w-amt').value);
             const m = document.getElementById('w-method').value;
             const adr = document.getElementById('w-addr').value;
 
             if(amt >= 1000 && score >= amt && adr.length > 5) {
-                const msg = `🔔 New Withdrawal Request!\n\n👤 User: ${user.first_name}\n🆔 User ID: ${user.id}\n💳 Method: ${m}\n💰 Amount: ${amt} 🍒\n👉 Address: ${adr}`;
-                
+                const msg = `🔔 New Withdrawal Request!\n👤 User: ${user.first_name}\n💰 Amount: ${amt} 🍒\n💳 Method: ${m}\n👉 Addr: ${adr}`;
                 fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${adminId}&text=${encodeURIComponent(msg)}`);
-                fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${groupChatId}&text=${encodeURIComponent("🏧Withdrawal Pending!✅\n\n👤 User: "+user.first_name+"\n💰 Amount: "+amt+" 🍒")}`);
-
-                score -= amt;
-                db.ref('users/' + user.id).update({ pts: score });
-                updateUI();
-                tg.showAlert("উইথড্রো রিকোয়েস্ট সফল হয়েছে! অ্যাডমিন চেক করে পেমেন্ট করে দেবে।");
-            } else {
-                tg.showAlert("সঠিক তথ্য বা পর্যাপ্ত ব্যালেন্স নেই! (সর্বনিম্ন ১০০০)");
-            }
+                fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${groupChatId}&text=${encodeURIComponent("🏧 Withdrawal Pending! User: "+user.first_name+" Amt: "+amt)}`);
+                score -= amt; db.ref('users/' + user.id).update({ pts: score });
+                updateUI(); tg.showAlert("Request Submitted!");
+            } else { tg.showAlert("Invalid amount or address!"); }
         }
 
-        // Navigation
         function showPage(id, el) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -300,11 +272,9 @@
 
         function copyRef() {
             const copyText = document.getElementById("ref-url");
-            copyText.select();
-            document.execCommand("copy");
-            tg.showAlert("লিঙ্ক কপি হয়েছে! বন্ধুদের ইনভাইট করুন।");
+            copyText.select(); document.execCommand("copy");
+            tg.showAlert("Link Copied!");
         }
-
     </script>
 </body>
 </html>
