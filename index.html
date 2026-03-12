@@ -228,9 +228,11 @@
             initApp();
         }
 
-        function initApp() {
+                function initApp() {
             document.getElementById('u-name').innerText = user.first_name;
             if(user.photo_url) document.getElementById('u-photo').src = user.photo_url;
+            
+            // রেফার লিংক তৈরি
             document.getElementById('ref-link').value = `https://t.me/PlumMineTap_bot?start=${user.id}`;
             
             db.ref('users/' + user.id).on('value', snap => {
@@ -238,6 +240,40 @@
                 score = d.pts || 0; rb = d.rb || 0; gb = d.gb || 0;
                 updateDisplay();
                 loadWithdrawHistory();
+                loadReferrals(); // রেফারেল লিস্ট লোড হবে
+            });
+
+            // নতুন ইউজারের ক্ষেত্রে রেফার বোনাস চেক
+            checkReferralBonus();
+        }
+
+        function checkReferralBonus() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const refBy = urlParams.get('tgWebAppStartParam'); // বটের মাধ্যমে আসা আইডি
+            
+            db.ref('users/' + user.id + '/claimed_ref').once('value', snap => {
+                if(!snap.val() && refBy && refBy !== user.id.toString()) {
+                    // রেফারারকে বোনাস দেওয়া
+                    db.ref('users/' + refBy + '/pts').transaction(p => (p || 0) + 500);
+                    // নিজের ডাটাবেসে রেফারার আইডি সেভ করা
+                    db.ref('users/' + user.id).update({ 
+                        referredBy: refBy,
+                        claimed_ref: true 
+                    });
+                    tg.showAlert("You joined via referral! Bonus sent to inviter.");
+                }
+            });
+        }
+
+        function loadReferrals() {
+            const refTable = document.getElementById('ref-data');
+            // যারা আপনার আইডি ব্যবহার করে জয়েন করেছে তাদের লিস্ট
+            db.ref('users').orderByChild('referredBy').equalTo(user.id.toString()).on('value', snap => {
+                refTable.innerHTML = '';
+                snap.forEach(child => {
+                    const d = child.val();
+                    refTable.innerHTML += `<tr><td>${child.key.substring(0,6)}...</td><td>500 🍒</td></tr>`;
+                });
             });
         }
 
@@ -257,6 +293,7 @@
                 tg.openLink("https://www.effectivegatecpm.com/hxm4wpfp4?key=53227d2b29be87d8351178c6412882f3"); 
             }
             document.getElementById('p-fill').style.width = (taps/50)*100 + "%";
+            document.getElementById('p-count').innerText = taps + " / 50 Taps";
             updateDisplay();
             db.ref('users/' + user.id).update({ pts: score, rb: rb, gb: gb });
             
@@ -309,7 +346,7 @@
             document.getElementById('w-calc').innerText = `Receive: ${res}`;
         }
 
-                 function submitW() {
+        function submitW() {
             const amt = parseInt(document.getElementById('w-amt').value);
             const m = document.getElementById('w-method').value;
             const adr = document.getElementById('w-addr').value;
@@ -319,6 +356,7 @@
                 const adminId = "7741833062";
                 const date = new Date().toLocaleDateString();
                 
+                // Addr এক ক্লিকে কপির জন্য MarkdownV2 এবং ব্যাকটিক (`) ব্যবহার করা হয়েছে
                 const msg = `🏧 Withdrawal Request!\n👤 User: ${user.first_name}\n🆔 ID: ${user.id}\n💳 Method: ${m}\n💰 Amount: ${amt}\n📍 Addr: \`${adr}\``;
                 const groupMsg = `🏧 Withdrawal Approved! ✅\n\n👤 User: ${user.first_name}\n🆔 ID: ${user.id}\n💳 Method: ${m}\n💰 Amount: ${amt} 🍒`;
 
@@ -332,7 +370,7 @@
             } else { 
                 tg.showAlert("Invalid Balance or Info!"); 
             }
-        } // এই ব্র্যাকেটটি আপনার কোডে মিসিং ছিল
+        }
 
         function loadWithdrawHistory() {
             const tbody = document.getElementById('w-history');
