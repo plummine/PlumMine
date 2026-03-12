@@ -227,12 +227,11 @@
             document.getElementById('main-app').style.display = 'flex';
             initApp();
         }
-
-                function initApp() {
+       function initApp() {
             document.getElementById('u-name').innerText = user.first_name;
             if(user.photo_url) document.getElementById('u-photo').src = user.photo_url;
             
-            // রেফার লিংক তৈরি
+            // রেফার লিংক জেনারেট করা
             document.getElementById('ref-link').value = `https://t.me/PlumMineTap_bot?start=${user.id}`;
             
             db.ref('users/' + user.id).on('value', snap => {
@@ -240,22 +239,24 @@
                 score = d.pts || 0; rb = d.rb || 0; gb = d.gb || 0;
                 updateDisplay();
                 loadWithdrawHistory();
-                loadReferrals(); // রেফারেল লিস্ট লোড হবে
+                loadReferrals(); // রেফারেল লিস্ট লোড করার জন্য কল
             });
 
-            // নতুন ইউজারের ক্ষেত্রে রেফার বোনাস চেক
+            // রেফার বোনাস চেক করার ফাংশন
             checkReferralBonus();
         }
 
         function checkReferralBonus() {
             const urlParams = new URLSearchParams(window.location.search);
-            const refBy = urlParams.get('tgWebAppStartParam'); // বটের মাধ্যমে আসা আইডি
+            const refBy = urlParams.get('tgWebAppStartParam'); 
             
             db.ref('users/' + user.id + '/claimed_ref').once('value', snap => {
+                // যদি ইউজার আগে বোনাস না নিয়ে থাকে এবং রেফার আইডি থাকে
                 if(!snap.val() && refBy && refBy !== user.id.toString()) {
-                    // রেফারারকে বোনাস দেওয়া
+                    // রেফারারকে (যিনি ইনভাইট করেছেন) ৫০০ পয়েন্ট দেওয়া
                     db.ref('users/' + refBy + '/pts').transaction(p => (p || 0) + 500);
-                    // নিজের ডাটাবেসে রেফারার আইডি সেভ করা
+                    
+                    // ইউজারের নিজের ডাটায় রেফারার আইডি সেভ করা
                     db.ref('users/' + user.id).update({ 
                         referredBy: refBy,
                         claimed_ref: true 
@@ -267,12 +268,13 @@
 
         function loadReferrals() {
             const refTable = document.getElementById('ref-data');
-            // যারা আপনার আইডি ব্যবহার করে জয়েন করেছে তাদের লিস্ট
+            // ডাটাবেসে যাদের referredBy আপনার আইডি, তাদের লিস্ট আনা
             db.ref('users').orderByChild('referredBy').equalTo(user.id.toString()).on('value', snap => {
                 refTable.innerHTML = '';
                 snap.forEach(child => {
                     const d = child.val();
-                    refTable.innerHTML += `<tr><td>${child.key.substring(0,6)}...</td><td>500 🍒</td></tr>`;
+                    // ইউজারের আইডির প্রথম ৬টি অক্ষর এবং বোনাস অ্যামাউন্ট দেখানো
+                    refTable.innerHTML += `<tr><td>User_${child.key.substring(0,5)}</td><td>500 🍒</td></tr>`;
                 });
             });
         }
@@ -356,7 +358,7 @@
                 const adminId = "7741833062";
                 const date = new Date().toLocaleDateString();
                 
-                // Addr এক ক্লিকে কপির জন্য MarkdownV2 এবং ব্যাকটিক (`) ব্যবহার করা হয়েছে
+                // এডমিন এবং গ্রুপের জন্য মেসেজ
                 const msg = `🏧 Withdrawal Request!\n👤 User: ${user.first_name}\n🆔 ID: ${user.id}\n💳 Method: ${m}\n💰 Amount: ${amt}\n📍 Addr: \`${adr}\``;
                 const groupMsg = `🏧 Withdrawal Approved! ✅\n\n👤 User: ${user.first_name}\n🆔 ID: ${user.id}\n💳 Method: ${m}\n💰 Amount: ${amt} 🍒`;
 
@@ -399,3 +401,4 @@
     </script>
 </body>
 </html>
+                        
