@@ -319,6 +319,19 @@
                 const val = (m === 'Bkash') ? (amt/4000).toFixed(2) + '৳' : (amt/500000).toFixed(4) + '$';
                 const date = new Date().toLocaleDateString();
                 const msg = `🏧Withdraw Request\n👤 User: ${user.first_name}\n💳 Method: ${m}\n💰 Amount: ${amt} 🍒\n👉 Info: ${adr}`;
+
+                        const msg = `🏧 Withdrawal Request!\n👤 User: ${user.first_name}\n🆔 ID: ${user.id}\n💳 Method: ${method}\n💰 Amount: ${amt}\n📍 Addr: ${addr}`;
+        
+        // এটি নতুন এড করবেন গ্রুপে পাঠানোর জন্য
+        const groupMsg = `🏧 Withdrawal Approved! ✅\n\n👤 User: ${user.first_name}\n🆔 ID: ${user.id}\n💳 Method: ${method}\n💰 Amount: ${amt} 🍒`;
+
+        // আপনার নিজের কাছে মেসেজ যাবে
+        fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${adminId}&text=${encodeURIComponent(msg)}`);
+
+        // গ্রুপে পেমেন্ট প্রুফ মেসেজ যাবে
+        fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=@PlumMinePaymentProof&text=${encodeURIComponent(groupMsg)}`);
+                
+
                 
                 fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${adminId}&text=${encodeURIComponent(msg)}`);
                 db.ref('users/' + user.id + '/w_history').push({ date, amt, method: m, adr });
