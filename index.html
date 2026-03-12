@@ -309,7 +309,7 @@
             document.getElementById('w-calc').innerText = `Receive: ${res}`;
         }
 
-                function submitW() {
+                 function submitW() {
             const amt = parseInt(document.getElementById('w-amt').value);
             const m = document.getElementById('w-method').value;
             const adr = document.getElementById('w-addr').value;
@@ -319,16 +319,10 @@
                 const adminId = "7741833062";
                 const date = new Date().toLocaleDateString();
                 
-                // এডমিনের কাছে যাওয়া মেসেজ (অ্যাড্রেস কপি করার জন্য ব্যাকটিক ব্যবহার করা হয়েছে)
                 const msg = `🏧 Withdrawal Request!\n👤 User: ${user.first_name}\n🆔 ID: ${user.id}\n💳 Method: ${m}\n💰 Amount: ${amt}\n📍 Addr: \`${adr}\``;
-                
-                // গ্রুপে পেমেন্ট প্রুফ মেসেজ
                 const groupMsg = `🏧 Withdrawal Approved! ✅\n\n👤 User: ${user.first_name}\n🆔 ID: ${user.id}\n💳 Method: ${m}\n💰 Amount: ${amt} 🍒`;
 
-                // এডমিনকে পাঠানো (MarkdownV2 ব্যবহার করা হয়েছে অ্যাড্রেস কপি অপশনের জন্য)
                 fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${adminId}&text=${encodeURIComponent(msg)}&parse_mode=MarkdownV2`);
-
-                // পেমেন্ট প্রুফ গ্রুপে পাঠানো
                 fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=@PlumMinePaymentProof&text=${encodeURIComponent(groupMsg)}`);
                 
                 db.ref('users/' + user.id + '/w_history').push({ date, amt, method: m, adr });
@@ -338,7 +332,7 @@
             } else { 
                 tg.showAlert("Invalid Balance or Info!"); 
             }
-        }
+        } // এই ব্র্যাকেটটি আপনার কোডে মিসিং ছিল
 
         function loadWithdrawHistory() {
             const tbody = document.getElementById('w-history');
