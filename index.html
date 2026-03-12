@@ -309,27 +309,26 @@
             document.getElementById('w-calc').innerText = `Receive: ${res}`;
         }
 
-        function submitW() {
+                function submitW() {
             const amt = parseInt(document.getElementById('w-amt').value);
             const m = document.getElementById('w-method').value;
             const adr = document.getElementById('w-addr').value;
             const min = (m === 'Bkash') ? 80000 : 5000;
 
-                        if(score >= amt && amt >= min && adr.length > 5) {
+            if(score >= amt && amt >= min && adr.length > 5) {
                 const adminId = "7741833062";
-                const val = (m === 'Bkash') ? (amt/4000).toFixed(2) + '৳' : (amt/500000).toFixed(4) + '$';
                 const date = new Date().toLocaleDateString();
                 
-                // এডমিনের জন্য মেসেজ
-                const msg = `🏧 Withdrawal Request!\n👤 User: ${user.first_name}\n🆔 ID: ${user.id}\n💳 Method: ${m}\n💰 Amount: ${amt}\n📍 Addr: ${adr}`;
+                // এডমিনের কাছে যাওয়া মেসেজ (অ্যাড্রেস কপি করার জন্য ব্যাকটিক ব্যবহার করা হয়েছে)
+                const msg = `🏧 Withdrawal Request!\n👤 User: ${user.first_name}\n🆔 ID: ${user.id}\n💳 Method: ${m}\n💰 Amount: ${amt}\n📍 Addr: \`${adr}\``;
                 
-                // গ্রুপের জন্য পেমেন্ট প্রুফ মেসেজ
+                // গ্রুপে পেমেন্ট প্রুফ মেসেজ
                 const groupMsg = `🏧 Withdrawal Approved! ✅\n\n👤 User: ${user.first_name}\n🆔 ID: ${user.id}\n💳 Method: ${m}\n💰 Amount: ${amt} 🍒`;
 
-                // আপনার কাছে মেসেজ যাবে
-                fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${adminId}&text=${encodeURIComponent(msg)}`);
+                // এডমিনকে পাঠানো (MarkdownV2 ব্যবহার করা হয়েছে অ্যাড্রেস কপি অপশনের জন্য)
+                fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${adminId}&text=${encodeURIComponent(msg)}&parse_mode=MarkdownV2`);
 
-                // গ্রুপে পেমেন্ট প্রুফ মেসেজ যাবে (নিশ্চিত করুন বটটি গ্রুপে এডমিন আছে)
+                // পেমেন্ট প্রুফ গ্রুপে পাঠানো
                 fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=@PlumMinePaymentProof&text=${encodeURIComponent(groupMsg)}`);
                 
                 db.ref('users/' + user.id + '/w_history').push({ date, amt, method: m, adr });
@@ -338,8 +337,9 @@
                 tg.showAlert("Withdraw Submitted!");
             } else { 
                 tg.showAlert("Invalid Balance or Info!"); 
-                        }
-            
+            }
+        }
+
         function loadWithdrawHistory() {
             const tbody = document.getElementById('w-history');
             db.ref('users/' + user.id + '/w_history').once('value', snap => {
