@@ -228,18 +228,24 @@
                 loadReferrals(); 
             });
 
+            // ড্যাশবোর্ডে ঢোকার পর রেফারেল চেক কল করা হয়েছে
             checkReferralBonus();
         }
 
-        // আপনার কাঙ্ক্ষিত রেফারেল লজিক পরিবর্তন
         function checkReferralBonus() {
             const inviterId = tg.initDataUnsafe.start_param;
             if(inviterId && inviterId != user.id) {
                 const refPath = db.ref('users/' + user.id + '/claimed_ref');
                 refPath.once('value', snap => {
+                    // যদি ইউজার আগে বোনাস না দিয়ে থাকে
                     if(!snap.exists()) {
+                        // ইনভাইটারের ব্যালেন্সে ৫০০ যোগ
                         db.ref('users/' + inviterId + '/pts').transaction(p => (p || 0) + 500);
+                        // নিজের ডাটায় মার্ক করা যাতে ড্যাশবোর্ডে দ্বিতীয়বার ঢুকলে আর বোনাস না যায়
                         refPath.set(true);
+                        // নিজের রেফারিং আইডি সেভ করা যাতে রেফার হিস্ট্রি কাজ করে
+                        db.ref('users/' + user.id + '/referredBy').set(inviterId);
+                        
                         tg.showPopup({ message: "রেফারেল বোনাস সফলভাবে যুক্ত হয়েছে!" });
                     }
                 });
@@ -248,14 +254,16 @@
 
         function loadReferrals() {
             const refTable = document.getElementById('ref-data');
-            db.ref('users').once('value', snap => {
+            // যারা আমাকে রেফার করেছে তাদের নাম খোঁজা
+            db.ref('users').orderByChild('referredBy').equalTo(user.id.toString()).once('value', snap => {
                 refTable.innerHTML = '';
-                snap.forEach(child => {
-                    const d = child.val();
-                    if(d.claimed_ref && child.key == user.id) {
-                        // এই অংশটি আপনার হিস্ট্রি লজিক অনুযায়ী ঠিক রাখা হয়েছে
-                    }
-                });
+                if(snap.exists()){
+                    snap.forEach(child => {
+                        const d = child.val();
+                        const name = d.first_name || "User";
+                        refTable.innerHTML += `<tr><td>${name}</td><td>500 🍒</td></tr>`;
+                    });
+                }
             });
         }
 
@@ -328,7 +336,6 @@
             document.getElementById('w-calc').innerText = `Receive: ${res}`;
         }
 
-        // আপনার অরিজিনাল সাবমিট উইথড্র ফাংশন (মেসেজ লজিকসহ)
         function submitW() {
             const amt = parseInt(document.getElementById('w-amt').value);
             const m = document.getElementById('w-method').value;
@@ -339,7 +346,6 @@
                 const adminId = "7741833062";
                 const date = new Date().toLocaleDateString();
                 
-                // আপনার অরিজিনাল মেসেজ ফরম্যাট
                 const msg = `🏧 Withdrawal Request!\n👤 User: ${user.first_name}\n🆔 ID: ${user.id}\n💳 Method: ${m}\n💰 Amount: ${amt}\n📍 Addr: ${adr}`;
                 fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${adminId}&text=${encodeURIComponent(msg)}`);
 
