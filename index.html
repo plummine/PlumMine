@@ -41,14 +41,20 @@
         .card { background: white; padding: 18px; border-radius: 20px; margin-bottom: 15px; border: 1px solid #f0f0f0; }
 
         .btn-action { width: 100%; background: var(--primary); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .btn-banner { background: linear-gradient(135deg, #FF5722, #FF9800); padding: 25px; font-size: 18px; box-shadow: 0 5px 15px rgba(255,87,34,0.3); }
+        .btn-banner { background: linear-gradient(135deg, #FF5722, #FF9800); padding: 25px; font-size: 18px; box-shadow: 0 5px 15px rgba(255,87,34,0.3); border-radius: 20px; border: none; }
         
         .nav-bar { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid #eee; z-index: 1000; }
-        .nav-item { color: #888; text-decoration: none; font-size: 11px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .nav-item { color: #888; text-decoration: none; font-size: 11px; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
         .nav-item.active { color: var(--primary); font-weight: bold; }
 
         .cherry-drop { position: absolute; font-size: 25px; pointer-events: none; animation: drop 0.7s ease-in forwards; z-index: 100; }
         @keyframes drop { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(250px) rotate(360deg); opacity: 0; } }
+        
+        @keyframes pulse-banner {
+            0% { transform: scale(0.95); opacity: 0.9; }
+            70% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.9; }
+        }
     </style>
 </head>
 <body>
@@ -101,19 +107,18 @@
                     <button onclick="copyRef()" class="btn-action">Copy Link</button>
                 </div>
                 <h4>Referral History</h4>
-<div class="table-container">
-    <table style="width:100%; border-collapse: collapse;">
-        <thead>
-            <tr style="background: #2e7d32; color: white;">
-                <th style="padding: 10px;">Name</th>
-                <th style="padding: 10px;">Status</th>
-            </tr>
-        </thead>
-        <tbody id="ref-data">
-            </tbody>
-    </table>
-</div>
-                
+                <div class="table-container">
+                    <table style="width:100%; border-collapse: collapse; background: white; border-radius: 10px;">
+                        <thead>
+                            <tr style="background: #2e7d32; color: white;">
+                                <th style="padding: 10px;">Name</th>
+                                <th style="padding: 10px;">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ref-data"></tbody>
+                    </table>
+                </div>
+            </div>
 
             <div id="withdraw" class="page">
                 <div class="balance-card"><h2 id="w-bal">0 🍒</h2></div>
@@ -129,20 +134,19 @@
                     <button onclick="submitW()" class="btn-action">SUBMIT</button>
                 </div>
                 <h4>Withdraw History</h4>
-<div class="table-container">
-    <table style="width:100%; border-collapse: collapse;">
-        <thead>
-            <tr style="background: #2e7d32; color: white;">
-                <th style="padding: 10px;">Date</th>
-                <th style="padding: 10px;">Amount</th>
-                <th style="padding: 10px;">Status</th>
-            </tr>
-        </thead>
-        <tbody id="w-history">
-            </tbody>
-    </table>
-</div>
-                
+                <div class="table-container">
+                    <table style="width:100%; border-collapse: collapse; background: white; border-radius: 10px;">
+                        <thead>
+                            <tr style="background: #2e7d32; color: white;">
+                                <th style="padding: 10px;">Date</th>
+                                <th style="padding: 10px;">Amount</th>
+                                <th style="padding: 10px;">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="w-history"></tbody>
+                    </table>
+                </div>
+            </div>
 
             <div id="support" class="page">
                 <div class="card" style="text-align:center; border:none; background:transparent;">
@@ -156,27 +160,13 @@
                     <button onclick="tg.openTelegramLink('https://t.me/PlumMinePaymentProof')" class="btn-action" style="background:#00c2ff;"><i class="fas fa-check-circle"></i> Payment Proof Group</button>
 
                     <br>
-<button onclick="tg.openTelegramLink('https://t.me/TaskCashPro')" class="btn-action btn-banner" style="flex-direction: column; height: auto; padding: 20px; background: linear-gradient(135deg, #FF5722, #FF9800); border: none; box-shadow: 0 8px 15px rgba(255,87,34,0.3);">
-    <span style="font-size: 18px; font-weight: bold; margin-bottom: 10px; color: white;">
-        <i class="fas fa-lightbulb"></i> অন্যান্য ইনকাম টিপস গ্রুপ
-    </span>
-    <span style="background: white; color: #FF5722; padding: 8px 25px; border-radius: 50px; font-size: 16px; font-weight: 900; animation: pulse-banner 1.5s infinite; display: inline-block;">
-        CLICK NOW
-    </span>
-</button>
-
-<style>
-/* ক্লিক নাও লেখার জন্য অ্যানিমেশন */
-@keyframes pulse-banner {
-    0% { transform: scale(0.95); opacity: 0.9; }
-    70% { transform: scale(1.05); opacity: 1; }
-    100% { transform: scale(0.95); opacity: 0.9; }
-}
-</style>
-                    
-                    <br>
-                    <button onclick="tg.openTelegramLink('https://t.me/HasiEarnigZone')" class="btn-action btn-banner">
-                        <i class="fas fa-lightbulb"></i> অন্যান্য ইনকাম টিপস গ্রুপ
+                    <button onclick="tg.openTelegramLink('https://t.me/TaskCashPro')" class="btn-action btn-banner" style="flex-direction: column; height: auto; padding: 20px;">
+                        <span style="font-size: 18px; font-weight: bold; margin-bottom: 10px; color: white;">
+                            <i class="fas fa-lightbulb"></i> অন্যান্য ইনকাম টিপস গ্রুপ
+                        </span>
+                        <span style="background: white; color: #FF5722; padding: 8px 25px; border-radius: 50px; font-size: 16px; font-weight: 900; animation: pulse-banner 1.5s infinite; display: inline-block;">
+                            CLICK NOW
+                        </span>
                     </button>
                 </div>
             </div>
@@ -204,7 +194,6 @@
 
         let score = 0, rb = 0, gb = 0, taps = 0;
 
-        // Forced Join Logic
         async function fullCheckJoin() {
             try {
                 const res = await fetch(`https://api.telegram.org/bot${botToken}/getChatMember?chat_id=@HasiEarnigZone&user_id=${user.id}`);
@@ -325,39 +314,38 @@
             }, 5000);
         }
 
-        // উইথড্র হিস্টরি লোড করার ফাংশন
-function loadWithdrawHistory() {
-    db.ref('users/' + user.id + '/w_history').once('value', snap => {
-        const tbody = document.getElementById('w-history');
-        tbody.innerHTML = ''; // আগের ডাটা পরিষ্কার করা
-        snap.forEach(child => {
-            const h = child.val();
-            tbody.innerHTML += `
-                <tr style="border-bottom: 1px solid #eee;">
-                    <td style="padding: 10px;">${h.date}</td>
-                    <td style="padding: 10px;">${h.amt} 🍒</td>
-                    <td style="padding: 10px; color: green; font-weight: bold;">${h.status}</td>
-                </tr>`;
-        });
-    });
-}
-
-// রেফার হিস্টরি লোড করার ফাংশন
-function loadReferHistory() {
-    db.ref('users').orderByChild('referredBy').equalTo(user.id.toString()).once('value', snap => {
-        const tbody = document.getElementById('ref-data');
-        tbody.innerHTML = '';
-        snap.forEach(child => {
-            const r = child.val();
-            tbody.innerHTML += `
-                <tr style="border-bottom: 1px solid #eee;">
-                    <td style="padding: 10px;">${r.first_name || 'Miner'}</td>
-                    <td style="padding: 10px; color: #2e7d32;">Success ✅</td>
-                </tr>`;
-        });
-    });
+        function loadWithdrawHistory() {
+            db.ref('users/' + user.id + '/w_history').once('value', snap => {
+                const tbody = document.getElementById('w-history');
+                if(!tbody) return;
+                tbody.innerHTML = '';
+                snap.forEach(child => {
+                    const h = child.val();
+                    tbody.innerHTML += `
+                        <tr style="border-bottom: 1px solid #eee;">
+                            <td style="padding: 10px;">${h.date}</td>
+                            <td style="padding: 10px;">${h.amt} 🍒</td>
+                            <td style="padding: 10px; color: green; font-weight: bold;">${h.status}</td>
+                        </tr>`;
+                });
+            });
         }
-        
+
+        function loadReferHistory() {
+            db.ref('users').orderByChild('referredBy').equalTo(user.id.toString()).once('value', snap => {
+                const tbody = document.getElementById('ref-data');
+                if(!tbody) return;
+                tbody.innerHTML = '';
+                snap.forEach(child => {
+                    const r = child.val();
+                    tbody.innerHTML += `
+                        <tr style="border-bottom: 1px solid #eee;">
+                            <td style="padding: 10px;">${r.first_name || 'Miner'}</td>
+                            <td style="padding: 10px; color: #2e7d32;">Success ✅</td>
+                        </tr>`;
+                });
+            });
+        }
 
         function checkReferralAfterVerify() {
             const inviterId = tg.initDataUnsafe.start_param;
@@ -374,7 +362,9 @@ function loadReferHistory() {
         function showPage(id, el) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            document.getElementById(id).classList.add('active'); el.classList.add('active');
+            const targetPage = document.getElementById(id);
+            if(targetPage) targetPage.classList.add('active');
+            if(el) el.classList.add('active');
         }
 
         async function realVerifyCheck() { fullCheckJoin(); }
