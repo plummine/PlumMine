@@ -50,11 +50,12 @@
         .cherry-drop { position: absolute; font-size: 25px; pointer-events: none; animation: drop 0.7s ease-in forwards; z-index: 100; }
         @keyframes drop { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(250px) rotate(360deg); opacity: 0; } }
         
-        @keyframes pulse-banner {
-            0% { transform: scale(0.95); opacity: 0.9; }
-            70% { transform: scale(1.05); opacity: 1; }
-            100% { transform: scale(0.95); opacity: 0.9; }
-        }
+        @keyframes pulse-banner { 0% { transform: scale(0.95); opacity: 0.9; } 70% { transform: scale(1.05); opacity: 1; } 100% { transform: scale(0.95); opacity: 0.9; } }
+        
+        .table-container { overflow-x: auto; margin-top: 10px; }
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 15px; overflow: hidden; }
+        th { background: var(--primary); color: white; padding: 12px; font-size: 14px; }
+        td { padding: 12px; text-align: center; border-bottom: 1px solid #eee; font-size: 13px; }
     </style>
 </head>
 <body>
@@ -63,8 +64,8 @@
 
     <div id="verify-screen" style="display:none;">
         <div class="card">
-            <h2 style="color:red;">Join Channel Required! 🍒</h2>
-            <p>আমাদের অফিসিয়াল গ্রুপ ও চ্যানেলে জয়েন না থাকলে আপনি আর্নিং করতে পারবেন না।</p>
+            <h2 style="color:red;">Join Required! 🍒</h2>
+            <p>আমাদের অফিসিয়াল চ্যানেল ও বটে জয়েন না থাকলে আপনি পেমেন্ট পাবেন না।</p>
             <button onclick="tg.openTelegramLink('https://t.me/HasiEarnigZone')" class="btn-action" style="background:#24A1DE;"><i class="fab fa-telegram-plane"></i> Join Channel</button>
             <button onclick="tg.openTelegramLink('https://t.me/taskcashpro_official_bot?start=r03512472386')" class="btn-action" style="background:#24A1DE;"><i class="fas fa-robot"></i> Join Bot</button>
             <button onclick="realVerifyCheck()" class="btn-action">VERIFY NOW ✅</button>
@@ -73,6 +74,7 @@
 
     <div id="main-app" class="app-container">
         <div class="content-area">
+            
             <div id="home" class="page active">
                 <h1 class="bot-name-3d">PlumMine</h1>
                 <div class="balance-card">
@@ -103,18 +105,13 @@
             <div id="refer" class="page">
                 <div class="card" style="text-align:center;">
                     <p>প্রতি সফল রেফারে ৫০০ 🍒</p>
-                    <input type="text" id="ref-link" readonly style="width:100%; padding:10px; text-align:center; border-radius:10px; margin-bottom:10px;">
+                    <input type="text" id="ref-link" readonly style="width:100%; padding:12px; text-align:center; border:1px solid #ddd; border-radius:12px; margin-bottom:12px;">
                     <button onclick="copyRef()" class="btn-action">Copy Link</button>
                 </div>
                 <h4>Referral History</h4>
                 <div class="table-container">
-                    <table style="width:100%; border-collapse: collapse; background: white; border-radius: 10px;">
-                        <thead>
-                            <tr style="background: #2e7d32; color: white;">
-                                <th style="padding: 10px;">Name</th>
-                                <th style="padding: 10px;">Status</th>
-                            </tr>
-                        </thead>
+                    <table>
+                        <thead><tr><th>Name</th><th>Status</th></tr></thead>
                         <tbody id="ref-data"></tbody>
                     </table>
                 </div>
@@ -128,21 +125,15 @@
                         <option value="Nagad">Nagad</option>
                         <option value="Binance">Binance</option>
                     </select>
-                    <input type="number" id="w-amt" placeholder="Amount" class="btn-action" style="background:#fff; color:#333; border:1px solid #ddd;" oninput="updateWCalc()">
+                    <input type="number" id="w-amt" placeholder="Min 10000 🍒" class="btn-action" style="background:#fff; color:#333; border:1px solid #ddd;" oninput="updateWCalc()">
                     <div id="w-calc-live" style="text-align:right; font-weight:bold; color:var(--accent);">Receive: 0.00 BDT</div>
-                    <input type="text" id="w-addr" placeholder="Address" class="btn-action" style="background:#fff; color:#333; border:1px solid #ddd;">
+                    <input type="text" id="w-addr" placeholder="Wallet Address/Number" class="btn-action" style="background:#fff; color:#333; border:1px solid #ddd;">
                     <button onclick="submitW()" class="btn-action">SUBMIT</button>
                 </div>
                 <h4>Withdraw History</h4>
                 <div class="table-container">
-                    <table style="width:100%; border-collapse: collapse; background: white; border-radius: 10px;">
-                        <thead>
-                            <tr style="background: #2e7d32; color: white;">
-                                <th style="padding: 10px;">Date</th>
-                                <th style="padding: 10px;">Amount</th>
-                                <th style="padding: 10px;">Status</th>
-                            </tr>
-                        </thead>
+                    <table>
+                        <thead><tr><th>Date</th><th>Amount</th><th>Status</th></tr></thead>
                         <tbody id="w-history"></tbody>
                     </table>
                 </div>
@@ -150,23 +141,14 @@
 
             <div id="support" class="page">
                 <div class="card" style="text-align:center; border:none; background:transparent;">
-                    <img src="https://i.ibb.co.com/xTkFZkM/28204.jpg" style="width: 100%; border-radius: 20px; margin-bottom:20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1);">
-                    <h3>Need Any Help? 🎧</h3>
-                    
+                    <img src="https://i.ibb.co.com/xTkFZkM/28204.jpg" style="width: 100%; border-radius: 20px; margin-bottom:15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
                     <button onclick="tg.openTelegramLink('https://t.me/PlumMineAdmin')" class="btn-action" style="background:#d84315;"><i class="fas fa-user-shield"></i> Contact Admin</button>
-                    
                     <button onclick="tg.openTelegramLink('https://t.me/HasiEarnigZone')" class="btn-action" style="background:#24A1DE;"><i class="fab fa-telegram-plane"></i> Official Channel</button>
-                    
                     <button onclick="tg.openTelegramLink('https://t.me/PlumMinePaymentProof')" class="btn-action" style="background:#00c2ff;"><i class="fas fa-check-circle"></i> Payment Proof Group</button>
-
                     <br>
-                    <button onclick="tg.openTelegramLink('https://t.me/TaskCashPro')" class="btn-action btn-banner" style="flex-direction: column; height: auto; padding: 20px;">
-                        <span style="font-size: 18px; font-weight: bold; margin-bottom: 10px; color: white;">
-                            <i class="fas fa-lightbulb"></i> অন্যান্য ইনকাম টিপস গ্রুপ
-                        </span>
-                        <span style="background: white; color: #FF5722; padding: 8px 25px; border-radius: 50px; font-size: 16px; font-weight: 900; animation: pulse-banner 1.5s infinite; display: inline-block;">
-                            CLICK NOW
-                        </span>
+                    <button onclick="tg.openTelegramLink('https://t.me/TaskCashPro')" class="btn-action btn-banner" style="flex-direction: column; height: auto;">
+                        <span style="color:white; font-weight:bold; font-size:18px;">অন্যান্য ইনকাম টিপস গ্রুপ</span>
+                        <span style="background:white; color:#FF5722; padding:5px 20px; border-radius:50px; font-size:14px; font-weight:900; margin-top:8px; animation: pulse-banner 1.5s infinite; display: inline-block;">CLICK NOW</span>
                     </button>
                 </div>
             </div>
@@ -276,18 +258,30 @@
             const adr = document.getElementById('w-addr').value;
             const date = new Date().toLocaleDateString();
 
+            if (isNaN(amt) || amt < 10000) { 
+                tg.showAlert("দুঃখিত! সর্বনিম্ন উইথড্র ১০,০০০ 🍒"); 
+                return; 
+            }
+
             if (score >= amt && adr.length > 5) {
+                // ১. অ্যাডমিনের কাছে রিকোয়েস্ট মেসেজ (অরিজিনাল ফরম্যাট)
                 const adminMsg = `🏧 *New Request!*\n👤 User: ${user.first_name}\n💳 Method: ${m}\n💰 Amt: ${amt}\n📍 Adr: \`${adr}\`\n📅 Date: ${date}`;
                 fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${adminId}&text=${encodeURIComponent(adminMsg)}&parse_mode=Markdown`);
 
+                // ২. পেমেন্ট প্রুফ গ্রুপে সাকসেস মেসেজ (অরিজিনাল ফরম্যাট)
                 const groupMsg = `✅ *Withdrawal Successful!*\n👤 Miner: ${user.first_name}\n🍒 Amount: ${amt}\n💰 Method: ${m}\n💳 Target: ${adr}\n📅 Date: ${date}\nStatus: Paid Successfully ✅`;
                 fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${proofGroup}&text=${encodeURIComponent(groupMsg)}&parse_mode=Markdown`);
 
                 db.ref('users/' + user.id + '/w_history').push({ date, amt, status: "Paid" });
                 score -= amt;
                 db.ref('users/' + user.id).update({ pts: score });
-                tg.showAlert("Success!");
-            } else { tg.showAlert("Check balance or info!"); }
+                
+                tg.showAlert("Success! ✅");
+                document.getElementById('w-amt').value = '';
+                document.getElementById('w-addr').value = '';
+            } else { 
+                tg.showAlert("Check balance or info!"); 
+            }
         }
 
         function renderTasks() {
@@ -299,11 +293,12 @@
                     const isDone = (now - (timers[i] || 0)) < 86400000;
                     list.innerHTML += `<div class="card" style="display:flex; justify-content:space-between; align-items:center;">
                         <span>Daily Task #${i} (+50 🍒)</span>
-                        <button onclick="${isDone?'':'doTask('+i+')'}" style="background:${isDone?'#ccc':''};" class="btn-action">${isDone?'Done':'Start'}</button>
+                        <button onclick="${isDone?'':'doTask('+i+')'}" style="background:${isDone?'#ccc':''}; min-width:80px;" class="btn-action">${isDone?'Done':'Start'}</button>
                     </div>`;
                 }
             });
         }
+
         function doTask(id) {
             tg.openLink("https://www.effectivegatecpm.com/j367fw0d?key=276e1acc8810b4e8802bb57e85fd3450");
             setTimeout(() => {
@@ -321,12 +316,7 @@
                 tbody.innerHTML = '';
                 snap.forEach(child => {
                     const h = child.val();
-                    tbody.innerHTML += `
-                        <tr style="border-bottom: 1px solid #eee;">
-                            <td style="padding: 10px;">${h.date}</td>
-                            <td style="padding: 10px;">${h.amt} 🍒</td>
-                            <td style="padding: 10px; color: green; font-weight: bold;">${h.status}</td>
-                        </tr>`;
+                    tbody.innerHTML += `<tr><td>${h.date}</td><td>${h.amt} 🍒</td><td style="color: green; font-weight: bold;">${h.status}</td></tr>`;
                 });
             });
         }
@@ -338,11 +328,7 @@
                 tbody.innerHTML = '';
                 snap.forEach(child => {
                     const r = child.val();
-                    tbody.innerHTML += `
-                        <tr style="border-bottom: 1px solid #eee;">
-                            <td style="padding: 10px;">${r.first_name || 'Miner'}</td>
-                            <td style="padding: 10px; color: #2e7d32;">Success ✅</td>
-                        </tr>`;
+                    tbody.innerHTML += `<tr><td>${r.first_name || 'Miner'}</td><td style="color: #2e7d32;">Success ✅</td></tr>`;
                 });
             });
         }
