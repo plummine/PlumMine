@@ -14,7 +14,6 @@
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 0; user-select: none; overflow: hidden; height: 100vh; }
         
-        /* Verification Layer */
         #loading-screen, #verify-screen { position: fixed; inset: 0; background: white; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10000; padding: 20px; text-align: center; }
         .spinner { width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -22,7 +21,6 @@
         .app-container { display: none; height: 100vh; width: 100%; flex-direction: column; position: relative; }
         .content-area { flex-grow: 1; overflow-y: auto; padding-bottom: 110px; }
         
-        /* Dashboard UI */
         .bot-name-3d { font-size: 36px; font-weight: 900; color: #2e7d32; text-shadow: 2px 2px 0px #fff, 5px 5px 0px #d84315; margin: 15px 0; text-align: center; }
         .user-info { display: flex; align-items: center; justify-content: space-between; padding: 0 20px; margin-bottom: 15px; }
         .user-photo-circle { width: 55px; height: 55px; border-radius: 50%; border: 3px solid var(--primary); object-fit: cover; background: #eee; }
@@ -32,7 +30,6 @@
         .progress-line { width: 100%; height: 12px; background: #eee; border-radius: 10px; overflow: hidden; margin-top: 10px; }
         .progress-fill { height: 100%; width: 0%; background: var(--primary); transition: 0.3s; }
 
-        /* Tree Area */
         .tree-section { display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; min-height: 280px; }
         .tree-container { width: 230px; cursor: pointer; transition: transform 0.1s; z-index: 10; }
         .tree-container:active { transform: scale(0.92); }
@@ -91,6 +88,7 @@
                 </div>
                 <div class="balance-card">
                     <h2 id="total-bal">0 🍒</h2>
+                    <div id="usd-bal" style="color: #666; font-weight: bold; margin-bottom: 10px;">$0.00 | 0.00 BDT</div>
                     <div class="progress-line"><div id="p-fill" class="progress-fill"></div></div>
                     <small id="p-count">0 / 50 Taps</small>
                 </div>
@@ -124,11 +122,12 @@
                 <div class="balance-card"><p>Available Balance</p><h2 id="w-bal">0 🍒</h2></div>
                 <div class="card">
                     <select id="w-method" class="btn-action" style="background:#fff; color:#333; border:1px solid #ddd; margin-bottom:10px;" onchange="updateW()">
-                        <option value="Bkash">Bkash (Min 80000 🍒)</option>
-                        <option value="Binance">Binance BEP20 (Min 5000 🍒)</option>
+                        <option value="Bkash">Bkash (Min 50000 🍒)</option>
+                        <option value="Nagad">Nagad (Min 50000 🍒)</option>
+                        <option value="Binance">Binance (Min 10000 🍒)</option>
                     </select>
-                    <input type="number" id="w-amt" placeholder="🍒 Amount" class="btn-action" style="background:#fff; color:#333; border:1px solid #ddd; margin-bottom:10px;" oninput="updateW()">
-                    <div id="w-calc" style="text-align:right; font-weight:bold; color:var(--accent); margin-bottom:10px;">Receive: 0</div>
+                    <input type="number" id="w-amt" placeholder="🍒 Enter Amount" class="btn-action" style="background:#fff; color:#333; border:1px solid #ddd; margin-bottom:10px;" oninput="updateW()">
+                    <div id="w-calc" style="text-align:right; font-weight:bold; color:var(--accent); margin-bottom:10px; font-size: 14px;">Receive: 0.00 BDT | $0.00</div>
                     <input type="text" id="w-addr" placeholder="Number/Address" class="btn-action" style="background:#fff; color:#333; border:1px solid #ddd; margin-bottom:15px;">
                     <button onclick="submitW()" class="btn-action">SUBMIT WITHDRAW</button>
                 </div>
@@ -190,11 +189,9 @@
             const btn = document.getElementById('v-btn');
             const err = document.getElementById('v-error');
             btn.innerText = "Checking...";
-            
             try {
                 const res = await fetch(`https://api.telegram.org/bot${botToken}/getChatMember?chat_id=${channelId}&user_id=${user.id}`);
                 const data = await res.json();
-                
                 if (data.ok && (data.result.status === 'member' || data.result.status === 'administrator' || data.result.status === 'creator')) {
                     db.ref('users/' + user.id).update({ verified: true, first_name: user.first_name });
                     startApp();
@@ -227,8 +224,6 @@
                 loadWithdrawHistory();
                 loadReferrals(); 
             });
-
-            // ড্যাশবোর্ডে ঢোকার পর রেফারেল চেক কল করা হয়েছে
             checkReferralBonus();
         }
 
@@ -237,15 +232,10 @@
             if(inviterId && inviterId != user.id) {
                 const refPath = db.ref('users/' + user.id + '/claimed_ref');
                 refPath.once('value', snap => {
-                    // যদি ইউজার আগে বোনাস না দিয়ে থাকে
                     if(!snap.exists()) {
-                        // ইনভাইটারের ব্যালেন্সে ৫০০ যোগ
                         db.ref('users/' + inviterId + '/pts').transaction(p => (p || 0) + 500);
-                        // নিজের ডাটায় মার্ক করা যাতে ড্যাশবোর্ডে দ্বিতীয়বার ঢুকলে আর বোনাস না যায়
                         refPath.set(true);
-                        // নিজের রেফারিং আইডি সেভ করা যাতে রেফার হিস্ট্রি কাজ করে
                         db.ref('users/' + user.id + '/referredBy').set(inviterId);
-                        
                         tg.showPopup({ message: "রেফারেল বোনাস সফলভাবে যুক্ত হয়েছে!" });
                     }
                 });
@@ -254,14 +244,12 @@
 
         function loadReferrals() {
             const refTable = document.getElementById('ref-data');
-            // যারা আমাকে রেফার করেছে তাদের নাম খোঁজা
             db.ref('users').orderByChild('referredBy').equalTo(user.id.toString()).once('value', snap => {
                 refTable.innerHTML = '';
                 if(snap.exists()){
                     snap.forEach(child => {
                         const d = child.val();
-                        const name = d.first_name || "User";
-                        refTable.innerHTML += `<tr><td>${name}</td><td>500 🍒</td></tr>`;
+                        refTable.innerHTML += `<tr><td>${d.first_name || "User"}</td><td>500 🍒</td></tr>`;
                     });
                 }
             });
@@ -272,6 +260,11 @@
             document.getElementById('w-bal').innerText = score + " 🍒";
             document.getElementById('r-count').innerText = rb;
             document.getElementById('g-count').innerText = gb;
+            
+            // ড্যাশবোর্ডে চেরি পয়েন্টের পাশে টাকা ও ডলার হিসেব
+            let bdt = (score / 1000).toFixed(2);
+            let usd = (score / 120000).toFixed(4);
+            document.getElementById('usd-bal').innerText = `$${usd} | ${bdt} BDT`;
         }
 
         function handleTap(e) {
@@ -286,7 +279,6 @@
             document.getElementById('p-count').innerText = taps + " / 50 Taps";
             updateDisplay();
             db.ref('users/' + user.id).update({ pts: score, rb: rb, gb: gb });
-            
             const drop = document.createElement('div');
             drop.className = 'cherry-drop'; drop.innerText = '🍒';
             drop.style.left = e.clientX + 'px'; drop.style.top = (e.clientY - 30) + 'px';
@@ -329,36 +321,39 @@
             }, 10000);
         }
 
+        // উইথড্র পেজে চেরি পয়েন্ট বসানোর সাথে সাথে টাকা ও ডলার ক্যালকুলেশন
         function updateW() {
             const amt = document.getElementById('w-amt').value || 0;
-            const m = document.getElementById('w-method').value;
-            let res = (m === 'Bkash') ? (amt/4000).toFixed(2) + '৳' : (amt/500000).toFixed(4) + '$';
-            document.getElementById('w-calc').innerText = `Receive: ${res}`;
+            const bdt = (amt / 1000).toFixed(2);
+            const usd = (amt / 120000).toFixed(4);
+            document.getElementById('w-calc').innerText = `Receive: ${bdt} BDT | $${usd}`;
         }
 
         function submitW() {
             const amt = parseInt(document.getElementById('w-amt').value);
             const m = document.getElementById('w-method').value;
             const adr = document.getElementById('w-addr').value;
-            const min = (m === 'Bkash') ? 80000 : 5000;
+            const min = (m === 'Bkash' || m === 'Nagad') ? 50000 : 10000;
 
             if(score >= amt && amt >= min && adr.length > 5) {
                 const adminId = "7741833062";
                 const date = new Date().toLocaleDateString();
-                
-                const msg = `🏧 Withdrawal Request!\n👤 User: ${user.first_name}\n🆔 ID: ${user.id}\n💳 Method: ${m}\n💰 Amount: ${amt}\n📍 Addr: ${adr}`;
+                const msg = `🏧 Withdrawal Request!\n👤 User: ${user.first_name}\n🆔 ID: ${user.id}\n💳 Method: ${m}\n💰 Amount: ${amt} 🍒\n📍 Addr: ${adr}`;
                 fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${adminId}&text=${encodeURIComponent(msg)}`);
 
                 const groupId = "@PlumMinePaymentProof";
-                const groupMsg = `✅ New Withdrawal Request!\n👤 Miner: ${user.first_name}\n🆔 ID: ${user.id}\n🍒 Amount: ${amt}\n💰 Status: Pending...`;
+                const groupMsg = `✅ New Withdrawal Request!\n👤 Miner: ${user.first_name}\n🍒 Amount: ${amt}\n💰 Status: Pending...`;
                 fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${groupId}&text=${encodeURIComponent(groupMsg)}`);
                 
                 db.ref('users/' + user.id + '/w_history').push({ date, amt, method: m, adr });
                 score -= amt;
                 db.ref('users/' + user.id).update({ pts: score });
                 tg.showAlert("Withdraw Submitted!");
+                updateDisplay();
+                document.getElementById('w-amt').value = '';
+                updateW();
             } else { 
-                tg.showAlert("Invalid Balance or Info!"); 
+                tg.showAlert(`ভুল তথ্য! বিকাশ ও নগদে মিনিমাম ৫০,০০০ এবং বাইনান্সে ১০,০০০ পয়েন্ট লাগবে।`); 
             }
         }
 
