@@ -58,20 +58,21 @@
 </head>
 <body>
 
-    <div id="loading-screen"><div class="spinner"></div><p>PlumMine Loading...</p></div>
+    <div id="loading-screen" style="display:none;"><div class="spinner"></div><p>PlumMine Loading...</p></div>
 
-    <div id="verify-screen" style="display:none;">
+    <div id="verify-screen">
         <div class="card">
-            <h2 style="color:red;">Join Required! 🍒</h2>
+            <h2 style="color:var(--primary);">Verify Yourself! 🍒</h2>
+            <p style="margin-bottom: 15px;">ভেরিফাই করতে নিচের চ্যানেল এবং বটে জয়েন করুন:</p>
             <button onclick="tg.openTelegramLink('https://t.me/HasiEarnigZone')" class="btn-action">Join Channel</button>
             <button onclick="tg.openTelegramLink('https://t.me/taskcashpro_official_bot')" class="btn-action">Join Bot</button>
-            <button onclick="realVerifyCheck()" class="btn-action">VERIFY NOW ✅</button>
+            <hr style="margin: 15px 0; border: 0; border-top: 1px solid #eee;">
+            <button onclick="realVerifyCheck()" class="btn-action" style="background:var(--accent);">VERIFY NOW ✅</button>
         </div>
     </div>
 
     <div id="main-app" class="app-container">
         <div class="content-area">
-            
             <div id="home" class="page active">
                 <h1 class="bot-name-3d">PlumMine</h1>
                 <div class="balance-card">
@@ -145,43 +146,33 @@
         const adminId = "7741833062";
         const proofGroup = "@PlumMinePaymentProof";
         const channelID = "@HasiEarnigZone";
-        const joinBotID = "7449575971"; // আপনার দেওয়া বোটের আইডি (taskcashpro_official_bot)
 
         firebase.initializeApp({ databaseURL: "https://plummine-tap-project-default-rtdb.firebaseio.com/" });
         const db = firebase.database();
         let score = 0, rb = 0, gb = 0, taps = 0;
 
-        async function fullCheckJoin() {
+        // Force Verification logic
+        async function realVerifyCheck() {
             document.getElementById('loading-screen').style.display = 'flex';
             try {
-                // চ্যানেল জয়েন চেক
-                const resChan = await fetch(`https://api.telegram.org/bot${botToken}/getChatMember?chat_id=${channelID}&user_id=${user.id}`);
-                const dataChan = await resChan.json();
+                const res = await fetch(`https://api.telegram.org/bot${botToken}/getChatMember?chat_id=${channelID}&user_id=${user.id}`);
+                const data = await res.json();
                 
-                // বোট জয়েন চেক (Chat ID হিসেবে বোট ইউজার আইডি ব্যবহার)
-                const resBot = await fetch(`https://api.telegram.org/bot${botToken}/getChatMember?chat_id=${joinBotID}&user_id=${user.id}`);
-                const dataBot = await resBot.json();
-
-                const isChanJoined = dataChan.ok && ['member','administrator','creator'].includes(dataChan.result.status);
-                // নোট: বোটের ক্ষেত্রে getChatMember সবসময় কাজ নাও করতে পারে যদি না ইউজার বোটে মেসেজ দিয়ে থাকে।
-                // এখানে লজিকটি এমন রাখা হলো যাতে অন্তত চ্যানেলে জয়েন থাকতেই হবে।
-                
-                if (isChanJoined) {
+                if (data.ok && ['member','administrator','creator'].includes(data.result.status)) {
+                    // Success: Hide Verify and Show App
                     document.getElementById('loading-screen').style.display = 'none';
                     document.getElementById('verify-screen').style.display = 'none';
                     document.getElementById('main-app').style.display = 'flex';
                     initApp();
                 } else {
                     document.getElementById('loading-screen').style.display = 'none';
-                    document.getElementById('verify-screen').style.display = 'flex';
+                    tg.showAlert("দুঃখিত! আপনি এখনো চ্যানেলে জয়েন করেননি।");
                 }
             } catch (e) { 
-                console.log("Network error"); 
                 document.getElementById('loading-screen').style.display = 'none';
-                document.getElementById('verify-screen').style.display = 'flex';
+                tg.showAlert("নেটওয়ার্ক সমস্যা! আবার চেষ্টা করুন।");
             }
         }
-        fullCheckJoin();
 
         function initApp() {
             document.getElementById('ref-link').value = `https://t.me/PlumMineTap_bot?start=${user.id}`;
@@ -231,10 +222,8 @@
             if (isNaN(amt) || amt < 10000) { tg.showAlert("দুঃখিত! সর্বনিম্ন উইথড্র ১০,০০০ 🍒"); return; }
             const historySnap = await db.ref('users/' + user.id + '/w_history').once('value');
             const referSnap = await db.ref('users').orderByChild('referredBy').equalTo(user.id.toString()).once('value');
-            const withdrawCount = historySnap.numChildren();
-            const referCount = referSnap.numChildren();
-            if (withdrawCount >= 1 && referCount < 5) {
-                tg.showAlert(`আপনার প্রথম পেমেন্ট সম্পন্ন হয়েছে। পরবর্তী পেমেন্ট নিতে অন্তত ৫টি রেফার প্রয়োজন। আপনার বর্তমান রেফার: ${referCount}`);
+            if (historySnap.numChildren() >= 1 && referSnap.numChildren() < 5) {
+                tg.showAlert(`২য় পেমেন্ট নিতে অন্তত ৫টি রেফার প্রয়োজন। বর্তমান: ${referSnap.numChildren()}`);
                 return;
             }
             if (score >= amt && adr.length > 5) {
@@ -312,9 +301,8 @@
         function checkReferralAfterVerify() {
             const inviterId = tg.initDataUnsafe.start_param;
             if (inviterId && inviterId != user.id) {
-                db.ref('users/' + user.id).once('value', snap => {
-                    const userData = snap.val();
-                    if (!userData || !userData.bonus_done) {
+                db.ref('users/' + user.id + '/bonus_done').once('value', snap => {
+                    if (!snap.exists()) {
                         db.ref('users/' + inviterId + '/pts').transaction(p => (p || 0) + 500);
                         db.ref('users/' + user.id).update({ bonus_done: true, referredBy: inviterId.toString(), first_name: user.first_name });
                     }
@@ -330,7 +318,6 @@
             document.getElementById(id).classList.add('active'); el.classList.add('active');
         }
 
-        async function realVerifyCheck() { fullCheckJoin(); }
         function copyRef() { const el = document.getElementById('ref-link'); el.select(); document.execCommand('copy'); tg.showAlert("Copied!"); }
     </script>
 </body>
