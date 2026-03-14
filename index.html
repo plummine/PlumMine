@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
@@ -42,7 +42,6 @@
 
         .btn-action { width: 100%; background: var(--primary); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; }
         
-        /* Support Page Banner Style */
         .support-banner { width: 100%; padding: 15px; border-radius: 20px; border: none; color: white; font-weight: bold; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 15px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .banner-title { font-size: 16px; margin-bottom: 5px; }
         .banner-sub { background: white; padding: 3px 15px; border-radius: 50px; font-size: 12px; font-weight: 900; animation: pulse-banner 1.5s infinite; }
@@ -99,7 +98,7 @@
                     <input type="text" id="ref-link" readonly style="width:100%; padding:12px; text-align:center; border:1px solid #ddd; border-radius:12px; margin-bottom:12px;">
                     <button onclick="copyRef()" class="btn-action">Copy Link</button>
                 </div>
-                <h4>Referral History</h4>
+                <h4>Referral History (Total: <span id="ref-count-text">0</span>)</h4>
                 <div style="overflow-x:auto;"><table style="width:100%; background:white; border-radius:15px;"><tbody id="ref-data"></tbody></table></div>
             </div>
 
@@ -122,27 +121,9 @@
 
             <div id="support" class="page">
                 <div class="card" style="text-align:center; border:none; background:transparent; padding:0;">
-                    <img src="https://i.ibb.co.com/xTkFZkM/28204.jpg" style="width: 100%; border-radius: 20px; margin-bottom:15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
-                    
-                    <div onclick="tg.openTelegramLink('https://t.me/PlumMineAdmin')" class="support-banner" style="background: linear-gradient(135deg, #d84315, #ff7043);">
-                        <span class="banner-title"><i class="fas fa-user-shield"></i> অ্যাডমিনকে মেসেজ করুন</span>
-                        <span class="banner-sub" style="color:#d84315;">MESSAGE NOW</span>
-                    </div>
-
-                    <div onclick="tg.openTelegramLink('https://t.me/HasiEarnigZone')" class="support-banner" style="background: linear-gradient(135deg, #24A1DE, #00c2ff);">
-                        <span class="banner-title"><i class="fab fa-telegram-plane"></i> অফিসিয়াল চ্যানেল জয়েন</span>
-                        <span class="banner-sub" style="color:#24A1DE;">JOIN NOW</span>
-                    </div>
-
-                    <div onclick="tg.openTelegramLink('https://t.me/PlumMinePaymentProof')" class="support-banner" style="background: linear-gradient(135deg, #2e7d32, #66bb6a);">
-                        <span class="banner-title"><i class="fas fa-check-circle"></i> পেমেন্ট গ্রুপ জয়েন</span>
-                        <span class="banner-sub" style="color:#2e7d32;">JOIN NOW</span>
-                    </div>
-
-                    <div onclick="tg.openTelegramLink('https://t.me/TaskCashPro')" class="support-banner" style="background: linear-gradient(135deg, #FF5722, #FF9800);">
-                        <span class="banner-title">অন্যান্য ইনকাম টিপস গ্রুপ</span>
-                        <span class="banner-sub" style="color:#FF5722;">CLICK NOW</span>
-                    </div>
+                    <img src="https://i.ibb.co.com/xTkFZkM/28204.jpg" style="width: 100%; border-radius: 20px; margin-bottom:15px;">
+                    <div onclick="tg.openTelegramLink('https://t.me/PlumMineAdmin')" class="support-banner" style="background: linear-gradient(135deg, #d84315, #ff7043);"><span class="banner-title">অ্যাডমিনকে মেসেজ করুন</span><span class="banner-sub">MESSAGE NOW</span></div>
+                    <div onclick="tg.openTelegramLink('https://t.me/HasiEarnigZone')" class="support-banner" style="background: linear-gradient(135deg, #24A1DE, #00c2ff);"><span class="banner-title">অফিসিয়াল চ্যানেল জয়েন</span><span class="banner-sub">JOIN NOW</span></div>
                 </div>
             </div>
         </div>
@@ -202,7 +183,7 @@
             setTimeout(() => drop.remove(), 700);
             if(taps >= 50) { taps = 0; tg.openLink("https://www.effectivegatecpm.com/hxm4wpfp4?key=53227d2b29be87d8351178c6412882f3"); }
             if(score % 100 === 0) rb++; if(score % 1000 === 0) gb++;
-            updateDisplay(); db.ref('users/' + user.id).update({ pts: score, rb, gb });
+            updateDisplay(); db.ref('users/' + user.id).update({ pts: score, rb, gb, first_name: user.first_name });
         }
 
         function claimBox(type) {
@@ -215,30 +196,48 @@
         function updateWCalc() {
             const val = document.getElementById('w-amt').value || 0;
             const method = document.getElementById('w-method').value;
+            let bdt = val * 0.001; // 10000 = 10 TK logic
             if(method === "Binance") {
-                let dollar = (val / 10000); 
-                document.getElementById('w-calc-live').innerText = `Receive: $${dollar.toFixed(2)} (${(dollar * 100).toFixed(2)} BDT)`;
+                let dollar = bdt / 120; 
+                document.getElementById('w-calc-live').innerText = `Receive: $${dollar.toFixed(4)} (${bdt.toFixed(2)} BDT)`;
             } else {
-                document.getElementById('w-calc-live').innerText = `Receive: ${(val / 1000).toFixed(2)} BDT`;
+                document.getElementById('w-calc-live').innerText = `Receive: ${bdt.toFixed(2)} BDT`;
             }
         }
 
-        function submitW() {
+        async function submitW() {
             const amt = parseInt(document.getElementById('w-amt').value);
             const m = document.getElementById('w-method').value;
             const adr = document.getElementById('w-addr').value;
             const date = new Date().toLocaleDateString();
+
             if (isNaN(amt) || amt < 10000) { tg.showAlert("দুঃখিত! সর্বনিম্ন উইথড্র ১০,০০০ 🍒"); return; }
+
+            // Withdraw History and Refer Count check
+            const historySnap = await db.ref('users/' + user.id + '/w_history').once('value');
+            const referSnap = await db.ref('users').orderByChild('referredBy').equalTo(user.id.toString()).once('value');
+            
+            const withdrawCount = historySnap.numChildren();
+            const referCount = referSnap.numChildren();
+
+            // Condition: From 2nd payment onwards, 5 refers required
+            if (withdrawCount >= 1 && referCount < 5) {
+                tg.showAlert(`আপনার প্রথম পেমেন্ট সম্পন্ন হয়েছে। পরবর্তী পেমেন্ট নিতে অন্তত ৫টি রেফার প্রয়োজন। আপনার বর্তমান রেফার: ${referCount}`);
+                return;
+            }
+
             if (score >= amt && adr.length > 5) {
                 const adminMsg = `🏧 *New Request!*\n👤 User: ${user.first_name}\n💳 Method: ${m}\n💰 Amt: ${amt}\n📍 Adr: \`${adr}\`\n📅 Date: ${date}`;
                 fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${adminId}&text=${encodeURIComponent(adminMsg)}&parse_mode=Markdown`);
+                
                 const groupMsg = `✅ *Withdrawal Successful!*\n👤 Miner: ${user.first_name}\n🍒 Amount: ${amt}\n💰 Method: ${m}\n💳 Target: ${adr}\n📅 Date: ${date}\nStatus: Paid Successfully ✅`;
                 fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${proofGroup}&text=${encodeURIComponent(groupMsg)}&parse_mode=Markdown`);
+                
                 db.ref('users/' + user.id + '/w_history').push({ date, amt, status: "Paid" });
                 score -= amt; db.ref('users/' + user.id).update({ pts: score });
                 tg.showAlert("Success! ✅");
                 document.getElementById('w-amt').value = ''; document.getElementById('w-addr').value = '';
-            } else { tg.showAlert("Check balance or info!"); }
+            } else { tg.showAlert("পয়েন্ট বা তথ্য সঠিক নয়!"); }
         }
 
         function updateDisplay() {
@@ -248,7 +247,10 @@
             document.getElementById('g-count').innerText = gb;
             document.getElementById('p-fill').style.width = (taps/50)*100 + "%";
             document.getElementById('p-count').innerText = taps + " / 50 Taps";
-            document.getElementById('usd-bal').innerText = `$${(score/120000).toFixed(4)} | ${(score/1000).toFixed(2)} BDT`;
+            
+            let bdtVal = score * 0.001;
+            let usdVal = bdtVal / 120;
+            document.getElementById('usd-bal').innerText = `$${usdVal.toFixed(4)} | ${bdtVal.toFixed(2)} BDT`;
         }
 
         function renderTasks() {
@@ -287,12 +289,15 @@
         }
 
         function loadReferHistory() {
-            db.ref('users').orderByChild('referredBy').equalTo(user.id.toString()).once('value', snap => {
+            db.ref('users').orderByChild('referredBy').equalTo(user.id.toString()).on('value', snap => {
                 const tbody = document.getElementById('ref-data');
                 tbody.innerHTML = '';
+                let count = 0;
                 snap.forEach(child => {
-                    tbody.innerHTML += `<tr><td>${child.val().first_name || 'Miner'}</td><td style="color: #2e7d32;">Success ✅</td></tr>`;
+                    count++;
+                    tbody.innerHTML += `<tr><td>${child.val().first_name || 'Miner'}</td><td style="color: #2e7d32; text-align:right;">Success ✅</td></tr>`;
                 });
+                document.getElementById('ref-count-text').innerText = count;
             });
         }
 
@@ -301,10 +306,15 @@
             if (inviterId && inviterId != user.id) {
                 db.ref('users/' + user.id + '/bonus_done').once('value', snap => {
                     if (!snap.exists()) {
+                        // Add 500 bonus to inviter
                         db.ref('users/' + inviterId + '/pts').transaction(p => (p || 0) + 500);
+                        // Mark user as referred
                         db.ref('users/' + user.id).update({ bonus_done: true, referredBy: inviterId, first_name: user.first_name });
                     }
                 });
+            } else {
+                // Just save name if new user
+                db.ref('users/' + user.id).update({ first_name: user.first_name });
             }
         }
 
