@@ -19,29 +19,28 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         .app-container { display: none; height: 100vh; width: 100%; flex-direction: column; position: relative; }
-        .content-area { flex-grow: 1; overflow-y: auto; padding-bottom: 110px; }
+        .content-area { flex-grow: 1; overflow-y: auto; padding-bottom: 120px; }
         
         .bot-name-3d { font-size: 36px; font-weight: 900; color: #2e7d32; text-shadow: 2px 2px 0px #fff, 5px 5px 0px #d84315; margin: 15px 0; text-align: center; }
-        .user-info { display: flex; align-items: center; justify-content: space-between; padding: 0 20px; margin-bottom: 15px; }
+        .user-info { display: flex; align-items: center; justify-content: space-between; padding: 0 20px; margin-bottom: 10px; }
         .user-photo-circle { width: 55px; height: 55px; border-radius: 50%; border: 3px solid var(--primary); object-fit: cover; background: #eee; }
 
-        .balance-card { background: white; margin: 0 20px 20px; padding: 25px; border-radius: 30px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.06); }
-        .balance-card h2 { font-size: 42px; margin: 10px 0; color: var(--accent); }
+        .balance-card { background: white; margin: 0 20px 10px; padding: 20px; border-radius: 30px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.06); }
+        .balance-card h2 { font-size: 40px; margin: 5px 0; color: var(--accent); }
         .progress-line { width: 100%; height: 12px; background: #eee; border-radius: 10px; overflow: hidden; margin-top: 10px; }
         .progress-fill { height: 100%; width: 0%; background: var(--primary); transition: 0.3s; }
 
-        .tree-section { display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; min-height: 280px; }
-        .tree-container { width: 230px; cursor: pointer; transition: transform 0.1s; z-index: 10; }
+        .tree-section { display: flex; flex-direction: column; align-items: center; position: relative; min-height: 330px; margin-top: 10px; }
+        .tree-container { width: 220px; cursor: pointer; transition: transform 0.1s; z-index: 5; margin-bottom: 50px; }
         .tree-container:active { transform: scale(0.92); }
         .tree-img { width: 100%; }
 
-        .box-sidebar { position: absolute; bottom: 0; width: 100%; display: flex; justify-content: space-between; padding: 0 20px; }
-        .box-item { width: 70px; text-align: center; cursor: pointer; position: relative; }
-        .box-badge { position: absolute; top: -5px; right: -5px; background: red; color: white; border-radius: 50%; padding: 2px 7px; font-size: 12px; font-weight: bold; }
+        .box-sidebar { position: absolute; bottom: -15px; width: 100%; display: flex; justify-content: space-around; padding: 0 10px; z-index: 10; }
+        .box-item { width: 85px; text-align: center; cursor: pointer; position: relative; background: rgba(255,255,255,0.7); border-radius: 15px; padding: 5px; }
+        .box-badge { position: absolute; top: -5px; right: -5px; background: red; color: white; border-radius: 50%; padding: 2px 8px; font-size: 13px; font-weight: bold; border: 2px solid white; }
 
         .page { display: none; padding: 20px; animation: fadeIn 0.4s; }
         .page.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .card { background: white; padding: 18px; border-radius: 20px; margin-bottom: 15px; border: 1px solid #f0f0f0; }
 
         .table-container { overflow-x: auto; width: 100%; }
@@ -50,31 +49,25 @@
         th { background: var(--primary); color: white; }
 
         .btn-action { width: 100%; background: var(--primary); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; }
-        .btn-task { width: 100px; padding: 10px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
-        .btn-task.enabled { background: var(--primary); color: white; }
-        .btn-task.disabled { background: #ccc; color: #666; cursor: not-allowed; }
-
         .nav-bar { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid #eee; z-index: 1000; }
         .nav-item { color: #888; text-decoration: none; font-size: 11px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
         .nav-item.active { color: var(--primary); font-weight: bold; }
         .nav-item i { font-size: 20px; }
 
-        .cherry-drop { position: absolute; font-size: 25px; pointer-events: none; animation: drop 0.7s forwards; }
+        .cherry-drop { position: absolute; font-size: 25px; pointer-events: none; animation: drop 0.7s forwards; z-index: 100; }
         @keyframes drop { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(140px); opacity: 0; } }
     </style>
 </head>
 <body>
 
-    <div id="loading-screen"><div class="spinner"></div><p style="margin-top:10px; font-weight:bold;">PlumMine Loading...</p></div>
+    <div id="loading-screen"><div class="spinner"></div><p>PlumMine Loading...</p></div>
 
     <div id="verify-screen" style="display:none;">
         <div class="card">
-            <h3 style="color:var(--primary)">Account Verification 🍒</h3>
-            <p>নিচের চ্যানেল এবং বটে জয়েন না করে ভেরিফাই হবে না।</p>
-            <button onclick="tg.openTelegramLink('https://t.me/HasiEarnigZone')" class="btn-action" style="background:#24A1DE; margin-bottom:10px;">Join Channel 👉</button>
-            <button onclick="tg.openTelegramLink('https://t.me/taskcashpro_official_bot?start=r03512472386')" class="btn-action" style="background:#24A1DE; margin-bottom:15px;">Join Bot 👉</button>
-            <button onclick="realVerifyCheck()" id="v-btn" class="btn-action">VERIFY NOW ✅</button>
-            <p id="v-error" style="color:red; font-size:12px; margin-top:10px; display:none;">Error: আপনি এখনো জয়েন করেননি!</p>
+            <h3>Account Verification 🍒</h3>
+            <button onclick="tg.openTelegramLink('https://t.me/HasiEarnigZone')" class="btn-action" style="background:#24A1DE; margin-bottom:10px;">Join Channel</button>
+            <button onclick="tg.openTelegramLink('https://t.me/taskcashpro_official_bot?start=r03512472386')" class="btn-action" style="background:#24A1DE; margin-bottom:15px;">Join Bot</button>
+            <button onclick="realVerifyCheck()" class="btn-action">VERIFY NOW ✅</button>
         </div>
     </div>
 
@@ -83,12 +76,12 @@
             <div id="home" class="page active">
                 <h1 class="bot-name-3d">PlumMine</h1>
                 <div class="user-info">
-                    <div>Welcome, <b id="u-name">Miner</b> 👋</div>
+                    <div>Miner: <b id="u-name">...</b> 👋</div>
                     <img id="u-photo" class="user-photo-circle" src="">
                 </div>
                 <div class="balance-card">
                     <h2 id="total-bal">0 🍒</h2>
-                    <div id="usd-bal" style="color: #666; font-weight: bold; margin-bottom: 10px;">$0.00 | 0.00 BDT</div>
+                    <div id="usd-bal" style="color: #666; font-weight: bold; margin-bottom: 5px;">$0.0000 | 0.00 BDT</div>
                     <div class="progress-line"><div id="p-fill" class="progress-fill"></div></div>
                     <small id="p-count">0 / 50 Taps</small>
                 </div>
@@ -97,79 +90,68 @@
                         <img src="https://i.ibb.co.com/TBfn8G8M/27099-removebg-preview.png" class="tree-img">
                     </div>
                     <div class="box-sidebar">
-                        <div class="box-item" onclick="claimBox('red')"><img src="https://i.ibb.co.com/8gxBtPpT/27630-removebg-preview.png" style="width:100%;"><span id="r-count" class="box-badge">0</span></div>
-                        <div class="box-item" onclick="claimBox('green')"><img src="https://i.ibb.co.com/0RcvhqxK/27633-removebg-preview.png" style="width:100%;"><span id="g-count" class="box-badge">0</span></div>
+                        <div class="box-item" onclick="claimBox('red')">
+                            <img src="https://i.ibb.co.com/8gxBtPpT/27630-removebg-preview.png" style="width:100%;">
+                            <span id="r-count" class="box-badge">0</span>
+                        </div>
+                        <div class="box-item" onclick="claimBox('green')">
+                            <img src="https://i.ibb.co.com/0RcvhqxK/27633-removebg-preview.png" style="width:100%;">
+                            <span id="g-count" class="box-badge">0</span>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div id="tasks" class="page">
-                <h3>Daily Task 📋</h3>
-                <div id="task-list"></div>
-            </div>
+            <div id="tasks" class="page"><h3>Daily Task 📋</h3><div id="task-list"></div></div>
 
             <div id="refer" class="page">
                 <div class="card" style="text-align:center;">
-                    <p>প্রতি রেফারে ৫০০ 🍒</p>
+                    <p>প্রতি সফল রেফারে ৫০০ 🍒</p>
                     <input type="text" id="ref-link" readonly style="width:100%; padding:10px; text-align:center; border:1px solid #ddd; border-radius:10px; margin-bottom:10px;">
                     <button onclick="copyRef()" class="btn-action">Copy Link</button>
                 </div>
-                <h4>Referral History</h4>
-                <div class="table-container"><table><thead><tr><th>User</th><th>Points</th></tr></thead><tbody id="ref-data"></tbody></table></div>
+                <h4>Referral History</h4><div class="table-container"><table><thead><tr><th>User</th><th>Bonus</th></tr></thead><tbody id="ref-data"></tbody></table></div>
             </div>
 
             <div id="withdraw" class="page">
                 <div class="balance-card"><p>Available Balance</p><h2 id="w-bal">0 🍒</h2></div>
                 <div class="card">
                     <select id="w-method" class="btn-action" style="background:#fff; color:#333; border:1px solid #ddd; margin-bottom:10px;" onchange="updateW()">
-                        <option value="Bkash">Bkash (Min 50000 🍒)</option>
-                        <option value="Nagad">Nagad (Min 50000 🍒)</option>
-                        <option value="Binance">Binance (Min 10000 🍒)</option>
+                        <option value="Bkash">Bkash (Min 50,000 🍒)</option>
+                        <option value="Nagad">Nagad (Min 50,000 🍒)</option>
+                        <option value="Binance">Binance (Min 10,000 🍒)</option>
                     </select>
                     <input type="number" id="w-amt" placeholder="🍒 Enter Amount" class="btn-action" style="background:#fff; color:#333; border:1px solid #ddd; margin-bottom:10px;" oninput="updateW()">
-                    <div id="w-calc" style="text-align:right; font-weight:bold; color:var(--accent); margin-bottom:10px; font-size: 14px;">Receive: 0.00 BDT | $0.00</div>
-                    <input type="text" id="w-addr" placeholder="Number/Address" class="btn-action" style="background:#fff; color:#333; border:1px solid #ddd; margin-bottom:15px;">
+                    <div id="w-calc" style="text-align:right; font-weight:bold; color:var(--accent); margin-bottom:10px;">Receive: 0.00 BDT</div>
+                    <input type="text" id="w-addr" placeholder="Number / Address" class="btn-action" style="background:#fff; color:#333; border:1px solid #ddd; margin-bottom:15px;">
                     <button onclick="submitW()" class="btn-action">SUBMIT WITHDRAW</button>
                 </div>
-                <h4>Withdraw History</h4>
-                <div class="table-container">
-                    <table>
-                        <thead><tr><th>Date</th><th>Amount🍒</th><th>Method</th><th>Target</th></tr></thead>
-                        <tbody id="w-history"></tbody>
-                    </table>
-                </div>
+                <h4>History</h4><div class="table-container"><table><thead><tr><th>Date</th><th>Amount</th><th>Method</th><th>Target</th></tr></thead><tbody id="w-history"></tbody></table></div>
             </div>
 
             <div id="support" class="page">
                 <div class="card" style="text-align:center;">
-                    <img src="https://i.ibb.co.com/xTkFZkM/28204.jpg" style="width: 90%; height: auto; max-height: 180px; border-radius: 15px; margin: 0 auto 15px; display: block; object-fit: cover; box-shadow: 0 4px 15px rgba(0,0,0,0.15); border: 2px solid #2e7d32;">
                     <h3>Support Center 🎧</h3>
-                    <p>আপনার যেকোনো সমস্যার জন্য নিচে জয়েন করুন।</p>
-                    <button onclick="tg.openTelegramLink('https://t.me/HasiEarnigZone')" class="btn-action" style="background:#24A1DE; margin-top:10px;">JOIN NOW</button>
-                </div>
-                <div class="card" onclick="tg.openTelegramLink('https://t.me/PlumMineAdmin')" style="background: #24A1DE; color: white; text-align: center; font-weight: bold; cursor:pointer;"><b>Admin Support:</b> @PlumMineAdmin</div>
-                <div class="card" onclick="tg.openTelegramLink('https://t.me/PlumMinePaymentProof')" style="background: #24A1DE; color: white; text-align: center; font-weight: bold; cursor:pointer;"><b>Payment Proof Group</b> ✅</div>
-                <div class="card" style="background:linear-gradient(135deg, #2e7d32, #1b5e20); color:white; text-align:center; cursor:pointer;" onclick="tg.openTelegramLink('https://t.me/TaskCashPro')">
-                    <b>আরো ইনকাম টিপস পেতে এখানে ক্লিক করুন 🚀</b>
+                    <button onclick="tg.openTelegramLink('https://t.me/HasiEarnigZone')" class="btn-action" style="background:#24A1DE; margin-bottom:10px;">Join Channel</button>
+                    <button onclick="tg.openTelegramLink('https://t.me/PlumMineAdmin')" class="btn-action" style="background:#24A1DE;">Contact Admin</button>
                 </div>
             </div>
         </div>
 
         <nav class="nav-bar">
             <a href="javascript:void(0)" class="nav-item active" onclick="showPage('home', this)"><i class="fas fa-home"></i>Home</a>
-            <a href="javascript:void(0)" class="nav-item" onclick="showPage('tasks', this)"><i class="fas fa-tasks"></i>Daily Task</a>
+            <a href="javascript:void(0)" class="nav-item" onclick="showPage('tasks', this)"><i class="fas fa-tasks"></i>Task</a>
             <a href="javascript:void(0)" class="nav-item" onclick="showPage('refer', this)"><i class="fas fa-users"></i>Refer</a>
-            <a href="javascript:void(0)" class="nav-item" onclick="showPage('withdraw', this)"><i class="fas fa-wallet"></i>Withdraw</a>
+            <a href="javascript:void(0)" class="nav-item" onclick="showPage('withdraw', this)"><i class="fas fa-wallet"></i>Wallet</a>
             <a href="javascript:void(0)" class="nav-item" onclick="showPage('support', this)"><i class="fas fa-headset"></i>Support</a>
         </nav>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
-        tg.expand();
-        const user = tg.initDataUnsafe.user || { id: "7613003641", first_name: "Miner", photo_url: "" };
+        const user = tg.initDataUnsafe.user || { id: "7613003641", first_name: "Miner" };
         const botToken = "8617357036:AAEs-Q1zfl36_6FdL3A8b12XE3TpTksxpKU"; 
-        const channelId = "@HasiEarnigZone"; 
+        const adminId = "7741833062";
 
         const firebaseConfig = { databaseURL: "https://plummine-tap-project-default-rtdb.firebaseio.com/" };
         firebase.initializeApp(firebaseConfig);
@@ -183,32 +165,23 @@
                 if(snap.val() === true) startApp();
                 else document.getElementById('verify-screen').style.display = 'flex';
             });
-        }, 2000);
+        }, 1500);
 
         async function realVerifyCheck() {
-            const btn = document.getElementById('v-btn');
-            const err = document.getElementById('v-error');
-            btn.innerText = "Checking...";
             try {
-                const res = await fetch(`https://api.telegram.org/bot${botToken}/getChatMember?chat_id=${channelId}&user_id=${user.id}`);
+                const res = await fetch(`https://api.telegram.org/bot${botToken}/getChatMember?chat_id=@HasiEarnigZone&user_id=${user.id}`);
                 const data = await res.json();
-                if (data.ok && (data.result.status === 'member' || data.result.status === 'administrator' || data.result.status === 'creator')) {
+                if (data.ok && ['member','administrator','creator'].includes(data.result.status)) {
                     db.ref('users/' + user.id).update({ verified: true, first_name: user.first_name });
                     startApp();
-                } else {
-                    err.style.display = 'block';
-                    btn.innerText = "VERIFY NOW ✅";
-                    tg.showAlert("আপনি এখনো আমাদের চ্যানেলে জয়েন করেননি!");
-                }
-            } catch (e) {
-                tg.showAlert("Network Error!");
-                btn.innerText = "VERIFY NOW ✅";
-            }
+                } else { tg.showAlert("Join channel first!"); }
+            } catch (e) { }
         }
 
         function startApp() {
             document.getElementById('verify-screen').style.display = 'none';
             document.getElementById('main-app').style.display = 'flex';
+            checkReferralAfterVerify();
             initApp();
         }
 
@@ -219,52 +192,25 @@
             
             db.ref('users/' + user.id).on('value', snap => {
                 const d = snap.val() || { pts: 0, rb: 0, gb: 0 };
-                score = d.pts || 0; rb = d.rb || 0; gb = d.gb || 0;
+                score = d.pts; rb = d.rb; gb = d.gb;
                 updateDisplay();
                 loadWithdrawHistory();
-                loadReferrals(); 
+                loadReferrals();
             });
-            checkReferralBonus();
         }
 
-        function checkReferralBonus() {
+        function checkReferralAfterVerify() {
             const inviterId = tg.initDataUnsafe.start_param;
-            if(inviterId && inviterId != user.id) {
-                const refPath = db.ref('users/' + user.id + '/claimed_ref');
-                refPath.once('value', snap => {
-                    if(!snap.exists()) {
+            if (inviterId && inviterId != user.id) {
+                const claimPath = db.ref('users/' + user.id + '/bonus_done');
+                claimPath.once('value', snap => {
+                    if (!snap.exists()) {
                         db.ref('users/' + inviterId + '/pts').transaction(p => (p || 0) + 500);
-                        refPath.set(true);
+                        claimPath.set(true);
                         db.ref('users/' + user.id + '/referredBy').set(inviterId);
-                        tg.showPopup({ message: "রেফারেল বোনাস সফলভাবে যুক্ত হয়েছে!" });
                     }
                 });
             }
-        }
-
-        function loadReferrals() {
-            const refTable = document.getElementById('ref-data');
-            db.ref('users').orderByChild('referredBy').equalTo(user.id.toString()).once('value', snap => {
-                refTable.innerHTML = '';
-                if(snap.exists()){
-                    snap.forEach(child => {
-                        const d = child.val();
-                        refTable.innerHTML += `<tr><td>${d.first_name || "User"}</td><td>500 🍒</td></tr>`;
-                    });
-                }
-            });
-        }
-
-        function updateDisplay() {
-            document.getElementById('total-bal').innerText = score + " 🍒";
-            document.getElementById('w-bal').innerText = score + " 🍒";
-            document.getElementById('r-count').innerText = rb;
-            document.getElementById('g-count').innerText = gb;
-            
-            // ড্যাশবোর্ডে চেরি পয়েন্টের পাশে টাকা ও ডলার হিসেব
-            let bdt = (score / 1000).toFixed(2);
-            let usd = (score / 120000).toFixed(4);
-            document.getElementById('usd-bal').innerText = `$${usd} | ${bdt} BDT`;
         }
 
         function handleTap(e) {
@@ -275,85 +221,57 @@
                 taps = 0; 
                 tg.openLink("https://www.effectivegatecpm.com/hxm4wpfp4?key=53227d2b29be87d8351178c6412882f3"); 
             }
-            document.getElementById('p-fill').style.width = (taps/50)*100 + "%";
-            document.getElementById('p-count').innerText = taps + " / 50 Taps";
             updateDisplay();
-            db.ref('users/' + user.id).update({ pts: score, rb: rb, gb: gb });
-            const drop = document.createElement('div');
-            drop.className = 'cherry-drop'; drop.innerText = '🍒';
-            drop.style.left = e.clientX + 'px'; drop.style.top = (e.clientY - 30) + 'px';
-            document.body.appendChild(drop);
-            setTimeout(() => drop.remove(), 700);
-            tg.HapticFeedback.impactOccurred('light');
+            db.ref('users/' + user.id).update({ pts: score, rb, gb });
+            tg.HapticFeedback.impactOccurred('medium');
         }
 
         function claimBox(t) {
             tg.openLink("https://www.effectivegatecpm.com/b1hixejydi?key=d536c017bbfff7dc4cca0099e085f5a4");
             if(t==='red' && rb > 0) { score += 5; rb--; }
-            if(t==='green' && gb > 0) { score += 2; gb--; }
-            db.ref('users/' + user.id).update({ pts: score, rb: rb, gb: gb });
+            else if(t==='green' && gb > 0) { score += 2; gb--; }
+            db.ref('users/' + user.id).update({ pts: score, rb, gb });
         }
 
-        function renderTasks() {
-            const list = document.getElementById('task-list');
-            list.innerHTML = '';
-            const now = Date.now();
-            db.ref('users/' + user.id + '/tasks').once('value', snap => {
-                const tData = snap.val() || {};
-                for(let i=1; i<=10; i++) {
-                    const last = tData[i] || 0;
-                    const isDone = (now - last) < 86400000;
-                    list.innerHTML += `<div class="card" style="display:flex; justify-content:space-between; align-items:center;">
-                        <span>Task #${i} (+10 🍒)</span>
-                        <button class="btn-task ${isDone ? 'disabled' : 'enabled'}" onclick="${isDone ? '' : 'doTask('+i+')'}">${isDone ? 'Done' : 'Start'}</button>
-                    </div>`;
-                }
-            });
+        function updateDisplay() {
+            document.getElementById('total-bal').innerText = score + " 🍒";
+            document.getElementById('w-bal').innerText = score + " 🍒";
+            document.getElementById('r-count').innerText = rb;
+            document.getElementById('g-count').innerText = gb;
+            document.getElementById('p-fill').style.width = (taps/50)*100 + "%";
+            document.getElementById('p-count').innerText = taps + " / 50 Taps";
+            document.getElementById('usd-bal').innerText = `$${(score/120000).toFixed(4)} | ${(score/1000).toFixed(2)} BDT`;
         }
 
-        function doTask(id) {
-            tg.openLink("https://www.effectivegatecpm.com/j367fw0d?key=276e1acc8810b4e8802bb57e85fd3450");
-            setTimeout(() => {
-                score += 10;
-                db.ref('users/' + user.id).update({ pts: score });
-                db.ref('users/' + user.id + '/tasks').update({ [id]: Date.now() });
-                renderTasks();
-            }, 10000);
-        }
-
-        // উইথড্র পেজে চেরি পয়েন্ট বসানোর সাথে সাথে টাকা ও ডলার ক্যালকুলেশন
         function updateW() {
             const amt = document.getElementById('w-amt').value || 0;
-            const bdt = (amt / 1000).toFixed(2);
-            const usd = (amt / 120000).toFixed(4);
-            document.getElementById('w-calc').innerText = `Receive: ${bdt} BDT | $${usd}`;
+            document.getElementById('w-calc').innerText = `Receive: ${(amt/1000).toFixed(2)} BDT`;
         }
 
+        // আপনার ফাইলের ঠিক আগের লজিক অনুযায়ী উইথড্র মেসেজ
         function submitW() {
             const amt = parseInt(document.getElementById('w-amt').value);
             const m = document.getElementById('w-method').value;
             const adr = document.getElementById('w-addr').value;
-            const min = (m === 'Bkash' || m === 'Nagad') ? 50000 : 10000;
+            const date = new Date().toLocaleString();
+            const min = (m === 'Binance') ? 10000 : 50000;
 
-            if(score >= amt && amt >= min && adr.length > 5) {
-                const adminId = "7741833062";
-                const date = new Date().toLocaleDateString();
-                const msg = `🏧 Withdrawal Request!\n👤 User: ${user.first_name}\n🆔 ID: ${user.id}\n💳 Method: ${m}\n💰 Amount: ${amt} 🍒\n📍 Addr: ${adr}`;
-                fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${adminId}&text=${encodeURIComponent(msg)}`);
+            if (score >= amt && amt >= min && adr.length > 5) {
+                // ১. অ্যাডমিনকে মেসেজ
+                const adminMsg = `🏧 New Withdrawal Request!\n👤 User: ${user.first_name}\n🆔 ID: ${user.id}\n💳 Method: ${m}\n💰 Amount: ${amt} 🍒\n📍 Addr: ${adr}\n📅 Date: ${date}`;
+                fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${adminId}&text=${encodeURIComponent(adminMsg)}`);
 
-                const groupId = "@PlumMinePaymentProof";
-                const groupMsg = `✅ New Withdrawal Request!\n👤 Miner: ${user.first_name}\n🍒 Amount: ${amt}\n💰 Status: Pending...`;
-                fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${groupId}&text=${encodeURIComponent(groupMsg)}`);
+                // ২. গ্রুপে পেমেন্ট প্রুফ মেসেজ
+                const groupMsg = `✅ Withdrawal Successful!\n\n👤 Miner: ${user.first_name}\n🍒 Amount: ${amt} 🍒\n💰 Method: ${m}\n💳 Target: ${adr}\n📅 Date: ${date}\n\nStatus: Processing... ⏳`;
+                fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=@PlumMinePaymentProof&text=${encodeURIComponent(groupMsg)}`);
                 
                 db.ref('users/' + user.id + '/w_history').push({ date, amt, method: m, adr });
                 score -= amt;
                 db.ref('users/' + user.id).update({ pts: score });
                 tg.showAlert("Withdraw Submitted!");
-                updateDisplay();
                 document.getElementById('w-amt').value = '';
-                updateW();
             } else { 
-                tg.showAlert(`ভুল তথ্য! বিকাশ ও নগদে মিনিমাম ৫০,০০০ এবং বাইনান্সে ১০,০০০ পয়েন্ট লাগবে।`); 
+                tg.showAlert("Invalid Balance or Info!"); 
             }
         }
 
@@ -376,10 +294,31 @@
             if(id === 'tasks') renderTasks();
         }
 
-        function copyRef() {
-            const el = document.getElementById('ref-link');
-            el.select(); document.execCommand('copy');
-            tg.showAlert("Copied!");
+        function renderTasks() {
+            const list = document.getElementById('task-list'); list.innerHTML = '';
+            const now = Date.now();
+            db.ref('users/' + user.id + '/tasks').once('value', snap => {
+                const tData = snap.val() || {};
+                for(let i=1; i<=10; i++) {
+                    const isDone = (now - (tData[i] || 0)) < 86400000;
+                    list.innerHTML += `<div class="card" style="display:flex; justify-content:space-between;"><span>Task #${i}</span><button onclick="${isDone?'':'doTask('+i+')'}" style="background:${isDone?'#ccc':'#2e7d32'}; color:white; border:none; padding:5px 15px; border-radius:10px;">${isDone?'Done':'Start'}</button></div>`;
+                }
+            });
+        }
+        function doTask(id) {
+            tg.openLink("https://www.effectivegatecpm.com/j367fw0d?key=276e1acc8810b4e8802bb57e85fd3450");
+            setTimeout(() => {
+                score += 10; db.ref('users/' + user.id).update({ pts: score });
+                db.ref('users/' + user.id + '/tasks').update({ [id]: Date.now() });
+                renderTasks();
+            }, 8000);
+        }
+        function copyRef() { const el = document.getElementById('ref-link'); el.select(); document.execCommand('copy'); tg.showAlert("Copied!"); }
+        function loadReferrals() {
+            db.ref('users').orderByChild('referredBy').equalTo(user.id.toString()).once('value', snap => {
+                const refTable = document.getElementById('ref-data'); refTable.innerHTML = '';
+                snap.forEach(child => { refTable.innerHTML += `<tr><td>${child.val().first_name || "User"}</td><td>500 🍒</td></tr>`; });
+            });
         }
     </script>
 </body>
