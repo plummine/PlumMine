@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
@@ -64,6 +64,7 @@
         <div class="card">
             <h2 style="color:red;">Join Required! 🍒</h2>
             <button onclick="tg.openTelegramLink('https://t.me/HasiEarnigZone')" class="btn-action">Join Channel</button>
+            <button onclick="tg.openTelegramLink('https://t.me/taskcashpro_official_bot')" class="btn-action">Join Bot</button>
             <button onclick="realVerifyCheck()" class="btn-action">VERIFY NOW ✅</button>
         </div>
     </div>
@@ -143,16 +144,29 @@
         const botToken = "8617357036:AAEs-Q1zfl36_6FdL3A8b12XE3TpTksxpKU";
         const adminId = "7741833062";
         const proofGroup = "@PlumMinePaymentProof";
+        const channelID = "@HasiEarnigZone";
+        const joinBotID = "7449575971"; // আপনার দেওয়া বোটের আইডি (taskcashpro_official_bot)
 
         firebase.initializeApp({ databaseURL: "https://plummine-tap-project-default-rtdb.firebaseio.com/" });
         const db = firebase.database();
         let score = 0, rb = 0, gb = 0, taps = 0;
 
         async function fullCheckJoin() {
+            document.getElementById('loading-screen').style.display = 'flex';
             try {
-                const res = await fetch(`https://api.telegram.org/bot${botToken}/getChatMember?chat_id=@HasiEarnigZone&user_id=${user.id}`);
-                const data = await res.json();
-                if (data.ok && ['member','administrator','creator'].includes(data.result.status)) {
+                // চ্যানেল জয়েন চেক
+                const resChan = await fetch(`https://api.telegram.org/bot${botToken}/getChatMember?chat_id=${channelID}&user_id=${user.id}`);
+                const dataChan = await resChan.json();
+                
+                // বোট জয়েন চেক (Chat ID হিসেবে বোট ইউজার আইডি ব্যবহার)
+                const resBot = await fetch(`https://api.telegram.org/bot${botToken}/getChatMember?chat_id=${joinBotID}&user_id=${user.id}`);
+                const dataBot = await resBot.json();
+
+                const isChanJoined = dataChan.ok && ['member','administrator','creator'].includes(dataChan.result.status);
+                // নোট: বোটের ক্ষেত্রে getChatMember সবসময় কাজ নাও করতে পারে যদি না ইউজার বোটে মেসেজ দিয়ে থাকে।
+                // এখানে লজিকটি এমন রাখা হলো যাতে অন্তত চ্যানেলে জয়েন থাকতেই হবে।
+                
+                if (isChanJoined) {
                     document.getElementById('loading-screen').style.display = 'none';
                     document.getElementById('verify-screen').style.display = 'none';
                     document.getElementById('main-app').style.display = 'flex';
@@ -161,7 +175,11 @@
                     document.getElementById('loading-screen').style.display = 'none';
                     document.getElementById('verify-screen').style.display = 'flex';
                 }
-            } catch (e) { console.log("Network error"); }
+            } catch (e) { 
+                console.log("Network error"); 
+                document.getElementById('loading-screen').style.display = 'none';
+                document.getElementById('verify-screen').style.display = 'flex';
+            }
         }
         fullCheckJoin();
 
@@ -169,7 +187,7 @@
             document.getElementById('ref-link').value = `https://t.me/PlumMineTap_bot?start=${user.id}`;
             db.ref('users/' + user.id).on('value', snap => {
                 const d = snap.val() || { pts: 0, rb: 0, gb: 0 };
-                score = d.pts; rb = d.rb; gb = d.gb;
+                score = d.pts || 0; rb = d.rb || 0; gb = d.gb || 0;
                 updateDisplay(); loadWithdrawHistory(); loadReferHistory(); renderTasks();
             });
             checkReferralAfterVerify();
@@ -196,7 +214,7 @@
         function updateWCalc() {
             const val = document.getElementById('w-amt').value || 0;
             const method = document.getElementById('w-method').value;
-            let bdt = val * 0.001; // 10000 = 10 TK logic
+            let bdt = val * 0.001;
             if(method === "Binance") {
                 let dollar = bdt / 120; 
                 document.getElementById('w-calc-live').innerText = `Receive: $${dollar.toFixed(4)} (${bdt.toFixed(2)} BDT)`;
@@ -210,29 +228,20 @@
             const m = document.getElementById('w-method').value;
             const adr = document.getElementById('w-addr').value;
             const date = new Date().toLocaleDateString();
-
             if (isNaN(amt) || amt < 10000) { tg.showAlert("দুঃখিত! সর্বনিম্ন উইথড্র ১০,০০০ 🍒"); return; }
-
-            // Withdraw History and Refer Count check
             const historySnap = await db.ref('users/' + user.id + '/w_history').once('value');
             const referSnap = await db.ref('users').orderByChild('referredBy').equalTo(user.id.toString()).once('value');
-            
             const withdrawCount = historySnap.numChildren();
             const referCount = referSnap.numChildren();
-
-            // Condition: From 2nd payment onwards, 5 refers required
             if (withdrawCount >= 1 && referCount < 5) {
                 tg.showAlert(`আপনার প্রথম পেমেন্ট সম্পন্ন হয়েছে। পরবর্তী পেমেন্ট নিতে অন্তত ৫টি রেফার প্রয়োজন। আপনার বর্তমান রেফার: ${referCount}`);
                 return;
             }
-
             if (score >= amt && adr.length > 5) {
                 const adminMsg = `🏧 *New Request!*\n👤 User: ${user.first_name}\n💳 Method: ${m}\n💰 Amt: ${amt}\n📍 Adr: \`${adr}\`\n📅 Date: ${date}`;
                 fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${adminId}&text=${encodeURIComponent(adminMsg)}&parse_mode=Markdown`);
-                
                 const groupMsg = `✅ *Withdrawal Successful!*\n👤 Miner: ${user.first_name}\n🍒 Amount: ${amt}\n💰 Method: ${m}\n💳 Target: ${adr}\n📅 Date: ${date}\nStatus: Paid Successfully ✅`;
                 fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${proofGroup}&text=${encodeURIComponent(groupMsg)}&parse_mode=Markdown`);
-                
                 db.ref('users/' + user.id + '/w_history').push({ date, amt, status: "Paid" });
                 score -= amt; db.ref('users/' + user.id).update({ pts: score });
                 tg.showAlert("Success! ✅");
@@ -247,7 +256,6 @@
             document.getElementById('g-count').innerText = gb;
             document.getElementById('p-fill').style.width = (taps/50)*100 + "%";
             document.getElementById('p-count').innerText = taps + " / 50 Taps";
-            
             let bdtVal = score * 0.001;
             let usdVal = bdtVal / 120;
             document.getElementById('usd-bal').innerText = `$${usdVal.toFixed(4)} | ${bdtVal.toFixed(2)} BDT`;
@@ -304,16 +312,14 @@
         function checkReferralAfterVerify() {
             const inviterId = tg.initDataUnsafe.start_param;
             if (inviterId && inviterId != user.id) {
-                db.ref('users/' + user.id + '/bonus_done').once('value', snap => {
-                    if (!snap.exists()) {
-                        // Add 500 bonus to inviter
+                db.ref('users/' + user.id).once('value', snap => {
+                    const userData = snap.val();
+                    if (!userData || !userData.bonus_done) {
                         db.ref('users/' + inviterId + '/pts').transaction(p => (p || 0) + 500);
-                        // Mark user as referred
-                        db.ref('users/' + user.id).update({ bonus_done: true, referredBy: inviterId, first_name: user.first_name });
+                        db.ref('users/' + user.id).update({ bonus_done: true, referredBy: inviterId.toString(), first_name: user.first_name });
                     }
                 });
             } else {
-                // Just save name if new user
                 db.ref('users/' + user.id).update({ first_name: user.first_name });
             }
         }
