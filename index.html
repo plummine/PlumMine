@@ -65,7 +65,6 @@
     <div id="verify-screen" style="display:none;">
         <div class="card">
             <h2 style="color:red;">Join Required! 🍒</h2>
-            <p>আমাদের অফিসিয়াল চ্যানেল ও বটে জয়েন না থাকলে আপনি পেমেন্ট পাবেন না।</p>
             <button onclick="tg.openTelegramLink('https://t.me/HasiEarnigZone')" class="btn-action" style="background:#24A1DE;"><i class="fab fa-telegram-plane"></i> Join Channel</button>
             <button onclick="tg.openTelegramLink('https://t.me/taskcashpro_official_bot?start=r03512472386')" class="btn-action" style="background:#24A1DE;"><i class="fas fa-robot"></i> Join Bot</button>
             <button onclick="realVerifyCheck()" class="btn-action">VERIFY NOW ✅</button>
@@ -74,7 +73,6 @@
 
     <div id="main-app" class="app-container">
         <div class="content-area">
-            
             <div id="home" class="page active">
                 <h1 class="bot-name-3d">PlumMine</h1>
                 <div class="balance-card">
@@ -109,44 +107,32 @@
                     <button onclick="copyRef()" class="btn-action">Copy Link</button>
                 </div>
                 <h4>Referral History</h4>
-                <div class="table-container">
-                    <table>
-                        <thead><tr><th>Name</th><th>Status</th></tr></thead>
-                        <tbody id="ref-data"></tbody>
-                    </table>
-                </div>
+                <div class="table-container"><table><thead><tr><th>Name</th><th>Status</th></tr></thead><tbody id="ref-data"></tbody></table></div>
             </div>
 
             <div id="withdraw" class="page">
                 <div class="balance-card"><h2 id="w-bal">0 🍒</h2></div>
                 <div class="card">
                     <select id="w-method" class="btn-action" style="background:#fff; color:#333; border:1px solid #ddd;" onchange="updateWCalc()">
-                        <option value="Bkash">Bkash</option>
-                        <option value="Nagad">Nagad</option>
-                        <option value="Binance">Binance</option>
+                        <option value="Bkash">Bkash (Min: 10000)</option>
+                        <option value="Nagad">Nagad (Min: 10000)</option>
+                        <option value="Binance">Binance (Min: 10000)</option>
                     </select>
                     <input type="number" id="w-amt" placeholder="Min 10000 🍒" class="btn-action" style="background:#fff; color:#333; border:1px solid #ddd;" oninput="updateWCalc()">
                     <div id="w-calc-live" style="text-align:right; font-weight:bold; color:var(--accent);">Receive: 0.00 BDT</div>
-                    <input type="text" id="w-addr" placeholder="Wallet Address/Number" class="btn-action" style="background:#fff; color:#333; border:1px solid #ddd;">
+                    <input type="text" id="w-addr" placeholder="Address/Number" class="btn-action" style="background:#fff; color:#333; border:1px solid #ddd;">
                     <button onclick="submitW()" class="btn-action">SUBMIT</button>
                 </div>
                 <h4>Withdraw History</h4>
-                <div class="table-container">
-                    <table>
-                        <thead><tr><th>Date</th><th>Amount</th><th>Status</th></tr></thead>
-                        <tbody id="w-history"></tbody>
-                    </table>
-                </div>
+                <div class="table-container"><table><thead><tr><th>Date</th><th>Amount</th><th>Status</th></tr></thead><tbody id="w-history"></tbody></table></div>
             </div>
 
             <div id="support" class="page">
                 <div class="card" style="text-align:center; border:none; background:transparent;">
-                    <img src="https://i.ibb.co.com/xTkFZkM/28204.jpg" style="width: 100%; border-radius: 20px; margin-bottom:15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
-                    <button onclick="tg.openTelegramLink('https://t.me/PlumMineAdmin')" class="btn-action" style="background:#d84315;"><i class="fas fa-user-shield"></i> Contact Admin</button>
-                    <button onclick="tg.openTelegramLink('https://t.me/HasiEarnigZone')" class="btn-action" style="background:#24A1DE;"><i class="fab fa-telegram-plane"></i> Official Channel</button>
-                    <button onclick="tg.openTelegramLink('https://t.me/PlumMinePaymentProof')" class="btn-action" style="background:#00c2ff;"><i class="fas fa-check-circle"></i> Payment Proof Group</button>
-                    <br>
-                    <button onclick="tg.openTelegramLink('https://t.me/TaskCashPro')" class="btn-action btn-banner" style="flex-direction: column; height: auto;">
+                    <img src="https://i.ibb.co.com/xTkFZkM/28204.jpg" style="width: 100%; border-radius: 20px; margin-bottom:15px;">
+                    <button onclick="tg.openTelegramLink('https://t.me/PlumMineAdmin')" class="btn-action" style="background:#d84315;">Contact Admin</button>
+                    <button onclick="tg.openTelegramLink('https://t.me/HasiEarnigZone')" class="btn-action" style="background:#24A1DE;">Official Channel</button>
+                    <button onclick="tg.openTelegramLink('https://t.me/TaskCashPro')" class="btn-action btn-banner">
                         <span style="color:white; font-weight:bold; font-size:18px;">অন্যান্য ইনকাম টিপস গ্রুপ</span>
                         <span style="background:white; color:#FF5722; padding:5px 20px; border-radius:50px; font-size:14px; font-weight:900; margin-top:8px; animation: pulse-banner 1.5s infinite; display: inline-block;">CLICK NOW</span>
                     </button>
@@ -184,7 +170,7 @@
                     document.getElementById('loading-screen').style.display = 'none';
                     document.getElementById('verify-screen').style.display = 'none';
                     document.getElementById('main-app').style.display = 'flex';
-                    startApp();
+                    initApp();
                 } else {
                     document.getElementById('loading-screen').style.display = 'none';
                     document.getElementById('verify-screen').style.display = 'flex';
@@ -193,11 +179,6 @@
         }
         
         fullCheckJoin();
-
-        function startApp() {
-            checkReferralAfterVerify();
-            initApp();
-        }
 
         function initApp() {
             document.getElementById('ref-link').value = `https://t.me/PlumMineTap_bot?start=${user.id}`;
@@ -209,22 +190,17 @@
                 loadReferHistory();
                 renderTasks();
             });
+            checkReferralAfterVerify();
         }
 
         function handleTap(e) {
             score++; taps++;
-            const drop = document.createElement('div');
-            drop.className = 'cherry-drop'; drop.innerText = '🍒';
+            const drop = document.createElement('div'); drop.className = 'cherry-drop'; drop.innerText = '🍒';
             drop.style.left = (e.clientX - 15) + 'px'; drop.style.top = (e.clientY - 30) + 'px';
             document.body.appendChild(drop);
             setTimeout(() => drop.remove(), 700);
-
-            if(taps >= 50) { 
-                taps = 0; 
-                tg.openLink("https://www.effectivegatecpm.com/hxm4wpfp4?key=53227d2b29be87d8351178c6412882f3"); 
-            }
-            if(score % 100 === 0) rb++;
-            if(score % 1000 === 0) gb++;
+            if(taps >= 50) { taps = 0; tg.openLink("https://www.effectivegatecpm.com/hxm4wpfp4?key=53227d2b29be87d8351178c6412882f3"); }
+            if(score % 100 === 0) rb++; if(score % 1000 === 0) gb++;
             updateDisplay();
             db.ref('users/' + user.id).update({ pts: score, rb, gb });
         }
@@ -233,7 +209,6 @@
             tg.openLink("https://www.effectivegatecpm.com/b1hixejydi?key=d536c017bbfff7dc4cca0099e085f5a4");
             if(type === 'red' && rb > 0) { score += 50; rb--; }
             else if(type === 'green' && gb > 0) { score += 200; gb--; }
-            else { tg.showAlert("No boxes!"); return; }
             db.ref('users/' + user.id).update({ pts: score, rb, gb });
         }
 
@@ -249,7 +224,16 @@
 
         function updateWCalc() {
             const val = document.getElementById('w-amt').value || 0;
-            document.getElementById('w-calc-live').innerText = `Receive: ${(val/1000).toFixed(2)} BDT`;
+            const method = document.getElementById('w-method').value;
+            // বাইনান্সের জন্য ১০০ টাকা রেট, অন্যদের জন্য ১০০০ চেরিতে ১ টাকা (বিকাশ/নগদ)
+            let receive = (method === "Binance") ? (val / 1000) * 1.2 : (val / 1000); 
+            // ইউজার চাইল বাইনান্স ১ ডলার ১০০ টাকা
+            if(method === "Binance") {
+                let dollar = (val / 10000); 
+                document.getElementById('w-calc-live').innerText = `Receive: $${dollar.toFixed(2)} (${(dollar * 100).toFixed(2)} BDT)`;
+            } else {
+                document.getElementById('w-calc-live').innerText = `Receive: ${(val / 1000).toFixed(2)} BDT`;
+            }
         }
 
         function submitW() {
@@ -258,30 +242,21 @@
             const adr = document.getElementById('w-addr').value;
             const date = new Date().toLocaleDateString();
 
-            if (isNaN(amt) || amt < 10000) { 
-                tg.showAlert("দুঃখিত! সর্বনিম্ন উইথড্র ১০,০০০ 🍒"); 
-                return; 
-            }
+            if (isNaN(amt) || amt < 10000) { tg.showAlert("দুঃখিত! সর্বনিম্ন উইথড্র ১০,০০০ 🍒"); return; }
 
             if (score >= amt && adr.length > 5) {
-                // ১. অ্যাডমিনের কাছে রিকোয়েস্ট মেসেজ (অরিজিনাল ফরম্যাট)
                 const adminMsg = `🏧 *New Request!*\n👤 User: ${user.first_name}\n💳 Method: ${m}\n💰 Amt: ${amt}\n📍 Adr: \`${adr}\`\n📅 Date: ${date}`;
                 fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${adminId}&text=${encodeURIComponent(adminMsg)}&parse_mode=Markdown`);
 
-                // ২. পেমেন্ট প্রুফ গ্রুপে সাকসেস মেসেজ (অরিজিনাল ফরম্যাট)
                 const groupMsg = `✅ *Withdrawal Successful!*\n👤 Miner: ${user.first_name}\n🍒 Amount: ${amt}\n💰 Method: ${m}\n💳 Target: ${adr}\n📅 Date: ${date}\nStatus: Paid Successfully ✅`;
                 fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${proofGroup}&text=${encodeURIComponent(groupMsg)}&parse_mode=Markdown`);
 
                 db.ref('users/' + user.id + '/w_history').push({ date, amt, status: "Paid" });
                 score -= amt;
                 db.ref('users/' + user.id).update({ pts: score });
-                
                 tg.showAlert("Success! ✅");
-                document.getElementById('w-amt').value = '';
-                document.getElementById('w-addr').value = '';
-            } else { 
-                tg.showAlert("Check balance or info!"); 
-            }
+                document.getElementById('w-amt').value = ''; document.getElementById('w-addr').value = '';
+            } else { tg.showAlert("Check balance or info!"); }
         }
 
         function renderTasks() {
@@ -302,8 +277,7 @@
         function doTask(id) {
             tg.openLink("https://www.effectivegatecpm.com/j367fw0d?key=276e1acc8810b4e8802bb57e85fd3450");
             setTimeout(() => {
-                score += 50;
-                db.ref('users/' + user.id).update({ pts: score });
+                score += 50; db.ref('users/' + user.id).update({ pts: score });
                 db.ref('users/' + user.id + '/task_timers/' + id).set(Date.now());
                 renderTasks();
             }, 5000);
@@ -312,7 +286,6 @@
         function loadWithdrawHistory() {
             db.ref('users/' + user.id + '/w_history').once('value', snap => {
                 const tbody = document.getElementById('w-history');
-                if(!tbody) return;
                 tbody.innerHTML = '';
                 snap.forEach(child => {
                     const h = child.val();
@@ -324,11 +297,9 @@
         function loadReferHistory() {
             db.ref('users').orderByChild('referredBy').equalTo(user.id.toString()).once('value', snap => {
                 const tbody = document.getElementById('ref-data');
-                if(!tbody) return;
                 tbody.innerHTML = '';
                 snap.forEach(child => {
-                    const r = child.val();
-                    tbody.innerHTML += `<tr><td>${r.first_name || 'Miner'}</td><td style="color: #2e7d32;">Success ✅</td></tr>`;
+                    tbody.innerHTML += `<tr><td>${child.val().first_name || 'Miner'}</td><td style="color: #2e7d32;">Success ✅</td></tr>`;
                 });
             });
         }
@@ -348,9 +319,7 @@
         function showPage(id, el) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            const targetPage = document.getElementById(id);
-            if(targetPage) targetPage.classList.add('active');
-            if(el) el.classList.add('active');
+            document.getElementById(id).classList.add('active'); el.classList.add('active');
         }
 
         async function realVerifyCheck() { fullCheckJoin(); }
