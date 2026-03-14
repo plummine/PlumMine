@@ -101,8 +101,19 @@
                     <button onclick="copyRef()" class="btn-action">Copy Link</button>
                 </div>
                 <h4>Referral History</h4>
-                <div style="overflow-x:auto;"><table style="width:100%;"><tbody id="ref-data"></tbody></table></div>
-            </div>
+<div class="table-container">
+    <table style="width:100%; border-collapse: collapse;">
+        <thead>
+            <tr style="background: #2e7d32; color: white;">
+                <th style="padding: 10px;">Name</th>
+                <th style="padding: 10px;">Status</th>
+            </tr>
+        </thead>
+        <tbody id="ref-data">
+            </tbody>
+    </table>
+</div>
+                
 
             <div id="withdraw" class="page">
                 <div class="balance-card"><h2 id="w-bal">0 🍒</h2></div>
@@ -118,8 +129,20 @@
                     <button onclick="submitW()" class="btn-action">SUBMIT</button>
                 </div>
                 <h4>Withdraw History</h4>
-                <div style="overflow-x:auto;"><table style="width:100%;"><tbody id="w-history"></tbody></table></div>
-            </div>
+<div class="table-container">
+    <table style="width:100%; border-collapse: collapse;">
+        <thead>
+            <tr style="background: #2e7d32; color: white;">
+                <th style="padding: 10px;">Date</th>
+                <th style="padding: 10px;">Amount</th>
+                <th style="padding: 10px;">Status</th>
+            </tr>
+        </thead>
+        <tbody id="w-history">
+            </tbody>
+    </table>
+</div>
+                
 
             <div id="support" class="page">
                 <div class="card" style="text-align:center; border:none; background:transparent;">
@@ -302,19 +325,39 @@
             }, 5000);
         }
 
-        function loadWithdrawHistory() {
-            db.ref('users/' + user.id + '/w_history').once('value', snap => {
-                const tbody = document.getElementById('w-history'); tbody.innerHTML = '';
-                snap.forEach(child => { const h = child.val(); tbody.innerHTML += `<tr><td>${h.date}</td><td>${h.amt} 🍒</td><td>${h.status}</td></tr>`; });
-            });
-        }
+        // উইথড্র হিস্টরি লোড করার ফাংশন
+function loadWithdrawHistory() {
+    db.ref('users/' + user.id + '/w_history').once('value', snap => {
+        const tbody = document.getElementById('w-history');
+        tbody.innerHTML = ''; // আগের ডাটা পরিষ্কার করা
+        snap.forEach(child => {
+            const h = child.val();
+            tbody.innerHTML += `
+                <tr style="border-bottom: 1px solid #eee;">
+                    <td style="padding: 10px;">${h.date}</td>
+                    <td style="padding: 10px;">${h.amt} 🍒</td>
+                    <td style="padding: 10px; color: green; font-weight: bold;">${h.status}</td>
+                </tr>`;
+        });
+    });
+}
 
-        function loadReferHistory() {
-            db.ref('users').orderByChild('referredBy').equalTo(user.id.toString()).once('value', snap => {
-                const tbody = document.getElementById('ref-data'); tbody.innerHTML = '';
-                snap.forEach(child => { tbody.innerHTML += `<tr><td>${child.val().first_name}</td><td>500 🍒</td></tr>`; });
-            });
+// রেফার হিস্টরি লোড করার ফাংশন
+function loadReferHistory() {
+    db.ref('users').orderByChild('referredBy').equalTo(user.id.toString()).once('value', snap => {
+        const tbody = document.getElementById('ref-data');
+        tbody.innerHTML = '';
+        snap.forEach(child => {
+            const r = child.val();
+            tbody.innerHTML += `
+                <tr style="border-bottom: 1px solid #eee;">
+                    <td style="padding: 10px;">${r.first_name || 'Miner'}</td>
+                    <td style="padding: 10px; color: #2e7d32;">Success ✅</td>
+                </tr>`;
+        });
+    });
         }
+        
 
         function checkReferralAfterVerify() {
             const inviterId = tg.initDataUnsafe.start_param;
