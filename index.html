@@ -73,6 +73,7 @@
 
     <div id="main-app" class="app-container">
         <div class="content-area">
+            
             <div id="home" class="page active">
                 <h1 class="bot-name-3d">PlumMine</h1>
                 <div class="balance-card">
@@ -151,7 +152,20 @@
         const db = firebase.database();
         let score = 0, rb = 0, gb = 0, taps = 0;
 
-        // Force Verification logic
+        // ব্যালেন্স জিরো হওয়া রোধ করতে সবার আগে ডেটা কানেকশন শুরু করা
+        function startSync() {
+            db.ref('users/' + user.id).on('value', snap => {
+                if(snap.exists()){
+                    const d = snap.val();
+                    score = d.pts || 0; 
+                    rb = d.rb || 0; 
+                    gb = d.gb || 0;
+                    updateDisplay();
+                }
+            });
+        }
+        startSync(); // অ্যাপ ওপেন করার সাথে সাথেই ডেটা রিড শুরু হবে
+
         async function realVerifyCheck() {
             document.getElementById('loading-screen').style.display = 'flex';
             try {
@@ -159,7 +173,6 @@
                 const data = await res.json();
                 
                 if (data.ok && ['member','administrator','creator'].includes(data.result.status)) {
-                    // Success: Hide Verify and Show App
                     document.getElementById('loading-screen').style.display = 'none';
                     document.getElementById('verify-screen').style.display = 'none';
                     document.getElementById('main-app').style.display = 'flex';
@@ -176,11 +189,9 @@
 
         function initApp() {
             document.getElementById('ref-link').value = `https://t.me/PlumMineTap_bot?start=${user.id}`;
-            db.ref('users/' + user.id).on('value', snap => {
-                const d = snap.val() || { pts: 0, rb: 0, gb: 0 };
-                score = d.pts || 0; rb = d.rb || 0; gb = d.gb || 0;
-                updateDisplay(); loadWithdrawHistory(); loadReferHistory(); renderTasks();
-            });
+            loadWithdrawHistory(); 
+            loadReferHistory(); 
+            renderTasks();
             checkReferralAfterVerify();
         }
 
@@ -192,14 +203,16 @@
             setTimeout(() => drop.remove(), 700);
             if(taps >= 50) { taps = 0; tg.openLink("https://www.effectivegatecpm.com/hxm4wpfp4?key=53227d2b29be87d8351178c6412882f3"); }
             if(score % 100 === 0) rb++; if(score % 1000 === 0) gb++;
-            updateDisplay(); db.ref('users/' + user.id).update({ pts: score, rb, gb, first_name: user.first_name });
+            updateDisplay(); 
+            // ডেটা ওভাররাইট না করে শুধু নির্দিষ্ট ফিল্ড আপডেট করা
+            db.ref('users/' + user.id).update({ pts: score, rb: rb, gb: gb, first_name: user.first_name });
         }
 
         function claimBox(type) {
             tg.openLink("https://www.effectivegatecpm.com/b1hixejydi?key=d536c017bbfff7dc4cca0099e085f5a4");
             if(type === 'red' && rb > 0) { score += 50; rb--; }
             else if(type === 'green' && gb > 0) { score += 200; gb--; }
-            db.ref('users/' + user.id).update({ pts: score, rb, gb });
+            db.ref('users/' + user.id).update({ pts: score, rb: rb, gb: gb });
         }
 
         function updateWCalc() {
