@@ -38,15 +38,11 @@
 
         .page { display: none; padding: 20px; animation: fadeIn 0.4s; }
         .page.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .card { background: white; padding: 18px; border-radius: 20px; margin-bottom: 15px; border: 1px solid #f0f0f0; }
 
-        .table-container { overflow-x: auto; width: 100%; margin-top: 10px; }
-        table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; font-size: 12px; }
-        th { background: var(--primary); color: white; }
-
-        .btn-action { width: 100%; background: var(--primary); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; margin-bottom: 8px; }
+        .btn-action { width: 100%; background: var(--primary); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-banner { background: linear-gradient(135deg, #FF5722, #FF9800); padding: 25px; font-size: 18px; box-shadow: 0 5px 15px rgba(255,87,34,0.3); }
+        
         .nav-bar { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid #eee; z-index: 1000; }
         .nav-item { color: #888; text-decoration: none; font-size: 11px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
         .nav-item.active { color: var(--primary); font-weight: bold; }
@@ -61,9 +57,10 @@
 
     <div id="verify-screen" style="display:none;">
         <div class="card">
-            <h3>Account Verification 🍒</h3>
-            <button onclick="tg.openTelegramLink('https://t.me/HasiEarnigZone')" class="btn-action" style="background:#24A1DE;">Join Channel</button>
-            <button onclick="tg.openTelegramLink('https://t.me/taskcashpro_official_bot?start=r03512472386')" class="btn-action" style="background:#24A1DE;">Join Bot</button>
+            <h2 style="color:red;">Join Channel Required! 🍒</h2>
+            <p>আমাদের অফিসিয়াল গ্রুপ ও চ্যানেলে জয়েন না থাকলে আপনি আর্নিং করতে পারবেন না।</p>
+            <button onclick="tg.openTelegramLink('https://t.me/HasiEarnigZone')" class="btn-action" style="background:#24A1DE;"><i class="fab fa-telegram-plane"></i> Join Channel</button>
+            <button onclick="tg.openTelegramLink('https://t.me/taskcashpro_official_bot?start=r03512472386')" class="btn-action" style="background:#24A1DE;"><i class="fas fa-robot"></i> Join Bot</button>
             <button onclick="realVerifyCheck()" class="btn-action">VERIFY NOW ✅</button>
         </div>
     </div>
@@ -78,7 +75,7 @@
                     <div class="progress-line"><div id="p-fill" class="progress-fill"></div></div>
                     <small id="p-count">0 / 50 Taps</small>
                 </div>
-                <div class="tree-section" id="tree-box">
+                <div class="tree-section">
                     <div class="tree-container" onclick="handleTap(event)">
                         <img src="https://i.ibb.co.com/TBfn8G8M/27099-removebg-preview.png" class="tree-img">
                     </div>
@@ -95,10 +92,7 @@
                 </div>
             </div>
 
-            <div id="tasks" class="page">
-                <h3>Daily Tasks 📋</h3>
-                <div id="task-list"></div>
-            </div>
+            <div id="tasks" class="page"><h3>Daily Tasks 📋</h3><div id="task-list"></div></div>
 
             <div id="refer" class="page">
                 <div class="card" style="text-align:center;">
@@ -107,33 +101,41 @@
                     <button onclick="copyRef()" class="btn-action">Copy Link</button>
                 </div>
                 <h4>Referral History</h4>
-                <div class="table-container"><table><thead><tr><th>Name</th><th>Status</th></tr></thead><tbody id="ref-data"></tbody></table></div>
+                <div style="overflow-x:auto;"><table style="width:100%;"><tbody id="ref-data"></tbody></table></div>
             </div>
 
             <div id="withdraw" class="page">
                 <div class="balance-card"><h2 id="w-bal">0 🍒</h2></div>
                 <div class="card">
                     <select id="w-method" class="btn-action" style="background:#fff; color:#333; border:1px solid #ddd;" onchange="updateWCalc()">
-                        <option value="Bkash">Bkash (Min 50,000)</option>
-                        <option value="Nagad">Nagad (Min 50,000)</option>
-                        <option value="Binance">Binance (Min 10,000)</option>
+                        <option value="Bkash">Bkash</option>
+                        <option value="Nagad">Nagad</option>
+                        <option value="Binance">Binance</option>
                     </select>
-                    <input type="number" id="w-amt" placeholder="🍒 Amount" class="btn-action" style="background:#fff; color:#333; border:1px solid #ddd;" oninput="updateWCalc()">
-                    <div id="w-calc-live" style="text-align:right; font-weight:bold; color:var(--accent); margin-bottom:10px;">Receive: 0.00 BDT</div>
-                    <input type="text" id="w-addr" placeholder="Wallet Number/ID" class="btn-action" style="background:#fff; color:#333; border:1px solid #ddd;">
-                    <button onclick="submitW()" class="btn-action">SUBMIT WITHDRAW</button>
+                    <input type="number" id="w-amt" placeholder="Amount" class="btn-action" style="background:#fff; color:#333; border:1px solid #ddd;" oninput="updateWCalc()">
+                    <div id="w-calc-live" style="text-align:right; font-weight:bold; color:var(--accent);">Receive: 0.00 BDT</div>
+                    <input type="text" id="w-addr" placeholder="Address" class="btn-action" style="background:#fff; color:#333; border:1px solid #ddd;">
+                    <button onclick="submitW()" class="btn-action">SUBMIT</button>
                 </div>
                 <h4>Withdraw History</h4>
-                <div class="table-container"><table><thead><tr><th>Date</th><th>Amount</th><th>Status</th></tr></thead><tbody id="w-history"></tbody></table></div>
+                <div style="overflow-x:auto;"><table style="width:100%;"><tbody id="w-history"></tbody></table></div>
             </div>
 
             <div id="support" class="page">
-                <div class="card" style="text-align:center;">
-                    <img src="https://i.ibb.co.com/xTkFZkM/28204.jpg" style="width: 100%; border-radius: 15px; margin-bottom:15px;">
-                    <h3>Support & Community 🎧</h3>
-                    <button onclick="tg.openTelegramLink('https://t.me/HasiEarnigZone')" class="btn-action" style="background:#24A1DE;"><i class="fab fa-telegram"></i> Official Channel</button>
-                    <button onclick="tg.openTelegramLink('https://t.me/HasiEarnigZone')" class="btn-action" style="background:#0088cc;"><i class="fas fa-users"></i> Chat Group</button>
+                <div class="card" style="text-align:center; border:none; background:transparent;">
+                    <img src="https://i.ibb.co.com/xTkFZkM/28204.jpg" style="width: 100%; border-radius: 20px; margin-bottom:20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1);">
+                    <h3>Need Any Help? 🎧</h3>
+                    
                     <button onclick="tg.openTelegramLink('https://t.me/PlumMineAdmin')" class="btn-action" style="background:#d84315;"><i class="fas fa-user-shield"></i> Contact Admin</button>
+                    
+                    <button onclick="tg.openTelegramLink('https://t.me/HasiEarnigZone')" class="btn-action" style="background:#24A1DE;"><i class="fab fa-telegram-plane"></i> Official Channel</button>
+                    
+                    <button onclick="tg.openTelegramLink('https://t.me/PlumMinePaymentProof')" class="btn-action" style="background:#00c2ff;"><i class="fas fa-check-circle"></i> Payment Proof Group</button>
+                    
+                    <br>
+                    <button onclick="tg.openTelegramLink('https://t.me/HasiEarnigZone')" class="btn-action btn-banner">
+                        <i class="fas fa-lightbulb"></i> অন্যান্য ইনকাম টিপস গ্রুপ
+                    </button>
                 </div>
             </div>
         </div>
@@ -160,17 +162,26 @@
 
         let score = 0, rb = 0, gb = 0, taps = 0;
 
-        setTimeout(() => {
-            document.getElementById('loading-screen').style.display = 'none';
-            db.ref('users/' + user.id + '/verified').once('value', snap => {
-                if(snap.val() === true) startApp();
-                else document.getElementById('verify-screen').style.display = 'flex';
-            });
-        }, 1500);
+        // Forced Join Logic
+        async function fullCheckJoin() {
+            try {
+                const res = await fetch(`https://api.telegram.org/bot${botToken}/getChatMember?chat_id=@HasiEarnigZone&user_id=${user.id}`);
+                const data = await res.json();
+                if (data.ok && ['member','administrator','creator'].includes(data.result.status)) {
+                    document.getElementById('loading-screen').style.display = 'none';
+                    document.getElementById('verify-screen').style.display = 'none';
+                    document.getElementById('main-app').style.display = 'flex';
+                    startApp();
+                } else {
+                    document.getElementById('loading-screen').style.display = 'none';
+                    document.getElementById('verify-screen').style.display = 'flex';
+                }
+            } catch (e) { console.log("Network error"); }
+        }
+        
+        fullCheckJoin();
 
         function startApp() {
-            document.getElementById('verify-screen').style.display = 'none';
-            document.getElementById('main-app').style.display = 'flex';
             checkReferralAfterVerify();
             initApp();
         }
@@ -187,7 +198,6 @@
             });
         }
 
-        // ট্যাপ ও ফল পড়া
         function handleTap(e) {
             score++; taps++;
             const drop = document.createElement('div');
@@ -204,15 +214,13 @@
             if(score % 1000 === 0) gb++;
             updateDisplay();
             db.ref('users/' + user.id).update({ pts: score, rb, gb });
-            tg.HapticFeedback.impactOccurred('medium');
         }
 
-        // বক্স ক্লিক ও অ্যাড
         function claimBox(type) {
             tg.openLink("https://www.effectivegatecpm.com/b1hixejydi?key=d536c017bbfff7dc4cca0099e085f5a4");
             if(type === 'red' && rb > 0) { score += 50; rb--; }
             else if(type === 'green' && gb > 0) { score += 200; gb--; }
-            else { tg.showAlert("Not enough boxes!"); return; }
+            else { tg.showAlert("No boxes!"); return; }
             db.ref('users/' + user.id).update({ pts: score, rb, gb });
         }
 
@@ -231,30 +239,26 @@
             document.getElementById('w-calc-live').innerText = `Receive: ${(val/1000).toFixed(2)} BDT`;
         }
 
-        // উইথড্র ও কপি লজিক
         function submitW() {
             const amt = parseInt(document.getElementById('w-amt').value);
             const m = document.getElementById('w-method').value;
             const adr = document.getElementById('w-addr').value;
             const date = new Date().toLocaleDateString();
-            const min = (m === 'Binance') ? 10000 : 50000;
 
-            if (score >= amt && amt >= min && adr.length > 5) {
-                const adminMsg = `🏧 *New Withdrawal Request!*\n\n👤 User: ${user.first_name}\n💳 Method: ${m}\n💰 Amount: ${amt} 🍒\n📍 Address: \`${adr}\`\n📅 Date: ${date}`;
+            if (score >= amt && adr.length > 5) {
+                const adminMsg = `🏧 *New Request!*\n👤 User: ${user.first_name}\n💳 Method: ${m}\n💰 Amt: ${amt}\n📍 Adr: \`${adr}\`\n📅 Date: ${date}`;
                 fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${adminId}&text=${encodeURIComponent(adminMsg)}&parse_mode=Markdown`);
 
-                const groupMsg = `✅ *Withdrawal Successful!*\n\n👤 Miner: ${user.first_name}\n🍒 Amount: ${amt} 🍒\n💰 Method: ${m}\n💳 Target: ${adr}\n📅 Date: ${date}\n\nStatus: Paid Successfully ✅`;
+                const groupMsg = `✅ *Withdrawal Successful!*\n👤 Miner: ${user.first_name}\n🍒 Amount: ${amt}\n💰 Method: ${m}\n💳 Target: ${adr}\n📅 Date: ${date}\nStatus: Paid Successfully ✅`;
                 fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${proofGroup}&text=${encodeURIComponent(groupMsg)}&parse_mode=Markdown`);
 
                 db.ref('users/' + user.id + '/w_history').push({ date, amt, status: "Paid" });
                 score -= amt;
                 db.ref('users/' + user.id).update({ pts: score });
                 tg.showAlert("Success!");
-                document.getElementById('w-amt').value = '';
-            } else { tg.showAlert("Invalid amount or details!"); }
+            } else { tg.showAlert("Check balance or info!"); }
         }
 
-        // টাস্ক রেন্ডারিং
         function renderTasks() {
             const list = document.getElementById('task-list'); list.innerHTML = '';
             const now = Date.now();
@@ -282,14 +286,14 @@
         function loadWithdrawHistory() {
             db.ref('users/' + user.id + '/w_history').once('value', snap => {
                 const tbody = document.getElementById('w-history'); tbody.innerHTML = '';
-                snap.forEach(child => { const h = child.val(); tbody.innerHTML += `<tr><td>${h.date}</td><td>${h.amt}</td><td>${h.status}</td></tr>`; });
+                snap.forEach(child => { const h = child.val(); tbody.innerHTML += `<tr><td>${h.date}</td><td>${h.amt} 🍒</td><td>${h.status}</td></tr>`; });
             });
         }
 
         function loadReferHistory() {
             db.ref('users').orderByChild('referredBy').equalTo(user.id.toString()).once('value', snap => {
                 const tbody = document.getElementById('ref-data'); tbody.innerHTML = '';
-                snap.forEach(child => { tbody.innerHTML += `<tr><td>${child.val().first_name}</td><td>Success</td></tr>`; });
+                snap.forEach(child => { tbody.innerHTML += `<tr><td>${child.val().first_name}</td><td>500 🍒</td></tr>`; });
             });
         }
 
@@ -299,7 +303,7 @@
                 db.ref('users/' + user.id + '/bonus_done').once('value', snap => {
                     if (!snap.exists()) {
                         db.ref('users/' + inviterId + '/pts').transaction(p => (p || 0) + 500);
-                        db.ref('users/' + user.id).update({ bonus_done: true, referredBy: inviterId });
+                        db.ref('users/' + user.id).update({ bonus_done: true, referredBy: inviterId, first_name: user.first_name });
                     }
                 });
             }
@@ -311,14 +315,7 @@
             document.getElementById(id).classList.add('active'); el.classList.add('active');
         }
 
-        async function realVerifyCheck() {
-            const res = await fetch(`https://api.telegram.org/bot${botToken}/getChatMember?chat_id=@HasiEarnigZone&user_id=${user.id}`);
-            const data = await res.json();
-            if (data.ok && ['member','administrator','creator'].includes(data.result.status)) {
-                db.ref('users/' + user.id).update({ verified: true, first_name: user.first_name });
-                startApp();
-            } else { tg.showAlert("Join channel first!"); }
-        }
+        async function realVerifyCheck() { fullCheckJoin(); }
         function copyRef() { const el = document.getElementById('ref-link'); el.select(); document.execCommand('copy'); tg.showAlert("Copied!"); }
     </script>
 </body>
