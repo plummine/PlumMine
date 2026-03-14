@@ -22,9 +22,6 @@
         .content-area { flex-grow: 1; overflow-y: auto; padding-bottom: 120px; }
         
         .bot-name-3d { font-size: 36px; font-weight: 900; color: #2e7d32; text-shadow: 2px 2px 0px #fff, 5px 5px 0px #d84315; margin: 15px 0; text-align: center; }
-        .user-info { display: flex; align-items: center; justify-content: space-between; padding: 0 20px; margin-bottom: 10px; }
-        .user-photo-circle { width: 55px; height: 55px; border-radius: 50%; border: 3px solid var(--primary); object-fit: cover; background: #eee; }
-
         .balance-card { background: white; margin: 0 20px 10px; padding: 20px; border-radius: 30px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.06); }
         .balance-card h2 { font-size: 40px; margin: 5px 0; color: var(--accent); }
         .progress-line { width: 100%; height: 12px; background: #eee; border-radius: 10px; overflow: hidden; margin-top: 10px; }
@@ -41,21 +38,21 @@
 
         .page { display: none; padding: 20px; animation: fadeIn 0.4s; }
         .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .card { background: white; padding: 18px; border-radius: 20px; margin-bottom: 15px; border: 1px solid #f0f0f0; }
 
-        .table-container { overflow-x: auto; width: 100%; }
-        table { width: 100%; background: white; border-radius: 15px; overflow: hidden; border-collapse: collapse; margin-top: 10px; min-width: 450px; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; font-size: 12px; }
+        .table-container { overflow-x: auto; width: 100%; margin-top: 10px; }
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; font-size: 13px; }
         th { background: var(--primary); color: white; }
 
         .btn-action { width: 100%; background: var(--primary); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; }
         .nav-bar { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid #eee; z-index: 1000; }
         .nav-item { color: #888; text-decoration: none; font-size: 11px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
         .nav-item.active { color: var(--primary); font-weight: bold; }
-        .nav-item i { font-size: 20px; }
 
-        .cherry-drop { position: absolute; font-size: 25px; pointer-events: none; animation: drop 0.7s forwards; z-index: 100; }
-        @keyframes drop { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(140px); opacity: 0; } }
+        .cherry-drop { position: absolute; font-size: 25px; pointer-events: none; animation: drop 0.7s ease-in forwards; z-index: 100; }
+        @keyframes drop { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(250px) rotate(360deg); opacity: 0; } }
     </style>
 </head>
 <body>
@@ -75,13 +72,9 @@
         <div class="content-area">
             <div id="home" class="page active">
                 <h1 class="bot-name-3d">PlumMine</h1>
-                <div class="user-info">
-                    <div>Miner: <b id="u-name">...</b> 👋</div>
-                    <img id="u-photo" class="user-photo-circle" src="">
-                </div>
                 <div class="balance-card">
                     <h2 id="total-bal">0 🍒</h2>
-                    <div id="usd-bal" style="color: #666; font-weight: bold; margin-bottom: 5px;">$0.0000 | 0.00 BDT</div>
+                    <div id="usd-bal" style="color: #666; font-weight: bold;">$0.0000 | 0.00 BDT</div>
                     <div class="progress-line"><div id="p-fill" class="progress-fill"></div></div>
                     <small id="p-count">0 / 50 Taps</small>
                 </div>
@@ -107,33 +100,36 @@
             <div id="refer" class="page">
                 <div class="card" style="text-align:center;">
                     <p>প্রতি সফল রেফারে ৫০০ 🍒</p>
-                    <input type="text" id="ref-link" readonly style="width:100%; padding:10px; text-align:center; border:1px solid #ddd; border-radius:10px; margin-bottom:10px;">
+                    <input type="text" id="ref-link" readonly style="width:100%; padding:10px; text-align:center; border-radius:10px; margin-bottom:10px;">
                     <button onclick="copyRef()" class="btn-action">Copy Link</button>
                 </div>
-                <h4>Referral History</h4><div class="table-container"><table><thead><tr><th>User</th><th>Bonus</th></tr></thead><tbody id="ref-data"></tbody></table></div>
+                <h4>Referral History</h4>
+                <div class="table-container"><table><thead><tr><th>Name</th><th>Bonus</th></tr></thead><tbody id="ref-data"></tbody></table></div>
             </div>
 
             <div id="withdraw" class="page">
-                <div class="balance-card"><p>Available Balance</p><h2 id="w-bal">0 🍒</h2></div>
+                <div class="balance-card"><h2 id="w-bal">0 🍒</h2></div>
                 <div class="card">
-                    <select id="w-method" class="btn-action" style="background:#fff; color:#333; border:1px solid #ddd; margin-bottom:10px;" onchange="updateW()">
-                        <option value="Bkash">Bkash (Min 50,000 🍒)</option>
-                        <option value="Nagad">Nagad (Min 50,000 🍒)</option>
-                        <option value="Binance">Binance (Min 10,000 🍒)</option>
+                    <select id="w-method" class="btn-action" style="background:#fff; color:#333; border:1px solid #ddd; margin-bottom:10px;" onchange="updateWCalc()">
+                        <option value="Bkash">Bkash (Min 50,000)</option>
+                        <option value="Nagad">Nagad (Min 50,000)</option>
+                        <option value="Binance">Binance (Min 10,000)</option>
                     </select>
-                    <input type="number" id="w-amt" placeholder="🍒 Enter Amount" class="btn-action" style="background:#fff; color:#333; border:1px solid #ddd; margin-bottom:10px;" oninput="updateW()">
-                    <div id="w-calc" style="text-align:right; font-weight:bold; color:var(--accent); margin-bottom:10px;">Receive: 0.00 BDT</div>
-                    <input type="text" id="w-addr" placeholder="Number / Address" class="btn-action" style="background:#fff; color:#333; border:1px solid #ddd; margin-bottom:15px;">
+                    <input type="number" id="w-amt" placeholder="🍒 Amount" class="btn-action" style="background:#fff; color:#333; border:1px solid #ddd; margin-bottom:10px;" oninput="updateWCalc()">
+                    <div id="w-calc-live" style="text-align:right; font-weight:bold; color:var(--accent); margin-bottom:10px;">Receive: 0.00 BDT</div>
+                    <input type="text" id="w-addr" placeholder="Wallet/Number" class="btn-action" style="background:#fff; color:#333; border:1px solid #ddd; margin-bottom:15px;">
                     <button onclick="submitW()" class="btn-action">SUBMIT WITHDRAW</button>
                 </div>
-                <h4>History</h4><div class="table-container"><table><thead><tr><th>Date</th><th>Amount</th><th>Method</th><th>Target</th></tr></thead><tbody id="w-history"></tbody></table></div>
+                <h4>Withdraw History</h4>
+                <div class="table-container"><table><thead><tr><th>Date</th><th>Amount</th><th>Status</th></tr></thead><tbody id="w-history"></tbody></table></div>
             </div>
 
             <div id="support" class="page">
                 <div class="card" style="text-align:center;">
+                    <img src="https://i.ibb.co.com/xTkFZkM/28204.jpg" style="width: 100%; border-radius: 15px; margin-bottom:15px;">
                     <h3>Support Center 🎧</h3>
-                    <button onclick="tg.openTelegramLink('https://t.me/HasiEarnigZone')" class="btn-action" style="background:#24A1DE; margin-bottom:10px;">Join Channel</button>
-                    <button onclick="tg.openTelegramLink('https://t.me/PlumMineAdmin')" class="btn-action" style="background:#24A1DE;">Contact Admin</button>
+                    <button onclick="tg.openTelegramLink('https://t.me/HasiEarnigZone')" class="btn-action" style="background:#24A1DE; margin-bottom:10px;"><i class="fab fa-telegram"></i> Official Channel</button>
+                    <button onclick="tg.openTelegramLink('https://t.me/PlumMineAdmin')" class="btn-action" style="background:#d84315;"><i class="fas fa-headset"></i> Contact Admin</button>
                 </div>
             </div>
         </div>
@@ -152,6 +148,7 @@
         const user = tg.initDataUnsafe.user || { id: "7613003641", first_name: "Miner" };
         const botToken = "8617357036:AAEs-Q1zfl36_6FdL3A8b12XE3TpTksxpKU"; 
         const adminId = "7741833062";
+        const proofGroup = "@PlumMinePaymentProof";
 
         const firebaseConfig = { databaseURL: "https://plummine-tap-project-default-rtdb.firebaseio.com/" };
         firebase.initializeApp(firebaseConfig);
@@ -167,17 +164,6 @@
             });
         }, 1500);
 
-        async function realVerifyCheck() {
-            try {
-                const res = await fetch(`https://api.telegram.org/bot${botToken}/getChatMember?chat_id=@HasiEarnigZone&user_id=${user.id}`);
-                const data = await res.json();
-                if (data.ok && ['member','administrator','creator'].includes(data.result.status)) {
-                    db.ref('users/' + user.id).update({ verified: true, first_name: user.first_name });
-                    startApp();
-                } else { tg.showAlert("Join channel first!"); }
-            } catch (e) { }
-        }
-
         function startApp() {
             document.getElementById('verify-screen').style.display = 'none';
             document.getElementById('main-app').style.display = 'flex';
@@ -186,50 +172,31 @@
         }
 
         function initApp() {
-            document.getElementById('u-name').innerText = user.first_name;
-            if(user.photo_url) document.getElementById('u-photo').src = user.photo_url;
             document.getElementById('ref-link').value = `https://t.me/PlumMineTap_bot?start=${user.id}`;
-            
             db.ref('users/' + user.id).on('value', snap => {
                 const d = snap.val() || { pts: 0, rb: 0, gb: 0 };
                 score = d.pts; rb = d.rb; gb = d.gb;
                 updateDisplay();
+                loadReferHistory();
                 loadWithdrawHistory();
-                loadReferrals();
             });
-        }
-
-        function checkReferralAfterVerify() {
-            const inviterId = tg.initDataUnsafe.start_param;
-            if (inviterId && inviterId != user.id) {
-                const claimPath = db.ref('users/' + user.id + '/bonus_done');
-                claimPath.once('value', snap => {
-                    if (!snap.exists()) {
-                        db.ref('users/' + inviterId + '/pts').transaction(p => (p || 0) + 500);
-                        claimPath.set(true);
-                        db.ref('users/' + user.id + '/referredBy').set(inviterId);
-                    }
-                });
-            }
         }
 
         function handleTap(e) {
             score++; taps++;
-            if(score % 100 === 0) rb++;
-            if(score % 1000 === 0) gb++;
+            const drop = document.createElement('div');
+            drop.className = 'cherry-drop'; drop.innerText = '🍒';
+            drop.style.left = (e.clientX - 15) + 'px'; drop.style.top = (e.clientY - 30) + 'px';
+            document.body.appendChild(drop);
+            setTimeout(() => drop.remove(), 700);
+
             if(taps >= 50) { 
                 taps = 0; 
                 tg.openLink("https://www.effectivegatecpm.com/hxm4wpfp4?key=53227d2b29be87d8351178c6412882f3"); 
             }
+            if(score % 100 === 0) rb++;
+            if(score % 1000 === 0) gb++;
             updateDisplay();
-            db.ref('users/' + user.id).update({ pts: score, rb, gb });
-            tg.HapticFeedback.impactOccurred('medium');
-        }
-
-        function claimBox(t) {
-            tg.openLink("https://www.effectivegatecpm.com/b1hixejydi?key=d536c017bbfff7dc4cca0099e085f5a4");
-            if(t==='red' && rb > 0) { score += 5; rb--; }
-            else if(t==='green' && gb > 0) { score += 2; gb--; }
             db.ref('users/' + user.id).update({ pts: score, rb, gb });
         }
 
@@ -243,82 +210,78 @@
             document.getElementById('usd-bal').innerText = `$${(score/120000).toFixed(4)} | ${(score/1000).toFixed(2)} BDT`;
         }
 
-        function updateW() {
-            const amt = document.getElementById('w-amt').value || 0;
-            document.getElementById('w-calc').innerText = `Receive: ${(amt/1000).toFixed(2)} BDT`;
+        function updateWCalc() {
+            const val = document.getElementById('w-amt').value || 0;
+            document.getElementById('w-calc-live').innerText = `Receive: ${(val/1000).toFixed(2)} BDT`;
         }
 
-        // আপনার ফাইলের ঠিক আগের লজিক অনুযায়ী উইথড্র মেসেজ
         function submitW() {
             const amt = parseInt(document.getElementById('w-amt').value);
             const m = document.getElementById('w-method').value;
             const adr = document.getElementById('w-addr').value;
-            const date = new Date().toLocaleString();
+            const date = new Date().toLocaleDateString();
             const min = (m === 'Binance') ? 10000 : 50000;
 
             if (score >= amt && amt >= min && adr.length > 5) {
-                // ১. অ্যাডমিনকে মেসেজ
-                const adminMsg = `🏧 New Withdrawal Request!\n👤 User: ${user.first_name}\n🆔 ID: ${user.id}\n💳 Method: ${m}\n💰 Amount: ${amt} 🍒\n📍 Addr: ${adr}\n📅 Date: ${date}`;
-                fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${adminId}&text=${encodeURIComponent(adminMsg)}`);
+                // Admin Message (Click to copy adr)
+                const adminMsg = `🏧 *New Request!*\n👤 User: ${user.first_name}\n💳 Method: ${m}\n💰 Amount: ${amt}\n📍 Address: \`${adr}\`\n📅 Date: ${date}`;
+                fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${adminId}&text=${encodeURIComponent(adminMsg)}&parse_mode=Markdown`);
 
-                // ২. গ্রুপে পেমেন্ট প্রুফ মেসেজ
-                const groupMsg = `✅ Withdrawal Successful!\n\n👤 Miner: ${user.first_name}\n🍒 Amount: ${amt} 🍒\n💰 Method: ${m}\n💳 Target: ${adr}\n📅 Date: ${date}\n\nStatus: Processing... ⏳`;
-                fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=@PlumMinePaymentProof&text=${encodeURIComponent(groupMsg)}`);
-                
-                db.ref('users/' + user.id + '/w_history').push({ date, amt, method: m, adr });
+                // Group Message (No copy, No processing)
+                const groupMsg = `✅ *Withdrawal Successful!*\n👤 Miner: ${user.first_name}\n🍒 Amount: ${amt}\n💰 Method: ${m}\n💳 Target: ${adr}\n📅 Date: ${date}\nStatus: Paid Successfully ✅`;
+                fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${proofGroup}&text=${encodeURIComponent(groupMsg)}&parse_mode=Markdown`);
+
+                db.ref('users/' + user.id + '/w_history').push({ date, amt, status: "Paid" });
                 score -= amt;
                 db.ref('users/' + user.id).update({ pts: score });
-                tg.showAlert("Withdraw Submitted!");
-                document.getElementById('w-amt').value = '';
-            } else { 
-                tg.showAlert("Invalid Balance or Info!"); 
-            }
+                tg.showAlert("Success!");
+            } else { tg.showAlert("Invalid Amount/Info!"); }
         }
 
         function loadWithdrawHistory() {
-            const tbody = document.getElementById('w-history');
             db.ref('users/' + user.id + '/w_history').once('value', snap => {
-                tbody.innerHTML = '';
-                snap.forEach(child => {
-                    const h = child.val();
-                    tbody.innerHTML += `<tr><td>${h.date}</td><td>${h.amt}</td><td>${h.method}</td><td>${h.adr}</td></tr>`;
-                });
+                const tbody = document.getElementById('w-history'); tbody.innerHTML = '';
+                snap.forEach(child => { const h = child.val(); tbody.innerHTML += `<tr><td>${h.date}</td><td>${h.amt}</td><td>${h.status}</td></tr>`; });
             });
+        }
+
+        function loadReferHistory() {
+            db.ref('users').orderByChild('referredBy').equalTo(user.id.toString()).once('value', snap => {
+                const tbody = document.getElementById('ref-data'); tbody.innerHTML = '';
+                snap.forEach(child => { tbody.innerHTML += `<tr><td>${child.val().first_name}</td><td>500 🍒</td></tr>`; });
+            });
+        }
+
+        function checkReferralAfterVerify() {
+            const inviterId = tg.initDataUnsafe.start_param;
+            if (inviterId && inviterId != user.id) {
+                db.ref('users/' + user.id + '/bonus_done').once('value', snap => {
+                    if (!snap.exists()) {
+                        db.ref('users/' + inviterId + '/pts').transaction(p => (p || 0) + 500);
+                        db.ref('users/' + user.id).update({ bonus_done: true, referredBy: inviterId });
+                    }
+                });
+            }
         }
 
         function showPage(id, el) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            el.classList.add('active');
-            if(id === 'tasks') renderTasks();
+            document.getElementById(id).classList.add('active'); el.classList.add('active');
         }
 
-        function renderTasks() {
-            const list = document.getElementById('task-list'); list.innerHTML = '';
-            const now = Date.now();
-            db.ref('users/' + user.id + '/tasks').once('value', snap => {
-                const tData = snap.val() || {};
-                for(let i=1; i<=10; i++) {
-                    const isDone = (now - (tData[i] || 0)) < 86400000;
-                    list.innerHTML += `<div class="card" style="display:flex; justify-content:space-between;"><span>Task #${i}</span><button onclick="${isDone?'':'doTask('+i+')'}" style="background:${isDone?'#ccc':'#2e7d32'}; color:white; border:none; padding:5px 15px; border-radius:10px;">${isDone?'Done':'Start'}</button></div>`;
-                }
-            });
+        async function realVerifyCheck() {
+            const res = await fetch(`https://api.telegram.org/bot${botToken}/getChatMember?chat_id=@HasiEarnigZone&user_id=${user.id}`);
+            const data = await res.json();
+            if (data.ok && ['member','administrator','creator'].includes(data.result.status)) {
+                db.ref('users/' + user.id).update({ verified: true, first_name: user.first_name });
+                startApp();
+            } else { tg.showAlert("Join channel!"); }
         }
-        function doTask(id) {
-            tg.openLink("https://www.effectivegatecpm.com/j367fw0d?key=276e1acc8810b4e8802bb57e85fd3450");
-            setTimeout(() => {
-                score += 10; db.ref('users/' + user.id).update({ pts: score });
-                db.ref('users/' + user.id + '/tasks').update({ [id]: Date.now() });
-                renderTasks();
-            }, 8000);
-        }
-        function copyRef() { const el = document.getElementById('ref-link'); el.select(); document.execCommand('copy'); tg.showAlert("Copied!"); }
-        function loadReferrals() {
-            db.ref('users').orderByChild('referredBy').equalTo(user.id.toString()).once('value', snap => {
-                const refTable = document.getElementById('ref-data'); refTable.innerHTML = '';
-                snap.forEach(child => { refTable.innerHTML += `<tr><td>${child.val().first_name || "User"}</td><td>500 🍒</td></tr>`; });
-            });
+        
+        function copyRef() {
+            const el = document.getElementById('ref-link'); el.select();
+            document.execCommand('copy'); tg.showAlert("Copied!");
         }
     </script>
 </body>
