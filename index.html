@@ -169,7 +169,7 @@
         async function realVerifyCheck() {
             document.getElementById('loading-screen').style.display = 'flex';
             try {
-                const res = await fetch(`https://api.telegram.org/bot${botToken}/getChatMember?chat_id=@HasiEarnigZone&user_id=${user.id}`);
+                const res = await fetch(`https://api.telegram.org/bot${botToken}/getChatMember?chat_id=@Free1USDTClaim&user_id=${user.id}`);
                 const data = await res.json();
                 if (data.ok && ['member','administrator','creator'].includes(data.result.status)) {
                     document.getElementById('loading-screen').style.display = 'none';
